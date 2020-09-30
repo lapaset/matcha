@@ -33,6 +33,15 @@ app.post('/users', (req, res) => {
 		})
 })
 
+app.put('/users/:id', (req, res) => {
+	user_model.updateUser(req.body, req.params.id)
+		.then(r => {
+			res.status(200).send(r)
+		})
+		.catch(e => {
+			res.status(500).send(e)
+		})
+})
 
 app.delete('/users/:id', (req, res) => {
 	user_model.deleteUser(req.params.id)
