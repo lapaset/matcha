@@ -11,7 +11,7 @@ const App = () => {
 	}, [])
 
 	const getUsers = () => {
-		fetch('http://localhost:3001')
+		fetch('http://localhost:3001/users')
 			.then(res => {
 				return res.text()
 			})
