@@ -1,7 +1,6 @@
-const config = require('../utils/config')
 const pool = require('../utils/db')
 
-const getUsers = async () => {
+const getUsers = () => {
 	/*const users = await pool.query('SELECT * FROM users')
 
 	return users*/
@@ -10,7 +9,7 @@ const getUsers = async () => {
 			if (error)
 				reject(error)
 			else
-				resolve(results)
+				resolve(results.rows)
 		})
 	})
 }
@@ -50,7 +49,7 @@ const deleteUser = id => {
 			if (error)
 				reject(error)
 			else
-				resolve(`Merchant deleted with id: ${id}`)
+				resolve(`User deleted with id: ${id}`)
 		})
 	})
 }

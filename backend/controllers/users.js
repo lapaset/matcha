@@ -4,7 +4,7 @@ const usersRouter = require('express').Router()
 usersRouter.get('/', (req, res) => {
 	userModel.getUsers()
 		.then(users => {
-			res.status(200).send(users.rows)
+			res.status(200).send(users)
 		})
 		.catch(error => {
 			res.status(500).send(error)

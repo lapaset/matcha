@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import UpdateForm from './components/UpdateForm'
 
-
 const App = () => {
 
 	const [users, setUsers] = useState(false)
