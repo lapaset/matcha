@@ -11,6 +11,16 @@ usersRouter.get('/', (req, res) => {
 		})
 })
 
+usersRouter.get('/:id', (req, res) => {
+	userModel.getUser(req.params.id)
+		.then(r => {
+			res.status(200).send(r)
+		})
+		.catch(e => {
+			res.status(500).send(e)
+		})
+})
+
 usersRouter.post('/', (req, res) => {
 	userModel.createUser(req.body)
 		.then(r => {

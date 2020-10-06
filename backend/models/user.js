@@ -1,29 +1,39 @@
-const pool = require('../utils/db')
+const db = require('../utils/db')
 
 const getUsers = () => {
-	/*const users = await pool.query('SELECT * FROM users')
-
-	return users*/
 	return new Promise((resolve, reject) => {
-		pool().query('SELECT * FROM users', (error, results) => {
-			if (error)
-				reject(error)
+		db.query('SELECT * FROM users', (err, res) => {
+			if (err)
+				reject(err)
 			else
-				resolve(results.rows)
+				resolve(res.rows)
 		})
 	})
 }
 
+const getUser = id => {
+	return new Promise((resolve, reject) => {
+		db.query('SELECT * FROM users WHERE user_id = $1', [id], (err, res) => {
+			if (res.rows[0])
+				resolve(res.rows[0])
+			else if (res)
+				reject(`User not found`)
+			else 
+				reject(err)
+		})
+	})
+} 
+
 const createUser = body => {
 	return new Promise((resolve, reject) => {
 		const { name, username, email, password, gender, orientation } = body
-		pool().query('INSERT INTO users (name, username, email, password, gender, orientation) \
+		db.query('INSERT INTO users (name, username, email, password, gender, orientation) \
 					VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-			[ name, username, email, password, gender, orientation ], (error, results) => {
-				if (error)
-					reject(error)
+			[ name, username, email, password, gender, orientation ], (err, res) => {
+				if (err)
+					reject(err)
 				else
-					resolve(results.rows[0])
+					resolve(res.rows[0])
 			})
 	})
 }
@@ -31,23 +41,23 @@ const createUser = body => {
 const updateUser = (body, id) => {
 	return new Promise((resolve, reject) => {
 		const { name, username, email, gender, orientation } = body
-		pool().query('UPDATE users \
+		db.query('UPDATE users \
 					SET (name, username, email, gender, orientation) = ($1, $2, $3, $4, $5) \
 					WHERE user_id = $6 RETURNING *',
-					[ name, username, email, gender, orientation, id ], (error, results) => {
-						if (error)
-							reject(error)
+					[ name, username, email, gender, orientation, id ], (err, res) => {
+						if (err)
+							reject(err)
 						else
-							resolve(results.rows[0])
+							resolve(res.rows[0])
 					})
 	})
 }
 
 const deleteUser = id => {
 	return new Promise((resolve, reject) => {
-		pool().query('DELETE FROM users WHERE user_id = $1', [id], (error, results) => {
-			if (error)
-				reject(error)
+		db.query('DELETE FROM users WHERE user_id = $1', [id], (err) => {
+			if (err)
+				reject(err)
 			else
 				resolve(`User deleted with id: ${id}`)
 		})
@@ -56,6 +66,7 @@ const deleteUser = id => {
 
 module.exports = {
 	getUsers,
+	getUser,
 	createUser,
 	deleteUser,
 	updateUser
