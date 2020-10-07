@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import UpdateForm from './components/UpdateForm'
+import UpdateForm from './components/UpdateForm/'
+
+const UserList = ({ users }) => (
+	<ul>
+		{users.map(u => {
+			return <li key={u.user_id}>{u.user_id}: {u.username}, {u.gender} looking for {u.orientation} </li>
+		})}
+	</ul>
+)
 
 const App = () => {
 
@@ -12,7 +20,7 @@ const App = () => {
 	const getUsers = () => {
 		fetch('http://localhost:3001/users')
 			.then(res => {
-				return res.text()
+				return res.json()
 			})
 			.then(data => {
 				setUsers(data)
@@ -24,8 +32,8 @@ const App = () => {
 
 	return (
 		<>
-			{ users ? users : 'There is no user data available'}
 			<UpdateForm getUsers={getUsers} />
+			{ users ? <UserList users={users} /> : 'There is no user data available'}
 		</>
 	)
 }
