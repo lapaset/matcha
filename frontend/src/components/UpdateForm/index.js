@@ -4,10 +4,36 @@ import InputField from './InputField'
 import SelectGender from './SelectGender'
 import SelectOrientation from './SelectOrientation'
 
+
+import CreatableSelect from 'react-select'
+
+
+const SelectTags = ({ setUserTags, userTags, tags }) => {
+
+	const onChange = options => setUserTags(options)
+
+	const getOptions = () => tags.map(t => {
+		return { value: t.tag, label: t.tag }})
+
+	return tags
+			?	<div>
+					tags
+					<CreatableSelect options={getOptions()} onChange={onChange} isMulti />
+				</div>
+			: null
+}
+
+const TagList = ({ tags }) => (
+	<div>
+		<h2>tags</h2>
+		{tags.map( t => t.tag )}
+	</div>
+)
+
 const UpdateForm = ({ getUsers }) => {
 	//TODO: get user_id from somewhere
 	const id = 1
-	
+
 	const [ user, setUser ] = useState({})
 	const { reset: nameReset, ...name } = useField('text')
 	const { reset: usernameReset, ...username } = useField('text')
@@ -15,8 +41,22 @@ const UpdateForm = ({ getUsers }) => {
 	const { reset: passwordReset, ...password } = useField('password')
 	const [ gender, setGender ] = useState({})
 	const [ orientation, setOrientation ] = useState([])
+	const [ tags, setTags ] = useState(false)
+	const [ userTags, setUserTags ] = useState([])
+
 
 	useEffect(() => {
+
+		fetch('http://localhost:3001/tags')
+			.then(res => {
+				return res.json()
+			})
+			.then(data => {
+				setTags(data)
+			})
+			.catch((error) => {
+				console.log(error)
+			})
 
 		fetch(`http://localhost:3001/users/${id}`)
 			.then(res => {
@@ -103,7 +143,7 @@ const UpdateForm = ({ getUsers }) => {
 	//console.log('orientation', orientation)
 	//console.log('user', user)
 	//console.log('gender', gender)
-	
+
 	return (
 		<div>	
 			<form onSubmit={handleSubmit}>
@@ -113,8 +153,10 @@ const UpdateForm = ({ getUsers }) => {
 				<InputField label='password' field={password} current='' />
 				<SelectGender name='gender' setGender={setGender} gender={gender} />
 				<SelectOrientation name='orientation' setOrientation={setOrientation} orientation={orientation} />				
+				<SelectTags name='tags' setUserTags={setUserTags} userTags={userTags} tags={tags} />
 				<button type="submit">Update</button>
 			</form>
+			{ tags ? <TagList tags={tags} /> : 'No tags data available'}
 		</div>
 	)
 }
