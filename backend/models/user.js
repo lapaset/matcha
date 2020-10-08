@@ -40,11 +40,11 @@ const createUser = body => {
 
 const updateUser = (body, id) => {
 	return new Promise((resolve, reject) => {
-		const { name, username, email, gender, orientation, tags } = body
+		const { name, username, email, gender, orientation, tags, bio } = body
 		db.query('UPDATE users \
-					SET (name, username, email, gender, orientation, tags) = ($1, $2, $3, $4, $5, $6) \
-					WHERE user_id = $7 RETURNING *',
-			[name, username, email, gender, orientation, tags, id], (err, res) => {
+					SET (name, username, email, gender, orientation, tags, bio) = ($1, $2, $3, $4, $5, $6, $7) \
+					WHERE user_id = $8 RETURNING *',
+			[name, username, email, gender, orientation, tags, bio, id], (err, res) => {
 				if (res && res.rows[0])
 					resolve(res.rows[0])
 				else if (res)

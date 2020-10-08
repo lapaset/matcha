@@ -4,20 +4,22 @@ import InputField from './InputField'
 import SelectGender from './SelectGender'
 import SelectOrientation from './SelectOrientation'
 import SelectTags from './SelectTags'
+import Textarea from './Textarea'
 
 const UpdateForm = ({ getUsers }) => {
 	//TODO: get user_id from somewhere
 	const id = 1
 
-	const [user, setUser] = useState({})
+	const [ user, setUser ] = useState({})
 	const { reset: nameReset, ...name } = useField('text')
 	const { reset: usernameReset, ...username } = useField('text')
 	const { reset: emailReset, ...email } = useField('email')
 	const { reset: passwordReset, ...password } = useField('password')
-	const [gender, setGender] = useState({})
-	const [orientation, setOrientation] = useState([])
-	const [tags, setTags] = useState(false)
-	const [userTags, setUserTags] = useState([])
+	const [ gender, setGender ] = useState({})
+	const [ orientation, setOrientation ] = useState([])
+	const [ tags, setTags ] = useState(false)
+	const [ userTags, setUserTags ] = useState([])
+	const [ bio, setBio ] = useState('')
 
 
 	useEffect(() => {
@@ -65,6 +67,7 @@ const UpdateForm = ({ getUsers }) => {
 				setGender({ value: res.gender, label: res.gender })
 				setOrientation(orientationFromDb())
 				setUserTags(tagsFromDB())
+				setBio(res.bio)
 
 			})
 			.catch(e => {
@@ -96,7 +99,8 @@ const UpdateForm = ({ getUsers }) => {
 			password: password.value ? password.value : user.password,
 			gender: gender.value,
 			orientation: orientationToDb(),
-			tags: userTags.map(t => t.value).join('')
+			tags: userTags.map(t => t.value).join(''),
+			bio: bio
 		}
 
 		console.log('updateduser', updatedUser)
@@ -139,6 +143,7 @@ const UpdateForm = ({ getUsers }) => {
 				<SelectOrientation name='orientation' setOrientation={setOrientation} orientation={orientation} />
 				<SelectTags name='tags' setUserTags={setUserTags} userTags={userTags}
 					tags={tags} setTags={setTags} />
+				<Textarea value={bio} setValue={setBio} label='bio' name='bio' />
 				<button type="submit">Update</button>
 			</form>
 		</div>
