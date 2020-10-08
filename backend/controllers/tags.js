@@ -17,6 +17,7 @@ tagsRouter.post('/', (req, res) => {
             res.status(200).send(r)
         })
         .catch(e => {
+			console.log(e)
             res.status(500).send(e)
         })
 })

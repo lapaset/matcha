@@ -3,46 +3,21 @@ import { useField } from '../../hooks'
 import InputField from './InputField'
 import SelectGender from './SelectGender'
 import SelectOrientation from './SelectOrientation'
-
-
-import CreatableSelect from 'react-select'
-
-
-const SelectTags = ({ setUserTags, userTags, tags }) => {
-
-	const onChange = options => setUserTags(options)
-
-	const getOptions = () => tags.map(t => {
-		return { value: t.tag, label: t.tag }})
-
-	return tags
-			?	<div>
-					tags
-					<CreatableSelect options={getOptions()} onChange={onChange} isMulti />
-				</div>
-			: null
-}
-
-const TagList = ({ tags }) => (
-	<div>
-		<h2>tags</h2>
-		{tags.map( t => t.tag )}
-	</div>
-)
+import SelectTags from './SelectTags'
 
 const UpdateForm = ({ getUsers }) => {
 	//TODO: get user_id from somewhere
 	const id = 1
 
-	const [ user, setUser ] = useState({})
+	const [user, setUser] = useState({})
 	const { reset: nameReset, ...name } = useField('text')
 	const { reset: usernameReset, ...username } = useField('text')
 	const { reset: emailReset, ...email } = useField('email')
 	const { reset: passwordReset, ...password } = useField('password')
-	const [ gender, setGender ] = useState({})
-	const [ orientation, setOrientation ] = useState([])
-	const [ tags, setTags ] = useState(false)
-	const [ userTags, setUserTags ] = useState([])
+	const [gender, setGender] = useState({})
+	const [orientation, setOrientation] = useState([])
+	const [tags, setTags] = useState(false)
+	const [userTags, setUserTags] = useState([])
 
 
 	useEffect(() => {
@@ -76,12 +51,20 @@ const UpdateForm = ({ getUsers }) => {
 					return o
 				}
 
+				const tagsFromDB = () => {
+					const tagsFromUser = res.tags.split('#').map(t => {
+						return { value: '#' + t, label: '#' + t }
+					})
+					return tagsFromUser.slice(1)
+				}
+
 				setUser({
 					...res
 				})
 
 				setGender({ value: res.gender, label: res.gender })
 				setOrientation(orientationFromDb())
+				setUserTags(tagsFromDB())
 
 			})
 			.catch(e => {
@@ -112,7 +95,8 @@ const UpdateForm = ({ getUsers }) => {
 			email: email.value ? email.value : user.email,
 			password: password.value ? password.value : user.password,
 			gender: gender.value,
-			orientation: orientationToDb()
+			orientation: orientationToDb(),
+			tags: userTags.map(t => t.value).join('')
 		}
 
 		console.log('updateduser', updatedUser)
@@ -145,18 +129,18 @@ const UpdateForm = ({ getUsers }) => {
 	//console.log('gender', gender)
 
 	return (
-		<div>	
+		<div>
 			<form onSubmit={handleSubmit}>
 				<InputField label='name' field={name} current={user.name} />
 				<InputField label='username' field={username} current={user.username} />
 				<InputField label='email' field={email} current={user.email} />
 				<InputField label='password' field={password} current='' />
 				<SelectGender name='gender' setGender={setGender} gender={gender} />
-				<SelectOrientation name='orientation' setOrientation={setOrientation} orientation={orientation} />				
-				<SelectTags name='tags' setUserTags={setUserTags} userTags={userTags} tags={tags} />
+				<SelectOrientation name='orientation' setOrientation={setOrientation} orientation={orientation} />
+				<SelectTags name='tags' setUserTags={setUserTags} userTags={userTags}
+					tags={tags} setTags={setTags} />
 				<button type="submit">Update</button>
 			</form>
-			{ tags ? <TagList tags={tags} /> : 'No tags data available'}
 		</div>
 	)
 }
