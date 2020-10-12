@@ -5,6 +5,7 @@ import SelectGender from './SelectGender'
 import SelectOrientation from './SelectOrientation'
 import SelectTags from './SelectTags'
 import Textarea from './Textarea'
+import userService from '../../services/users'
 
 const UpdateForm = ({ getUsers }) => {
 	//TODO: get user_id from somewhere
@@ -35,12 +36,8 @@ const UpdateForm = ({ getUsers }) => {
 				console.log(error)
 			})
 
-		fetch(`http://localhost:3001/users/${id}`)
-			.then(res => {
-				if (!res.ok)
-					throw Error(res.statusText)
-				return res.json()
-			})
+		userService
+			.getUser(id)
 			.then(res => {
 				const orientationFromDb = () => {
 					const o = []
@@ -67,11 +64,11 @@ const UpdateForm = ({ getUsers }) => {
 				setGender({ value: res.gender, label: res.gender })
 				setOrientation(orientationFromDb())
 				setUserTags(tagsFromDB())
-				setBio(res.bio)
+				setBio(res.bio || '')
 
 			})
 			.catch(e => {
-				console.log(e)
+				console.log(e.response)
 			})
 	}, [])
 
@@ -105,25 +102,17 @@ const UpdateForm = ({ getUsers }) => {
 
 		console.log('updateduser', updatedUser)
 
-		fetch(`http://localhost:3001/users/${id}`, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(updatedUser),
-		})
-			.then(res => {
-				if (!res.ok)
-					throw Error(res.statusText)
-				return res.text()
-			})
+		userService
+			.updateUser(updatedUser, id)
 			.then(data => {
-				alert(data)
+				console.log(data)
 				setUser(updatedUser)
 				getUsers()
+				//todo: clear fields
 			})
 			.catch(e => {
-				console.log(e)
+				console.log('error', e.response.data)
+				//todo: notify error
 			})
 	}
 

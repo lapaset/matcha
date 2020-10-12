@@ -27,6 +27,7 @@ usersRouter.post('/', (req, res) => {
 			res.status(200).send(r)
 		})
 		.catch(e => {
+			console.log(e)
 			res.status(500).send(e)
 		})
 })
@@ -37,6 +38,7 @@ usersRouter.put('/:id', (req, res) => {
 			res.status(200).send(r)
 		})
 		.catch(e => {
+			console.log(e)
 			res.status(500).send(e)
 		})
 })
@@ -44,10 +46,10 @@ usersRouter.put('/:id', (req, res) => {
 usersRouter.delete('/:id', (req, res) => {
 	userModel.deleteUser(req.params.id)
 		.then(r => {
-			res.status(200).send(r)
+			res.status(204).send(r)
 		})
 		.catch(e => {
-			res.status(500).send(e)
+			res.status(204).send(e)
 		})
 })
 

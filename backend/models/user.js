@@ -1,3 +1,4 @@
+const e = require('express')
 const db = require('../utils/db')
 
 const getUsers = () => {
@@ -17,9 +18,9 @@ const getUser = id => {
 			if (res && res.rows[0])
 				resolve(res.rows[0])
 			else if (res)
-				reject(`User not found`)
+				reject({ error: 'User not found' })
 			else
-				reject(err)
+				reject({ error: err.details })
 		})
 	})
 }
@@ -45,14 +46,13 @@ const updateUser = (body, id) => {
 					SET (name, username, email, gender, orientation, tags, bio) = ($1, $2, $3, $4, $5, $6, $7) \
 					WHERE user_id = $8 RETURNING *',
 			[name, username, email, gender, orientation, tags, bio, id], (err, res) => {
+				
 				if (res && res.rows[0])
 					resolve(res.rows[0])
 				else if (res)
-					reject(`User not found`)
-				else {
-					console.log('error', err.detail)
-					reject(err)
-				}
+					reject({ error: 'User not found' })
+				else 
+					reject({ error: err.detail })
 			})
 	})
 }
