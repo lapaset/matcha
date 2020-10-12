@@ -15,7 +15,7 @@ module.exports = {
 		return pool.query(text, params, (err, res) => {
 		  const duration = Date.now() - start
 		  if (res)
-			  console.log('executed query', { text, duration, rows: res.rowCount })
+			  console.log('postgres query', { text, duration, rows: res.rowCount, res: res.rows })
 		  callback(err, res)
 		})
 	},

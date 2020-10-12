@@ -4,12 +4,16 @@ const app = express()
 const config = require('./utils/config')
 const usersRouter = require('./controllers/users')
 const tagsRouter = require('./controllers/tags')
+const middleware = require('./utils/middleware')
 
 app.use(express.json())
 app.use(cors())
+app.use(middleware.requestLogger)
 
 app.use('/users', usersRouter)
 app.use('/tags', tagsRouter)
+
+app.use(middleware.unknownEndpoint)
 
 app.listen(config.PORT, () => {
 	console.log(`App running on port ${config.PORT}.`)

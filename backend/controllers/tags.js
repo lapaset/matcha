@@ -13,9 +13,7 @@ tagsRouter.get('/', (req, res) => {
 
 tagsRouter.post('/', (req, res) => {
 	if (!req.body.tag) {
-		return res.status(400).json({
-			error: 'tag missing'
-		})
+		return res.status(400).json({ error: 'tag missing' })
 	}
 
     tagModel.addTag(req.body)
