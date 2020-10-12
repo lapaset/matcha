@@ -6,6 +6,7 @@ import SelectOrientation from './SelectOrientation'
 import SelectTags from './SelectTags'
 import Textarea from './Textarea'
 import userService from '../../services/users'
+import tagService from '../../services/tags'
 
 const UpdateForm = ({ getUsers }) => {
 	//TODO: get user_id from somewhere
@@ -25,10 +26,8 @@ const UpdateForm = ({ getUsers }) => {
 
 	useEffect(() => {
 
-		fetch('http://localhost:3001/tags')
-			.then(res => {
-				return res.json()
-			})
+		tagService
+			.getTags()
 			.then(data => {
 				setTags(data)
 			})

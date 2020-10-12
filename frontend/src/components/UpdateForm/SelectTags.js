@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import CreatableSelect from 'react-select'
+import tagService from '../../services/tags'
 
 const SelectTags = ({ setUserTags, userTags, tags, setTags }) => {
 
@@ -11,28 +12,18 @@ const SelectTags = ({ setUserTags, userTags, tags, setTags }) => {
 			? inputValue
 			: '#' + inputValue
 
-		fetch(`http://localhost:3001/tags`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ tag: newTag }),
-		})
+		tagService
+			.addTag({ tag: newTag })
 			.then(res => {
-				if (!res.ok) {
-					console.log(res)
-					throw Error(res.statusText)
-				}
 				setUserTags(userTags.concat({
-					value: newTag,
-					label: newTag
+					value: res,
+					label: res
 				}))
-				setTags(tags.concat({ tag: newTag }))
+				setTags(tags.concat({ tag: res }))
 				setInputValue('')
-
 			})
 			.catch((e) => {
-				console.log('Failed to add tag', e)
+				console.log('Failed to add tag', e.response.data)
 			})
 	}
 
@@ -41,6 +32,9 @@ const SelectTags = ({ setUserTags, userTags, tags, setTags }) => {
 	const handleInputChange = value => setInputValue(value)
 
 	const handleKeyDown = event => {
+
+		//todo: can enter pick the tag if it already exists
+		// and should it close after enter
 		if (!inputValue) return
 		switch (event.key) {
 			case 'Enter':
