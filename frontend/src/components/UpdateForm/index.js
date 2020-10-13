@@ -86,6 +86,16 @@ const UpdateForm = ({ getUsers }) => {
 			return 'fm'
 		}
 
+		const validateInput = () => {
+			const name = document.getElementById('name')
+			console.log('validate name', name)
+			if (name !== 'liisa') {
+				console.log('here')
+				name.setCustomValidity('name must be liisa')
+			}
+		}
+
+		validateInput()
 		//TODO validate input
 
 		const updatedUser = {
