@@ -1,0 +1,8 @@
+.nav a {
+	padding: 0.5em;
+}
+
+.nav {
+	padding-bottom: 0.5em;
+	border-bottom: 0.1em solid black;
+}

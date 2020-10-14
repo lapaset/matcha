@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import UpdateForm from './components/UpdateForm/'
-import userService from './services/users'
+import './style/app.css'
 
-const UserList = ({ users }) => (
+
+/*const UserList = ({ users }) => (
 	<div>
 		<h2>users</h2>
 		<ul>
@@ -11,11 +13,32 @@ const UserList = ({ users }) => (
 			})}
 		</ul>
 	</div>
-)
+)*/
 
 const App = () => {
 
-	const [users, setUsers] = useState(false)
+	return (
+		<Router>
+			<div className="nav">
+				<Link to="/">home</Link>
+				<Link to="/update">update</Link>
+			</div>
+			<Switch>
+				<Route path="/update">
+					<UpdateForm />
+				</Route>
+				<Route path="/">
+					<h1>home</h1>
+				</Route>
+			</Switch>
+			<footer>
+				<hr></hr>
+				<i>this footer stays here</i>
+			</footer>
+		</Router>
+	)
+
+	/*const [users, setUsers] = useState(false)
 
 	const getUsers = () => {
 		userService
@@ -37,7 +60,7 @@ const App = () => {
 			<UpdateForm getUsers={getUsers} />
 			{ users ? <UserList users={users} /> : 'No user data available'}
 		</>
-	)
+	)*/
 }
 
 export default App;

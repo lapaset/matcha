@@ -8,7 +8,7 @@ import Textarea from './Textarea'
 import userService from '../../services/users'
 import tagService from '../../services/tags'
 
-const UpdateForm = ({ getUsers }) => {
+const UpdateForm = () => {
 	//TODO: get user_id from somewhere
 	const id = 1
 
@@ -116,7 +116,6 @@ const UpdateForm = ({ getUsers }) => {
 			.then(data => {
 				console.log(data)
 				setUser(updatedUser)
-				getUsers()
 				//todo: clear fields
 			})
 			.catch(e => {
