@@ -13,7 +13,8 @@ const UpdateForm = () => {
 	const id = 1
 
 	const [ user, setUser ] = useState({})
-	const { reset: nameReset, ...name } = useField('text')
+	const { reset: firstNameReset, ...firstName } = useField('text')
+	const { reset: lastNameReset, ...lastName } = useField('text')
 	const { reset: usernameReset, ...username } = useField('text')
 	const { reset: emailReset, ...email } = useField('email')
 	const { reset: passwordReset, ...password } = useField('password')
@@ -25,7 +26,6 @@ const UpdateForm = () => {
 
 
 	useEffect(() => {
-
 		tagService
 			.getTags()
 			.then(data => {
@@ -56,18 +56,21 @@ const UpdateForm = () => {
 					return tagsFromUser.slice(1)
 				}
 
+				const { first_name, last_name, ...user } = res
+
 				setUser({
-					...res
+					...user,
+					firstName: res.first_name,
+					lastName: res.last_name
 				})
 
 				setGender({ value: res.gender, label: res.gender })
 				setOrientation(orientationFromDb())
 				setUserTags(tagsFromDB())
 				setBio(res.bio || '')
-
 			})
 			.catch(e => {
-				console.log(e.response)
+				console.log('Error:', e.response)
 			})
 	}, [])
 
@@ -86,20 +89,9 @@ const UpdateForm = () => {
 			return 'fm'
 		}
 
-		const validateInput = () => {
-			const name = document.getElementById('name')
-			console.log('validate name', name)
-			if (name !== 'liisa') {
-				console.log('here')
-				name.setCustomValidity('name must be liisa')
-			}
-		}
-
-		validateInput()
-		//TODO validate input
-
 		const updatedUser = {
-			name: name.value ? name.value : user.name,
+			firstName: firstName.value ? firstName.value : user.firstName,
+			lastName: lastName.value ? lastName.value : user.lastName,
 			username: username.value.length > 0 ? username.value : user.username,
 			email: email.value ? email.value : user.email,
 			password: password.value ? password.value : user.password,
@@ -109,12 +101,12 @@ const UpdateForm = () => {
 			bio: bio
 		}
 
-		console.log('updateduser', updatedUser)
+		//console.log('updateduser', updatedUser)
 
 		userService
 			.updateUser(updatedUser, id)
 			.then(data => {
-				console.log(data)
+				//console.log(data)
 				setUser(updatedUser)
 				//todo: clear fields
 			})
@@ -135,7 +127,8 @@ const UpdateForm = () => {
 			<div className="row justify-content-center align-items-center">
 				
 				<form onSubmit={handleSubmit}>
-					<InputField label='name' field={name} current={user.name} />
+					<InputField label='first name' field={firstName} current={user.firstName} />
+					<InputField label='last name' field={lastName} current={user.lastName} />
 					<InputField label='username' field={username} current={user.username} />
 					<InputField label='email' field={email} current={user.email} />
 					<InputField label='password' field={password} current='' />

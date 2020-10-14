@@ -42,8 +42,7 @@ const App = () => {
 				</Route>
 			</Switch>
 			<footer>
-				<hr></hr>
-				<i>this footer stays here</i>
+				this footer stays here
 			</footer>
 		</Router>
 	)

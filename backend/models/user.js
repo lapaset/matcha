@@ -27,10 +27,10 @@ const getUser = id => {
 
 const createUser = body => {
 	return new Promise((resolve, reject) => {
-		const { name, username, email, password, gender, orientation } = body
-		db.query('INSERT INTO users (name, username, email, password, gender, orientation) \
-					VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-			[name, username, email, password, gender, orientation], (err, res) => {
+		const { firstName, lastName, username, email, password, gender, orientation } = body
+		db.query('INSERT INTO users (first_name, last_name, username, email, password, gender, orientation) \
+					VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+			[firstName, lastName, username, email, password, gender, orientation], (err, res) => {
 				if (err)
 					reject(err)
 				else
@@ -41,11 +41,11 @@ const createUser = body => {
 
 const updateUser = (body, id) => {
 	return new Promise((resolve, reject) => {
-		const { name, username, email, gender, orientation, tags, bio } = body
+		const { firstName, lastName, username, email, gender, orientation, tags, bio } = body
 		db.query('UPDATE users \
-					SET (name, username, email, gender, orientation, tags, bio) = ($1, $2, $3, $4, $5, $6, $7) \
-					WHERE user_id = $8 RETURNING *',
-			[name, username, email, gender, orientation, tags, bio, id], (err, res) => {
+					SET (first_name, last_name, username, email, gender, orientation, tags, bio) = ($1, $2, $3, $4, $5, $6, $7, $8) \
+					WHERE user_id = $9 RETURNING *',
+			[firstName, lastName, username, email, gender, orientation, tags, bio, id], (err, res) => {
 				
 				if (res && res.rows[0])
 					resolve(res.rows[0])
