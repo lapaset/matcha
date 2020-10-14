@@ -3,7 +3,7 @@ import React from 'react'
 const InputField = ({ label, field, current }) => (
 	<div>
 		<label>{label}: {current}</label><br />
-		<input id={label} {...field} />
+		<input className="form-control" {...field} />
 	</div>
 )
 

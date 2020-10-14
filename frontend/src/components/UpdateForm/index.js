@@ -131,18 +131,22 @@ const UpdateForm = () => {
 
 	return (
 		<div>
-			<form onSubmit={handleSubmit}>
-				<InputField label='name' field={name} current={user.name} />
-				<InputField label='username' field={username} current={user.username} />
-				<InputField label='email' field={email} current={user.email} />
-				<InputField label='password' field={password} current='' />
-				<SelectGender name='gender' setGender={setGender} gender={gender} />
-				<SelectOrientation name='orientation' setOrientation={setOrientation} orientation={orientation} />
-				<SelectTags name='tags' setUserTags={setUserTags} userTags={userTags}
-					tags={tags} setTags={setTags} />
-				<Textarea value={bio} setValue={setBio} label='bio' name='bio' />
-				<button type="submit">Update</button>
-			</form>
+			<h2 className="text-center mt-3">Update user</h2>
+			<div className="row justify-content-center align-items-center">
+				
+				<form onSubmit={handleSubmit}>
+					<InputField label='name' field={name} current={user.name} />
+					<InputField label='username' field={username} current={user.username} />
+					<InputField label='email' field={email} current={user.email} />
+					<InputField label='password' field={password} current='' />
+					<SelectGender name='gender' setGender={setGender} gender={gender} />
+					<SelectOrientation name='orientation' setOrientation={setOrientation} orientation={orientation} />
+					<SelectTags name='tags' setUserTags={setUserTags} userTags={userTags}
+						tags={tags} setTags={setTags} />
+					<Textarea value={bio} setValue={setBio} label='bio' name='bio' />
+					<button className="btn btn-success mt-3" type="submit">Update</button>
+				</form>
+			</div>
 		</div>
 	)
 }
