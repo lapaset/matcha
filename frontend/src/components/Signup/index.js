@@ -1,11 +1,8 @@
 import React, { Fragment, useState, useRef, useEffect } from "react";
-import axios from 'axios';
 //import FlashMessage from 'react-flash-message';
 //import Alert from 'react-bootstrap/Alert';
 import '../../style/signup.css';
-
-//import DatePicker from 'react-datepicker';
-//import "react-datepicker/dist/react-datepicker.css";
+import userService from '../../services/users'
 
 const Signup = () => {
 	const [firstName, setFirstName] = useState("");
@@ -14,14 +11,10 @@ const Signup = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [cpassword, setCpassword] = useState("");
-	const [gender, setGender] = useState('');
-	//const [date, setDate] = useState(new Date());
 	const [disable, setDisable] = useState(true);
 	const [error, setError] = useState("");
 	const [signupStatus, setSignupStatus] = useState("");
 	
-	const verified = 0;
-	//const today = new Date();
 	const firstRender = useRef(true);
 
 	// generating token
@@ -34,49 +27,50 @@ const Signup = () => {
 			firstRender.current = false;
 			return
 		}
-		setDisable(inputValidation());
+		setDisable(!inputValidation());
 	}, [firstName, lastName, username, email, password]) // eslint-disable-line react-hooks/exhaustive-deps
 
 	const inputValidation = () => {
 		if (lastName === "" || firstName === "" || username === "" || email === "" || password === "")
 		{
 			setError("All fields should be filled!")
-			return true;
-		}
-		else {
-			setError(null);
 			return false;
 		}
+		else
+			return true;
 	}
 
 	const submitForm = async e => {
 		e.preventDefault();
 
-		if (!inputValidation())
-		{
-			if (password === cpassword)
-			{
-				axios.post(`http://localhost:5000/signup`, { firstName, lastName, username, email, password, verified, token, gender })
-				.then(response => {
-					if (response.data.message) {
-						setSignupStatus(response.data.message);
-						/*setFirstName('');
-						setLastName('');
-						setUsername('');
-						setEmail('');
-						setPassword('');
-						setCpassword('');
-						setGender('');*/
-					}
-				})
-			}
-			else {
-				return setSignupStatus("Password and cofirm password mismatch");
-			}
-		}
-		else{
+		if (!inputValidation()) {
 			alert({error})
+			return
 		}
+
+		if (password === cpassword)
+		{
+			const userObject = {
+				firstName,
+				lastName,
+				username,
+				email,
+				password,
+				token
+			}
+
+			userService
+				.createUser(userObject)
+				.then(data => {
+					console.log('user added', data)
+				})
+				.catch(e => {
+					setSignupStatus(e.response.data.error)
+				})
+		}
+		else
+			return setSignupStatus("Password and cofirm password mismatch")
+			
 	}
 	return (
 		<Fragment>
@@ -147,26 +141,7 @@ const Signup = () => {
 							onChange={e => setCpassword(e.target.value)}
 							placeholder="Confirm password"
 						/>
-					</div>
-					<div className="form-group mt-3">
-						<select className="form-control btn border" name="gender" value={gender} onChange={e => setGender(e.target.value)}>
-							<option value="select">select</option>
-							<option value="male">Male</option>
-							<option value="female">Female</option>
-							<option value="others">Others</option>
-						</select>
-					</div>
-					{/*
-					<div className="form-group mt-3">
-						<DatePicker className="form-control"
-							selected={date}
-							onChange={date => setDate(date)}
-							name="date"
-							maxDate={today}
-							dateFormat="dd/MM/yyyy"
-						/>
-					</div>*/}
-					
+					</div>					
 					<button className="btn btn-success mt-3" disabled={disable} type="submit">Register</button>
 				</form>
 			</div>

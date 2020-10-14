@@ -66,10 +66,14 @@ usersRouter.post('/', async (req, resp) => {
 		VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
 		[firstName, lastName, username, email, hashedPassword, token],
 		(err, res) => {
-			if (err)
-				resp.status(500).send({ error: err.detail })
-			else
+			if (res)
 				resp.status(200).send(res.rows[0])
+			else if (err.detail.startsWith('Key (email)'))
+				resp.status(409).send({ error: 'email already exists' })
+			else if (err.detail.startsWith('Key (username)'))
+				resp.status(409).send({ error: 'username already exists' })
+			else
+				resp.status(500).send(err)
 		})
 
 })

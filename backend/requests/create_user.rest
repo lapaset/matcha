@@ -4,7 +4,7 @@ Content-Type: application/json
 {
 	"firstName": "ulla",
 	"lastName": "taalasmaa",
-	"username": "ulla2",
+	"username": "ulla",
 	"email": "ulla2@ulla",
 	"password": "pulla",
 	"token": "oirhafjraglkf4802945"

@@ -4,6 +4,7 @@ const app = express()
 const config = require('./utils/config')
 const usersRouter = require('./routers/users')
 const tagsRouter = require('./routers/tags')
+const loginRouter = require('./routers/login')
 const middleware = require('./utils/middleware')
 
 app.use(express.json())
@@ -12,6 +13,7 @@ app.use(middleware.requestLogger)
 
 app.use('/users', usersRouter)
 app.use('/tags', tagsRouter)
+app.use('/login', loginRouter)
 
 app.use(middleware.unknownEndpoint)
 
