@@ -5,8 +5,8 @@ import SelectGender from './SelectGender'
 import SelectOrientation from './SelectOrientation'
 import SelectTags from './SelectTags'
 import Textarea from './Textarea'
-import userService from '../../services/users'
-import tagService from '../../services/tags'
+import userService from '../../services/userService'
+import tagService from '../../services/tagService'
 
 const UpdateForm = () => {
 	//TODO: get user_id from somewhere

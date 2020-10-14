@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
-import userService from './services/users'
+import userService from './services/userService'
 import UpdateForm from './components/UpdateForm/'
 import Signup from './components/Signup'
 import Login from './components/Login'

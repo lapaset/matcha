@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import CreatableSelect from 'react-select'
-import tagService from '../../services/tags'
+import tagService from '../../services/tagService'
 
 const SelectTags = ({ setUserTags, userTags, tags, setTags }) => {
 

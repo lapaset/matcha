@@ -2,7 +2,7 @@ import React, { Fragment, useState, useRef, useEffect } from "react";
 //import FlashMessage from 'react-flash-message';
 //import Alert from 'react-bootstrap/Alert';
 import '../../style/signup.css';
-import userService from '../../services/users'
+import userService from '../../services/userService'
 
 const Signup = () => {
 	const [firstName, setFirstName] = useState("");
