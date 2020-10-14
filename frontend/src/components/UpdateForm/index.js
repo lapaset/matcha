@@ -38,6 +38,8 @@ const UpdateForm = () => {
 		userService
 			.getUser(id)
 			.then(res => {
+				console.log(res)
+
 				const orientationFromDb = () => {
 					const o = []
 					if (res.orientation.includes('f'))
@@ -64,13 +66,16 @@ const UpdateForm = () => {
 					lastName: res.last_name
 				})
 
-				setGender({ value: res.gender, label: res.gender })
-				setOrientation(orientationFromDb())
-				setUserTags(tagsFromDB())
+				if (res.gender)
+					setGender({ value: res.gender, label: res.gender })
+				if (res.orientation)
+					setOrientation(orientationFromDb())
+				if (res.tags)
+					setUserTags(tagsFromDB())
 				setBio(res.bio || '')
 			})
 			.catch(e => {
-				console.log('Error:', e.response)
+				console.log('error:', e)
 			})
 	}, [])
 
