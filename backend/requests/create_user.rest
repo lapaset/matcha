@@ -2,10 +2,11 @@ POST http://localhost:3001/users
 Content-Type: application/json
 
 {
-	"name": "kalle",
-	"username": "kalle5",
-	"email": "kalle@kalle5",
-	"password": "kukka",
-	"gender": "male",
-	"orientation": "m"
+	"firstName": "ulla",
+	"lastName": "taalasmaa",
+	"username": "ulla2",
+	"email": "ulla2@ulla",
+	"password": "pulla",
+	"gender": "female",
+	"orientation": "fmo"
 }
