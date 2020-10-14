@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import UpdateForm from './components/UpdateForm/'
 import Signup from './components/Signup'
+import Login from './components/Login'
 import './style/app.css'
 
 
@@ -24,6 +25,7 @@ const App = () => {
 				<Link to="/">home</Link>
 				<Link to="/update">update</Link>
 				<Link to="/signup">signup</Link>
+				<Link to="/login">login</Link>
 			</div>
 			<Switch>
 				<Route path="/update">
@@ -31,6 +33,9 @@ const App = () => {
 				</Route>
 				<Route path="/signup">
 					<Signup />
+				</Route>
+				<Route path="/login">
+					<Login />
 				</Route>
 				<Route path="/">
 					<h1>home</h1>
