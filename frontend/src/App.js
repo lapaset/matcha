@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import UpdateForm from './components/UpdateForm/'
+import Signup from './components/Signup'
 import './style/app.css'
 
 
@@ -22,10 +23,14 @@ const App = () => {
 			<div className="nav">
 				<Link to="/">home</Link>
 				<Link to="/update">update</Link>
+				<Link to="/signup">signup</Link>
 			</div>
 			<Switch>
 				<Route path="/update">
 					<UpdateForm />
+				</Route>
+				<Route path="/signup">
+					<Signup />
 				</Route>
 				<Route path="/">
 					<h1>home</h1>
