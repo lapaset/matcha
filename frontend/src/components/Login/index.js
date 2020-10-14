@@ -1,32 +1,30 @@
 import React, { useState } from "react";
-import login from '../../services/loginService';
+import loginService from '../../services/loginService';
 //import FlashMessage from 'react-flash-message';
 //import Alert from 'react-bootstrap/Alert';
 
-const Login = () => {
+const Login = ({ setUser }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState(null)
-    const [user, setUser] = useState("");
 
     const handleLogin = async event => {
         event.preventDefault();
-        try {
-            const user = await login.loginService({
-                username, password
-            })
-            setUser(user)
-            setUsername('')
-            setPassword('')
-        } catch(exception){
-            setErrorMessage('Wrong credentials')
-            setTimeout(() => {
-                setErrorMessage(null)
-            }, 5000)
-        }
+		loginService
+			.login({ username, password })
+			.then(data => {
+				console.log(data)
+				setUser(data)
+				setUsername('')
+				setPassword('')
+			})
+			.catch(e => {
+				setErrorMessage(e.response.message.error)
+				setTimeout(() => {
+					setErrorMessage(null)
+				}, 5000)
+			})    
 	}
-	
-	console.log('user', user)
 
     return (
         <>
@@ -61,13 +59,6 @@ const Login = () => {
                         />
                     </div>
                     <button className="btn btn-success mt-3" type="submit">Login</button>
-                    <div className="form-group mt-3">
-                        {user !== null &&
-                            <div>
-                                <p><b>{user.username}</b> logged-in and id is: {user.id}</p>
-                            </div>
-                        }
-                    </div>
                 </form>
             </div>
        </>

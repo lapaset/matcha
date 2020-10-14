@@ -21,7 +21,8 @@ const UserList = ({ users }) => {
 }
 
 const App = () => {
-	const [users, setUsers] = useState(false)
+	const [ users, setUsers ] = useState(false)
+	const [ user, setUser ] = useState({})
 
 	useEffect(() => {
 		userService
@@ -42,6 +43,7 @@ const App = () => {
 				<Link to="/update">update</Link>
 				<Link to="/signup">signup</Link>
 				<Link to="/login">login</Link>
+				{ user ? <div>user: {user.username}</div> : <div>no user</div> }
 			</div>
 			<Switch>
 				<Route path="/update">
@@ -51,41 +53,17 @@ const App = () => {
 					<Signup />
 				</Route>
 				<Route path="/login">
-					<Login />
+					<Login setUser={setUser} />
 				</Route>
 				<Route path="/">
 					<UserList users={users} />
 				</Route>
 			</Switch>
 			<footer>
-				this footer stays here
+				this is footer
 			</footer>
 		</Router>
 	)
-
-	/*const [users, setUsers] = useState(false)
-
-	const getUsers = () => {
-		userService
-			.getAll()
-			.then(u => {
-				setUsers(u)
-			})
-			.catch((error) => {
-				console.log(error)
-			})
-	}
-
-	useEffect(() => {
-		getUsers()
-	}, [])
-
-	return (
-		<>
-			<UpdateForm getUsers={getUsers} />
-			{ users ? <UserList users={users} /> : 'No user data available'}
-		</>
-	)*/
 }
 
 export default App;
