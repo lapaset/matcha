@@ -22,8 +22,8 @@ const UserList = ({ users }) => {
 
 
 const App = () => {
-	const [ users, setUsers ] = useState(false)
-	const [ user, setUser ] = useState({})
+	const [users, setUsers] = useState(false)
+	const [user, setUser] = useState({})
 
 	useEffect(() => {
 		userService
@@ -37,23 +37,28 @@ const App = () => {
 			})
 	}, [])
 
-
-console.log(user)
+	useEffect(() => {
+		const loggedUserJSON = window.localStorage.getItem('loggedMatchaUser')
+		if (loggedUserJSON) {
+			const userFromDb = JSON.parse(loggedUserJSON)
+			setUser(userFromDb)
+		}
+	}, [])
 
 	return (
 		<Router>
 			<div className="nav">
 				<Link to="/">home</Link>
-				{ user.username 
+				{user.username
 					? <><Link to="/update">update</Link>
-					<div>user: {user.username}</div></>
+						<div>user: {user.username}</div></>
 					: <><Link to="/signup">signup</Link>
-					<Link to="/login">login</Link></> }
+						<Link to="/login">login</Link></>}
 			</div>
 			<Switch>
 				<Route path="/update" render={() =>
 					user.user_id ? <UpdateForm user={user} setUser={setUser} /> : <Redirect to="/login" />
-				} />	
+				} />
 				<Route path="/signup">
 					<Signup />
 				</Route>
