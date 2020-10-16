@@ -76,6 +76,7 @@ usersRouter.post('/', async (req, resp) => {
 				resp.status(500).send(err)
 		})
 
+	//send the email!
 })
 
 usersRouter.put('/:id', (req, resp) => {
@@ -91,8 +92,12 @@ usersRouter.put('/:id', (req, resp) => {
 				resp.status(200).send(res.rows[0])
 			else if (res)
 				resp.status(500).send({ error: 'User not found' })
+			else if (err.detail.startsWith('Key (email)'))
+				resp.status(409).send({ error: 'email already exists' })
+			else if (err.detail.startsWith('Key (username)'))
+				resp.status(409).send({ error: 'username already exists' })
 			else
-				resp.status(500).send({ error: err.detail })
+				resp.status(500).send(err)
 		})
 })
 

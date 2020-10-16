@@ -11,9 +11,9 @@ const SelectOrientation = ({ setOrientation, orientation }) => {
 		{ value: 'other', label: 'other' }
 	]
 
-	return 	<div>
-				looking for
-				<Select options={options} value={orientation} onChange={onChange} isMulti />
+	return 	<div className="form-group">
+				<label>looking for</label><br />
+				<Select class="form-control" options={options} value={orientation} onChange={onChange} isMulti />
 			</div>
 }
 

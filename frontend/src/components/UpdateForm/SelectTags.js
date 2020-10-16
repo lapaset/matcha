@@ -55,9 +55,10 @@ const SelectTags = ({ setUserTags, userTags, tags, setTags }) => {
 	//console.log('tags:', tags)
 
 	return tags
-		? <div>
-			tags
+		? <div className="form-group">
+			<label>tags</label><br />
 			<CreatableSelect
+				class="form-control"
 				options={getOptions()}
 				value={userTags}
 				onChange={handleChange}

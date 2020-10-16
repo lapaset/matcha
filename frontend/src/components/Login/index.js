@@ -19,7 +19,7 @@ const Login = ({ setUser }) => {
 				setPassword('')
 			})
 			.catch(e => {
-				setErrorMessage(e.response.message.error)
+				setErrorMessage(e.response.data.error)
 				setTimeout(() => {
 					setErrorMessage(null)
 				}, 5000)

@@ -1,8 +1,8 @@
 import React from 'react'
 
 const InputField = ({ label, field, current }) => (
-	<div>
-		<label>{label}: {current}</label><br />
+	<div className="form-group">
+		<label>{label}</label><br />
 		<input className="form-control" {...field} />
 	</div>
 )

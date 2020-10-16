@@ -11,9 +11,9 @@ const SelectGender = ({ setGender, gender }) => {
 		{ value: 'other', label: 'other' }
 	]
 
-	return 	<div>
-				gender
-				<Select options={options} value={gender} onChange={onChange} />
+	return 	<div className="form-group">
+				<label>gender</label><br />
+				<Select class="form-control" options={options} value={gender} onChange={onChange} />
 			</div>
 }
 

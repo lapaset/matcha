@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Link, Redirect } from 'react-router-dom'
 import userService from './services/userService'
 import UpdateForm from './components/UpdateForm/'
 import Signup from './components/Signup'
@@ -20,6 +20,7 @@ const UserList = ({ users }) => {
 		: null
 }
 
+
 const App = () => {
 	const [ users, setUsers ] = useState(false)
 	const [ user, setUser ] = useState({})
@@ -36,19 +37,23 @@ const App = () => {
 			})
 	}, [])
 
+
+console.log(user)
+
 	return (
 		<Router>
 			<div className="nav">
 				<Link to="/">home</Link>
-				<Link to="/update">update</Link>
-				<Link to="/signup">signup</Link>
-				<Link to="/login">login</Link>
-				{ user ? <div>user: {user.username}</div> : <div>no user</div> }
+				{ user.username 
+					? <><Link to="/update">update</Link>
+					<div>user: {user.username}</div></>
+					: <><Link to="/signup">signup</Link>
+					<Link to="/login">login</Link></> }
 			</div>
 			<Switch>
-				<Route path="/update">
-					<UpdateForm />
-				</Route>
+				<Route path="/update" render={() =>
+					user.user_id ? <UpdateForm user={user} setUser={setUser} /> : <Redirect to="/login" />
+				} />	
 				<Route path="/signup">
 					<Signup />
 				</Route>

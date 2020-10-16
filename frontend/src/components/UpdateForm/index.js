@@ -8,22 +8,24 @@ import Textarea from './Textarea'
 import userService from '../../services/userService'
 import tagService from '../../services/tagService'
 
-const UpdateForm = () => {
-	//TODO: get user_id from somewhere
-	const id = 1
+const UpdateForm = ({ user, setUser }) => {
 
-	const [ user, setUser ] = useState({})
-	const { reset: firstNameReset, ...firstName } = useField('text')
-	const { reset: lastNameReset, ...lastName } = useField('text')
-	const { reset: usernameReset, ...username } = useField('text')
-	const { reset: emailReset, ...email } = useField('email')
+	//TODO: 
+	// gender, tags and orientation translations in the components?
+
+	const id = user.user_id
+
+	const { reset: firstNameReset, ...firstName } = useField('text', user.firstName)
+	const { reset: lastNameReset, ...lastName } = useField('text', user.lastName)
+	const { reset: usernameReset, ...username } = useField('text', user.username)
+	const { reset: emailReset, ...email } = useField('email', user.email)
 	const { reset: passwordReset, ...password } = useField('password')
 	const [ gender, setGender ] = useState({})
 	const [ orientation, setOrientation ] = useState([])
 	const [ tags, setTags ] = useState(false)
 	const [ userTags, setUserTags ] = useState([])
-	const [ bio, setBio ] = useState('')
-
+	const [ bio, setBio ] = useState(user.bio || '')
+	const [ errorMessage, setErrorMessage ] = useState('')
 
 	useEffect(() => {
 		tagService
@@ -35,48 +37,30 @@ const UpdateForm = () => {
 				console.log(error)
 			})
 
-		userService
-			.getUser(id)
-			.then(res => {
-				console.log(res)
+		const orientationFromDb = () => {
+			const o = []
+			if (user.orientation.includes('f'))
+				o.push({ value: 'female', label: 'female' })
+			if (user.orientation.includes('m'))
+				o.push({ value: 'male', label: 'male' })
+			if (user.orientation.includes('o'))
+				o.push({ value: 'other', label: 'other' })
+			return o
+		}
 
-				const orientationFromDb = () => {
-					const o = []
-					if (res.orientation.includes('f'))
-						o.push({ value: 'female', label: 'female' })
-					if (res.orientation.includes('m'))
-						o.push({ value: 'male', label: 'male' })
-					if (res.orientation.includes('o'))
-						o.push({ value: 'other', label: 'other' })
-					return o
-				}
-
-				const tagsFromDB = () => {
-					const tagsFromUser = res.tags.split('#').map(t => {
-						return { value: '#' + t, label: '#' + t }
-					})
-					return tagsFromUser.slice(1)
-				}
-
-				const { first_name, last_name, ...user } = res
-
-				setUser({
-					...user,
-					firstName: res.first_name,
-					lastName: res.last_name
-				})
-
-				if (res.gender)
-					setGender({ value: res.gender, label: res.gender })
-				if (res.orientation)
-					setOrientation(orientationFromDb())
-				if (res.tags)
-					setUserTags(tagsFromDB())
-				setBio(res.bio || '')
+		const tagsFromDB = () => {
+			const tagsFromUser = user.tags.split('#').map(t => {
+				return { value: '#' + t, label: '#' + t }
 			})
-			.catch(e => {
-				console.log('error:', e)
-			})
+			return tagsFromUser.slice(1)
+		}
+
+		if (user.gender)
+			setGender({ value: user.gender, label: user.gender })
+		if (user.orientation)
+			setOrientation(orientationFromDb())
+		if (user.tags)
+			setUserTags(tagsFromDB())
 	}, [])
 
 	const handleSubmit = e => {
@@ -112,12 +96,13 @@ const UpdateForm = () => {
 			.updateUser(updatedUser, id)
 			.then(data => {
 				//console.log(data)
-				setUser(updatedUser)
+				setUser(data)
+				setErrorMessage('')
 				//todo: clear fields
 			})
 			.catch(e => {
 				console.log('error', e.response.data)
-				//todo: notify error
+				setErrorMessage(e.response.data.error)
 			})
 	}
 
@@ -126,12 +111,14 @@ const UpdateForm = () => {
 	//console.log('user', user)
 	//console.log('gender', gender)
 
-	return (
-		<div>
+	return <div>
+			{ errorMessage && 
+		   		<div><strong>{errorMessage}</strong></div>
+			}
 			<h2 className="text-center mt-3">Update user</h2>
 			<div className="row justify-content-center align-items-center">
 				
-				<form onSubmit={handleSubmit}>
+				<form className="text-left mt-3 col-md-6 col-sm-6 col-lg-4 col-xs-8" onSubmit={handleSubmit}>
 					<InputField label='first name' field={firstName} current={user.firstName} />
 					<InputField label='last name' field={lastName} current={user.lastName} />
 					<InputField label='username' field={username} current={user.username} />
@@ -146,7 +133,6 @@ const UpdateForm = () => {
 				</form>
 			</div>
 		</div>
-	)
 }
 
 export default UpdateForm;
