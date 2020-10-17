@@ -3,7 +3,9 @@ import Select from 'react-select'
 
 const SelectGender = ({ setGender, gender }) => {
 
-	const onChange = option => setGender(option)
+	const onChange = option => {
+		setGender(option.value)
+	}
 
 	const options = [
 		{ value: 'female', label: 'female' },
@@ -13,7 +15,7 @@ const SelectGender = ({ setGender, gender }) => {
 
 	return 	<div className="form-group">
 				<label>gender</label><br />
-				<Select class="form-control" options={options} value={gender} onChange={onChange} />
+				<Select class="form-control" options={options} value={{ value: gender, label: gender }} onChange={onChange} />
 			</div>
 }
 

@@ -5,31 +5,6 @@ const nodemailer = require('nodemailer');
 
 //const { registerValidation } = require('../utils/validation')
 
-const sendEmail = (email, token) => {
-	const transporter = nodemailer.createTransport({
-		service: 'gmail',
-		auth: {
-			user: 'testing.matcha',
-			pass: 'matcha1234'
-		}
-	});
-
-	const mailOptions = {
-		from: 'testing.matcha@gmail.com',
-		to: email,
-		subject: 'Sending Email using Node.js',
-		text: `Hello! Please click the following link to verify your email http://localhost:5000/verify?token=${token}`
-	};
-
-	transporter.sendMail(mailOptions, function (error, info) {
-		if (error) {
-			console.log(error);
-		} else {
-			console.log('Email sent: ' + info.response);
-		}
-	});
-}
-
 usersRouter.get('/', (req, resp) => {
 	db.query('SELECT * FROM users', [], (err, res) => {
 		if (err)
@@ -51,6 +26,32 @@ usersRouter.get('/:id', (req, resp) => {
 })
 
 usersRouter.post('/', async (req, resp) => {
+
+	const sendEmail = (email, token) => {
+		const transporter = nodemailer.createTransport({
+			service: 'gmail',
+			auth: {
+				user: 'testing.matcha',
+				pass: 'matcha1234'
+			}
+		});
+	
+		const mailOptions = {
+			from: 'testing.matcha@gmail.com',
+			to: email,
+			subject: 'Sending Email using Node.js',
+			text: `Hello! Please click the following link to verify your email http://localhost:5000/verify?token=${token}`
+		};
+	
+		transporter.sendMail(mailOptions, function (error, info) {
+			if (error) {
+				console.log(error);
+			} else {
+				console.log('Email sent: ' + info.response);
+			}
+		});
+	}
+	
 	// LETS VALIDATE THE DATA BEFORE MAKE A USER and it comes from validation.js file
 	//const { error } = registerValidation(req.body);
 	//if (error) return res.status(400).send({ message: error.details[0].message });
@@ -68,9 +69,9 @@ usersRouter.post('/', async (req, resp) => {
 		(err, res) => {
 			if (res)
 				resp.status(200).send(res.rows[0])
-			else if (err.detail.startsWith('Key (email)'))
+			else if (err.detail && err.detail.startsWith('Key (email)'))
 				resp.status(409).send({ error: 'email already exists' })
-			else if (err.detail.startsWith('Key (username)'))
+			else if (err.detail && err.detail.startsWith('Key (username)'))
 				resp.status(409).send({ error: 'username already exists' })
 			else
 				resp.status(500).send(err)
@@ -92,9 +93,9 @@ usersRouter.put('/:id', (req, resp) => {
 				resp.status(200).send(res.rows[0])
 			else if (res)
 				resp.status(500).send({ error: 'User not found' })
-			else if (err.detail.startsWith('Key (email)'))
+			else if (err.detail && err.detail.startsWith('Key (email)'))
 				resp.status(409).send({ error: 'email already exists' })
-			else if (err.detail.startsWith('Key (username)'))
+			else if (err.detail && err.detail.startsWith('Key (username)'))
 				resp.status(409).send({ error: 'username already exists' })
 			else
 				resp.status(500).send(err)

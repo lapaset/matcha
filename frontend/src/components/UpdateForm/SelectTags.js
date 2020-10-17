@@ -15,10 +15,7 @@ const SelectTags = ({ setUserTags, userTags, tags, setTags }) => {
 		tagService
 			.addTag({ tag: newTag })
 			.then(res => {
-				setUserTags(userTags.concat({
-					value: res,
-					label: res
-				}))
+				setUserTags(userTags.concat(res))
 				setTags(tags.concat({ tag: res }))
 				setInputValue('')
 			})
@@ -27,7 +24,11 @@ const SelectTags = ({ setUserTags, userTags, tags, setTags }) => {
 			})
 	}
 
-	const handleChange = options => setUserTags(options)
+	const handleChange = options => {
+		options
+			? setUserTags(options.map(t => t.value).join(''))
+			: setUserTags('')
+	}
 
 	const handleInputChange = value => setInputValue(value)
 
@@ -51,6 +52,17 @@ const SelectTags = ({ setUserTags, userTags, tags, setTags }) => {
 		return { value: t.tag, label: t.tag }
 	})
 
+	const userTagsFromDb = () => {
+		if (!userTags)
+			return []
+
+		const tagsFromUser = userTags.split('#').map(t => {
+			return { value: '#' + t, label: '#' + t }
+		})
+		return tagsFromUser.slice(1)
+	}
+
+
 	//console.log('user tags:', userTags)
 	//console.log('tags:', tags)
 
@@ -60,7 +72,7 @@ const SelectTags = ({ setUserTags, userTags, tags, setTags }) => {
 			<CreatableSelect
 				class="form-control"
 				options={getOptions()}
-				value={userTags}
+				value={userTagsFromDb()}
 				onChange={handleChange}
 				onKeyDown={handleKeyDown}
 				onInputChange={handleInputChange}

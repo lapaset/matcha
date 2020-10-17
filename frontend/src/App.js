@@ -40,8 +40,12 @@ const App = () => {
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem('loggedMatchaUser')
 		if (loggedUserJSON) {
-			const userFromDb = JSON.parse(loggedUserJSON)
-			setUser(userFromDb)
+			const userFromLocalStorage = JSON.parse(loggedUserJSON)
+			userService
+				.getUser(userFromLocalStorage.user_id)
+				.then(data => {
+					setUser(data)
+				})
 		}
 	}, [])
 
@@ -62,9 +66,9 @@ const App = () => {
 				<Route path="/signup">
 					<Signup />
 				</Route>
-				<Route path="/login">
-					<Login setUser={setUser} />
-				</Route>
+				<Route path="/login" render={() =>
+					user.user_id ? <Redirect to="/" /> : <Login setUser={setUser} />
+				} />
 				<Route path="/">
 					<UserList users={users} />
 				</Route>

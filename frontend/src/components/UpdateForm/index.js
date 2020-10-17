@@ -10,20 +10,15 @@ import tagService from '../../services/tagService'
 
 const UpdateForm = ({ user, setUser }) => {
 
-	//TODO: 
-	// gender, tags and orientation translations in the components?
-
-	const id = user.user_id
-
 	const { reset: firstNameReset, ...firstName } = useField('text', user.firstName)
 	const { reset: lastNameReset, ...lastName } = useField('text', user.lastName)
 	const { reset: usernameReset, ...username } = useField('text', user.username)
 	const { reset: emailReset, ...email } = useField('email', user.email)
 	const { reset: passwordReset, ...password } = useField('password')
-	const [ gender, setGender ] = useState({})
-	const [ orientation, setOrientation ] = useState([])
+	const [ gender, setGender ] = useState(user.gender)
+	const [ orientation, setOrientation ] = useState(user.orientation)
 	const [ tags, setTags ] = useState(false)
-	const [ userTags, setUserTags ] = useState([])
+	const [ userTags, setUserTags ] = useState(user.tags)
 	const [ bio, setBio ] = useState(user.bio || '')
 	const [ errorMessage, setErrorMessage ] = useState('')
 
@@ -36,66 +31,29 @@ const UpdateForm = ({ user, setUser }) => {
 			.catch((error) => {
 				console.log(error)
 			})
-
-		const orientationFromDb = () => {
-			const o = []
-			if (user.orientation.includes('f'))
-				o.push({ value: 'female', label: 'female' })
-			if (user.orientation.includes('m'))
-				o.push({ value: 'male', label: 'male' })
-			if (user.orientation.includes('o'))
-				o.push({ value: 'other', label: 'other' })
-			return o
-		}
-
-		const tagsFromDB = () => {
-			const tagsFromUser = user.tags.split('#').map(t => {
-				return { value: '#' + t, label: '#' + t }
-			})
-			return tagsFromUser.slice(1)
-		}
-
-		if (user.gender)
-			setGender({ value: user.gender, label: user.gender })
-		if (user.orientation)
-			setOrientation(orientationFromDb())
-		if (user.tags)
-			setUserTags(tagsFromDB())
 	}, [])
 
 	const handleSubmit = e => {
 		e.preventDefault()
 
-		const orientationToDb = () => {
-			if (orientation.length === 3)
-				return 'fmo'
-			if (orientation.length === 1)
-				return orientation[0].value.substring(0, 1)
-			if (!orientation.map(o => o.value).find(v => v === 'female'))
-				return 'mo'
-			if (!orientation.map(o => o.value).find(v => v === 'male'))
-				return 'fo'
-			return 'fm'
-		}
-
 		const updatedUser = {
 			firstName: firstName.value ? firstName.value : user.firstName,
 			lastName: lastName.value ? lastName.value : user.lastName,
-			username: username.value.length > 0 ? username.value : user.username,
+			username: username.value ? username.value : user.username,
 			email: email.value ? email.value : user.email,
 			password: password.value ? password.value : user.password,
-			gender: gender.value,
-			orientation: orientationToDb(),
-			tags: userTags.map(t => t.value).join(''),
+			gender: gender,
+			orientation: orientation,
+			tags: userTags,
 			bio: bio
 		}
 
-		//console.log('updateduser', updatedUser)
+		console.log('updateduser', updatedUser)
 
 		userService
-			.updateUser(updatedUser, id)
+			.updateUser(updatedUser, user.user_id)
 			.then(data => {
-				//console.log(data)
+				console.log('data when updated', data)
 				setUser(data)
 				setErrorMessage('')
 				//todo: clear fields
