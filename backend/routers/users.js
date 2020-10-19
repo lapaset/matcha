@@ -41,7 +41,7 @@ usersRouter.post('/', async (req, resp) => {
 			from: 'testing.matcha@gmail.com',
 			to: email,
 			subject: 'Sending Email using Node.js',
-			text: `Hello! Please click the following link to verify your email http://localhost:3001/users/verify?token=${token}`
+			text: `Hello! Please click the following link to verify your email http://localhost:3001/verify?token=${token}`
 		};
 	
 		transporter.sendMail(mailOptions, function (error, info) {

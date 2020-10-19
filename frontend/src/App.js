@@ -4,6 +4,7 @@ import userService from './services/userService'
 import UpdateForm from './components/UpdateForm/'
 import Signup from './components/Signup'
 import Login from './components/Login'
+import Verify from './components/Verify'
 import './style/app.css'
 
 
@@ -69,6 +70,9 @@ const App = () => {
 				<Route path="/login" render={() =>
 					user.user_id ? <Redirect to="/" /> : <Login setUser={setUser} />
 				} />
+				<Route path="/verify">
+					<Verify setUser={setUser} />
+				</Route>
 				<Route path="/">
 					<UserList users={users} />
 				</Route>
