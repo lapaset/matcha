@@ -36,11 +36,12 @@ usersRouter.post('/', async (req, resp) => {
 			}
 		});
 	
+		//could add user_id to the verify address
 		const mailOptions = {
 			from: 'testing.matcha@gmail.com',
 			to: email,
 			subject: 'Sending Email using Node.js',
-			text: `Hello! Please click the following link to verify your email http://localhost:5000/verify?token=${token}`
+			text: `Hello! Please click the following link to verify your email http://localhost:3001/users/verify?token=${token}`
 		};
 	
 		transporter.sendMail(mailOptions, function (error, info) {
@@ -51,7 +52,7 @@ usersRouter.post('/', async (req, resp) => {
 			}
 		});
 	}
-	
+
 	// LETS VALIDATE THE DATA BEFORE MAKE A USER and it comes from validation.js file
 	//const { error } = registerValidation(req.body);
 	//if (error) return res.status(400).send({ message: error.details[0].message });
@@ -78,6 +79,7 @@ usersRouter.post('/', async (req, resp) => {
 		})
 
 	//send the email!
+	sendEmail(email, token)
 })
 
 usersRouter.put('/:id', (req, resp) => {
@@ -106,6 +108,20 @@ usersRouter.delete('/:id', (req, resp) => {
 	db.query('DELETE FROM users WHERE user_id = $1', [req.params.id], () => {
 		resp.status(204).end()
 	})
+})
+
+usersRouter.get('/verify', (req, resp) => {
+	db.query('SELECT * FROM users', [], (err, res) => {
+		if (err)
+			resp.status(500).send(err)
+		else
+			resp.status(200).send(res.rows)
+	})
+	/*console.log('req.query.token', req.params.token)
+	db.query('UPDATE users SET verified = 1 WHERE token = $1',
+		[req.params.token], (err, res) => {
+			resp.redirect('http://localhost:3000')
+	})*/
 })
 
 module.exports = usersRouter

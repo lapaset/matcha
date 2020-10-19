@@ -18,7 +18,10 @@ loginRouter.post('/', (request, response) => {
 
 		if (!matches)
 			return response.status(401).send({ error: "Invalid username or password" })
-		
+
+		if (!res.rows[0].verified)
+			return response.status(401).send({ error: "Account needs to be verified, check your email" })
+
 		const userForToken = {
 			username: res.rows[0].username,
 			id: res.rows[0].user_id

@@ -6,6 +6,7 @@ const usersRouter = require('./routers/users')
 const tagsRouter = require('./routers/tags')
 const loginRouter = require('./routers/login')
 const middleware = require('./utils/middleware')
+const verifyRouter = require('./routers/verify')
 
 app.use(express.json())
 app.use(cors())
@@ -14,6 +15,7 @@ app.use(middleware.requestLogger)
 app.use('/users', usersRouter)
 app.use('/tags', tagsRouter)
 app.use('/login', loginRouter)
+app.use('/verify', verifyRouter)
 
 app.use(middleware.unknownEndpoint)
 
