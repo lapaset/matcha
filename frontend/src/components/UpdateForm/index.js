@@ -1,32 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import SelectGender from './SelectGender'
 import SelectOrientation from './SelectOrientation'
 import SelectTags from './SelectTags'
 import userService from '../../services/userService'
-import tagService from '../../services/tagService'
+
 
 const UpdateForm = ({ user, setUser }) => {
 	const { register, handleSubmit, errors, control } = useForm()
-	
-	const [ tags, setTags ] = useState(false)
-	const [ userTags, setUserTags ] = useState(user.tags)
 	const [ errorMessage, setErrorMessage ] = useState('')
 
-	useEffect(() => {
-		tagService
-			.getTags()
-			.then(data => {
-				setTags(data)
-			})
-			.catch((error) => {
-				console.log(error)
-			})
-	}, [])
-
 	const onSubmit = data => {
-		console.log(data)
-
+		console.log('react-hook-form data', data)
 
 		const orientationToDb = selected => {
 
@@ -44,15 +29,11 @@ const UpdateForm = ({ user, setUser }) => {
 		}
 
 		const updatedUser = {
-			firstName: data.firstName,
-			lastName: data.lastName,
-			username: data.username,
-			email: data.email,
+			...data,
 			password: user.password,
 			gender: data.gender.value,
 			orientation: orientationToDb(data.orientation),
-			tags: userTags,
-			bio: data.bio
+			tags: data.tags ? data.tags.map(t => t.value).join('') : '',
 		}
 
 		console.log('updateduser', updatedUser)
@@ -109,8 +90,8 @@ const UpdateForm = ({ user, setUser }) => {
 					<SelectGender gender={user.gender} control={control} errors={errors} />
 
 					<SelectOrientation orientation={user.orientation} control={control} errors={errors} />
-					<SelectTags name='tags' setUserTags={setUserTags} userTags={userTags}
-						tags={tags} setTags={setTags} />
+					
+					<SelectTags name='tags' userTags={user.tags} control={control} errors={errors} />
 					
 					<div className="form-group">
 						<label>bio</label><br />

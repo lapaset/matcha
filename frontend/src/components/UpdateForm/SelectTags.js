@@ -1,10 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import CreatableSelect from 'react-select'
+import { Controller } from 'react-hook-form'
 import tagService from '../../services/tagService'
 
-const SelectTags = ({ setUserTags, userTags, tags, setTags }) => {
+const SelectTags = ({ userTags, control, errors }) => {
 
-	const [inputValue, setInputValue] = useState('')
+	const [ inputValue, setInputValue ] = useState('')
+	const [ tags, setTags ] = useState(false)
+
+	useEffect(() => {
+		tagService
+			.getTags()
+			.then(data => {
+				setTags(data)
+			})
+			.catch((error) => {
+				console.log(error)
+			})
+	}, [])
 
 	const addNewTag = () => {
 
@@ -15,19 +28,12 @@ const SelectTags = ({ setUserTags, userTags, tags, setTags }) => {
 		tagService
 			.addTag({ tag: newTag })
 			.then(res => {
-				setUserTags(userTags.concat(res))
 				setTags(tags.concat({ tag: res }))
 				setInputValue('')
 			})
 			.catch((e) => {
 				console.log('Failed to add tag', e.response.data)
 			})
-	}
-
-	const handleChange = options => {
-		options
-			? setUserTags(options.map(t => t.value).join(''))
-			: setUserTags('')
 	}
 
 	const handleInputChange = value => setInputValue(value)
@@ -69,14 +75,17 @@ const SelectTags = ({ setUserTags, userTags, tags, setTags }) => {
 	return tags
 		? <div className="form-group">
 			<label>tags</label><br />
-			<CreatableSelect
+			<Controller
 				class="form-control"
+				name="tags"
+				as={CreatableSelect}
 				options={getOptions()}
 				value={userTagsFromDb()}
-				onChange={handleChange}
+				defaultValue={userTagsFromDb()}
 				onKeyDown={handleKeyDown}
 				onInputChange={handleInputChange}
 				inputValue={inputValue}
+				control={control}
 				isMulti
 				isClearable />
 		</div>
