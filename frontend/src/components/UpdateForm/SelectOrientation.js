@@ -1,10 +1,14 @@
 import React from 'react'
 import Select from 'react-select'
+import { Controller } from 'react-hook-form'
 
-const SelectOrientation = ({ setOrientation, orientation }) => {
+const SelectOrientation = ({ orientation, control, errors }) => {
 
 	const orientationFromDb = () => {
 		const o = []
+
+		if (!orientation)
+			return o
 		if (orientation.includes('f'))
 			o.push({ value: 'female', label: 'female' })
 		if (orientation.includes('m'))
@@ -14,10 +18,8 @@ const SelectOrientation = ({ setOrientation, orientation }) => {
 		return o
 	}
 
-	const orientationToDb = selected => {
+	/*const orientationToDb = selected => {
 
-		console.log('selected', selected)
-		//todo: disable update if not selected
 		if (!selected)
 			return ''
 		if (selected.length === 3)
@@ -34,7 +36,7 @@ const SelectOrientation = ({ setOrientation, orientation }) => {
 	const onChange = selected => {
 		console.log('on orientation change', orientationToDb(selected))
 		return setOrientation(orientationToDb(selected))
-	}
+	}*/
 
 	const options = [
 		{ value: 'female', label: 'female' },
@@ -42,9 +44,22 @@ const SelectOrientation = ({ setOrientation, orientation }) => {
 		{ value: 'other', label: 'other' }
 	]
 
+	const defVal = () => orientation ? orientationFromDb() : ""
+
 	return 	<div className="form-group">
 				<label>looking for</label><br />
-				<Select class="form-control" options={options} value={orientationFromDb()} onChange={onChange} isMulti />
+
+				<Controller
+					class="form-control"
+					name="orientation"
+					as={Select}
+					options={options}
+					value={orientationFromDb()}
+					defaultValue={defVal()}
+					control={control}
+					rules={{ required: true }}
+					isMulti />
+				{errors.orientation && errors.orientation.type === 'required' && (<p className="text-danger">Required</p>)}
 			</div>
 }
 
