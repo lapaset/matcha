@@ -7,6 +7,7 @@ const tagsRouter = require('./routers/tags')
 const loginRouter = require('./routers/login')
 const middleware = require('./utils/middleware')
 const verifyRouter = require('./routers/verify')
+const resetRouter = require('./routers/reset')
 
 app.use(express.json())
 app.use(cors())
@@ -16,6 +17,7 @@ app.use('/users', usersRouter)
 app.use('/tags', tagsRouter)
 app.use('/login', loginRouter)
 app.use('/verify', verifyRouter)
+app.use('/reset', resetRouter)
 
 app.use(middleware.unknownEndpoint)
 
