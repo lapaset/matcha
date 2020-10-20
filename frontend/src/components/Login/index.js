@@ -3,23 +3,23 @@ import loginService from '../../services/loginService';
 //import FlashMessage from 'react-flash-message';
 //import Alert from 'react-bootstrap/Alert';
 
-const Login = ({ setUser }) => {
+const Login = ({ setUser, loadingUser }) => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [errorMessage, setErrorMessage] = useState(null)
 
-	const handleLogin = async event => {
+	const handleLogin = event => {
 		event.preventDefault();
 		loginService
 			.login({ username, password })
 			.then(data => {
 				console.log('Login data:', data)
-				setUser(data)
 				window.localStorage.setItem(
 					'loggedMatchaUser', JSON.stringify(data)
 				)
 				setUsername('')
 				setPassword('')
+				setUser(data)
 			})
 			.catch(e => {
 				setErrorMessage(e.response.data.error)

@@ -3,8 +3,6 @@ const db = require('../utils/db')
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 
-//const { registerValidation } = require('../utils/validation')
-
 usersRouter.get('/', (req, resp) => {
 	db.query('SELECT * FROM users', [], (err, res) => {
 		if (err)
@@ -60,8 +58,7 @@ usersRouter.post('/', async (req, resp) => {
 	const { firstName, lastName, username, email, token } = req.body;
 
 	// Hash password	
-	const saltRounds = 10
-	const hashedPassword = await bcrypt.hash(req.body.password, saltRounds)
+	const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
 	// Add user
 	db.query('INSERT INTO users (first_name, last_name, username, email, password, token) \
@@ -82,26 +79,51 @@ usersRouter.post('/', async (req, resp) => {
 	sendEmail(email, token)
 })
 
-usersRouter.put('/:id', (req, resp) => {
+usersRouter.put('/:id', async (req, resp) => {
 	const { firstName, lastName, username, email, gender, orientation, tags, bio } = req.body
-	db.query('UPDATE users \
-		SET (first_name, last_name, username, email, gender, orientation, tags, bio) \
-		= ($1, $2, $3, $4, $5, $6, $7, $8) \
-		WHERE user_id = $9 RETURNING *',
-		[firstName, lastName, username, email, gender, orientation, tags, bio, req.params.id],
-		(err, res) => {
 
-			if (res && res.rows[0])
-				resp.status(200).send(res.rows[0])
-			else if (res)
-				resp.status(500).send({ error: 'User not found' })
-			else if (err.detail && err.detail.startsWith('Key (email)'))
-				resp.status(409).send({ error: 'email already exists' })
-			else if (err.detail && err.detail.startsWith('Key (username)'))
-				resp.status(409).send({ error: 'username already exists' })
-			else
-				resp.status(500).send(err)
+	if (req.body.password) {
+		const hashedPassword = await bcrypt.hash(req.body.password, 10)
+		db.query('UPDATE users \
+			SET (first_name, last_name, username, email, gender, orientation, tags, bio, password) \
+			= ($1, $2, $3, $4, $5, $6, $7, $8, $9) \
+			WHERE user_id = $10 RETURNING *',
+			[firstName, lastName, username, email, gender, orientation, tags, bio, hashedPassword, req.params.id],
+			(err, res) => {
+
+				if (res && res.rows[0])
+					resp.status(200).send(res.rows[0])
+				else if (res)
+					resp.status(500).send({ error: 'User not found' })
+				else if (err.detail && err.detail.startsWith('Key (email)'))
+					resp.status(409).send({ error: 'email already exists' })
+				else if (err.detail && err.detail.startsWith('Key (username)'))
+					resp.status(409).send({ error: 'username already exists' })
+				else
+					resp.status(500).send(err)
 		})
+
+	} else {
+
+		db.query('UPDATE users \
+			SET (first_name, last_name, username, email, gender, orientation, tags, bio) \
+			= ($1, $2, $3, $4, $5, $6, $7, $8) \
+			WHERE user_id = $9 RETURNING *',
+			[firstName, lastName, username, email, gender, orientation, tags, bio, req.params.id],
+			(err, res) => {
+
+				if (res && res.rows[0])
+					resp.status(200).send(res.rows[0])
+				else if (res)
+					resp.status(500).send({ error: 'User not found' })
+				else if (err.detail && err.detail.startsWith('Key (email)'))
+					resp.status(409).send({ error: 'email already exists' })
+				else if (err.detail && err.detail.startsWith('Key (username)'))
+					resp.status(409).send({ error: 'username already exists' })
+				else
+					resp.status(500).send(err)
+		})
+	}
 })
 
 usersRouter.delete('/:id', (req, resp) => {

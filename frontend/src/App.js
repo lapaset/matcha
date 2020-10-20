@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { BrowserRouter as Router, Switch, Route, Link, Redirect } from 'react-router-dom'
 import userService from './services/userService'
 import UpdateForm from './components/UpdateForm/'
@@ -25,18 +25,8 @@ const UserList = ({ users }) => {
 const App = () => {
 	const [users, setUsers] = useState(false)
 	const [user, setUser] = useState({})
+	const loadingUser = useRef(true);
 
-	useEffect(() => {
-		userService
-			.getAll()
-			.then(u => {
-				//console.log(users)
-				setUsers(u)
-			})
-			.catch((error) => {
-				console.log(error)
-			})
-	}, [])
 
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem('loggedMatchaUser')
@@ -48,9 +38,23 @@ const App = () => {
 					setUser(data)
 				})
 		}
+		loadingUser.current = false
 	}, [])
 
-	return (
+	useEffect(() => {
+		userService
+			.getAll()
+			.then(u => {
+				setUsers(u)
+			})
+			.catch((error) => {
+				console.log(error)
+			})
+	}, [])
+
+	return loadingUser.current
+		? null
+		: (
 		<Router>
 			<div className="nav">
 				<Link to="/">home</Link>

@@ -23,13 +23,8 @@ const getUser = async id => {
 
 const updateUser = async (userObject, id) => {
 	const resp = await axios.put(`${baseUrl}/${id}`, userObject)
-	const { first_name, last_name, ...user } = resp.data
   
-	return ({
-		...user,
-		firstName: resp.data.first_name,
-		lastName: resp.data.last_name
-	})
+	return responseDataToApp(resp.data)
 }
 
 const createUser = async userObject => {
