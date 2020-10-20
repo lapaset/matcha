@@ -62,10 +62,11 @@ const UpdateForm = ({ user, setUser }) => {
 
 			<form className="text-left mt-3 col-md-6 col-sm-6 col-lg-4 col-xs-8" onSubmit={handleSubmit(onSubmit)}>
 
-				{errorMessage && <div className="text-danger" >{errorMessage}</div>}
-				{notification && <div className="text-success" >{notification}</div>}
+				{errorMessage && <div className="text-center text-danger" >{errorMessage}</div>}
+				{notification && <div className="text-center text-success" >{notification}</div>}
 
-				<RequiredInputField label='first name' errors={errors.firstName} name="firstName" defVal={user.firstName} maxLen='50'
+				<RequiredInputField label='first name' errors={errors.firstName}
+					name="firstName" defVal={user.firstName} maxLen='50'
 					requirements={register({
 						required: {
 							value: true,
@@ -77,7 +78,8 @@ const UpdateForm = ({ user, setUser }) => {
 						}
 					})} />
 
-				<RequiredInputField label='last name' errors={errors.lastName} name="lastName" defVal={user.lastName} maxLen='50'
+				<RequiredInputField label='last name' errors={errors.lastName}
+					name="lastName" defVal={user.lastName} maxLen='50'
 					requirements={register({
 						required: {
 							value: true,
@@ -89,7 +91,8 @@ const UpdateForm = ({ user, setUser }) => {
 						}
 					})} />
 
-				<RequiredInputField label='username' errors={errors.username} name="username" defVal={user.username} maxLen='50'
+				<RequiredInputField label='username' errors={errors.username}
+					name="username" defVal={user.username} maxLen='50'
 					requirements={register({
 						required: {
 							value: true,
@@ -101,7 +104,8 @@ const UpdateForm = ({ user, setUser }) => {
 						}
 					})} />
 
-				<RequiredInputField label='email' errors={errors.email} name="email" defVal={user.email} maxLen='255'
+				<RequiredInputField label='email' errors={errors.email}
+					name="email" defVal={user.email} maxLen='255'
 					requirements={register({
 						required: {
 							value: true,
