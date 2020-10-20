@@ -1,16 +1,17 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import SelectGender from './SelectGender'
 import SelectOrientation from './SelectOrientation'
 import SelectTags from './SelectTags'
 import userService from '../../services/userService'
+import RequiredInputField from './RequiredInputField'
+import PasswordFields from './PasswordFields'
 
 const UpdateForm = ({ user, setUser }) => {
 	const { register, handleSubmit, errors, control, watch } = useForm()
-	const [ errorMessage, setErrorMessage ] = useState('')
-	const [ notification, setNotification ] = useState('')
-	const password = useRef({})
-	password.current = watch("password", "")
+	const [errorMessage, setErrorMessage] = useState('')
+	const [notification, setNotification] = useState('')
+
 
 	const onSubmit = data => {
 		//console.log('react-hook-form data', data)
@@ -61,65 +62,62 @@ const UpdateForm = ({ user, setUser }) => {
 
 			<form className="text-left mt-3 col-md-6 col-sm-6 col-lg-4 col-xs-8" onSubmit={handleSubmit(onSubmit)}>
 
-				{ errorMessage && <div className="text-danger" >{errorMessage}</div> }
-				{ notification && <div className="text-success" >{notification}</div> }
+				{errorMessage && <div className="text-danger" >{errorMessage}</div>}
+				{notification && <div className="text-success" >{notification}</div>}
 
-				<div className="form-group">
-					<label>first name</label>
-					{errors.firstName && errors.firstName.type === 'required' && (<span className="text-danger"> *</span>)}<br />
-					<input className="form-control" name="firstName" defaultValue={user.firstName} maxLength="50"
-						ref={register({ required: true, maxLength: 50 })} />
-					{errors.firstName && errors.firstName.type === 'maxLength' && (<p className="text-danger">Max length is 50</p>)}
-				</div>
+				<RequiredInputField label='first name' errors={errors.firstName} name="firstName" defVal={user.firstName} maxLen='50'
+					requirements={register({
+						required: {
+							value: true,
+							message: '*'
+						},
+						maxLength: {
+							value: 50,
+							message: 'max length 50'
+						}
+					})} />
 
-				<div className="form-group">
-					<label>last name</label><br />
-					<input className="form-control" name="lastName" defaultValue={user.lastName} maxLength="50"
-						ref={register({ required: true, maxLength: 50 })} />
-					{errors.lastName && errors.lastName.type === 'required' && (<p className="text-danger">Required</p>)}
-					{errors.lastName && errors.lastName.type === 'maxLength' && (<p className="text-danger">Max length is 50</p>)}
-				</div>
+				<RequiredInputField label='last name' errors={errors.lastName} name="lastName" defVal={user.lastName} maxLen='50'
+					requirements={register({
+						required: {
+							value: true,
+							message: '*'
+						},
+						maxLength: {
+							value: 50,
+							message: 'max length 50'
+						}
+					})} />
 
-				<div className="form-group">
-					<label>username</label><br />
-					<input className="form-control" name="username" defaultValue={user.username} maxLength="50"
-						ref={register({ required: true, maxLength: 50 })} />
-					{errors.username && errors.username.type === 'required' && (<p className="text-danger">Required</p>)}
-					{errors.username && errors.username.type === 'maxLength' && (<p className="text-danger">Max length is 50</p>)}
-				</div>
+				<RequiredInputField label='username' errors={errors.username} name="username" defVal={user.username} maxLen='50'
+					requirements={register({
+						required: {
+							value: true,
+							message: '*'
+						},
+						maxLength: {
+							value: 50,
+							message: 'max length 50'
+						}
+					})} />
 
-				<div className="form-group">
-					<label>email</label><br />
-					<input className="form-control" name="email" type="email" defaultValue={user.email} maxLength="255"
-						ref={register({
-							required: true, maxLength: 255,
-							pattern: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{ | }~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-						})} />
-					{errors.email && errors.email.type === 'required' && (<p className="text-danger">Required</p>)}
-					{errors.email && errors.email.type === 'pattern' && (<p className="text-danger">Not a valid email</p>)}
-					{errors.username && errors.username.type === 'maxLength' && (<p className="text-danger">Max length is 255</p>)}
-				</div>
+				<RequiredInputField label='email' errors={errors.email} name="email" defVal={user.email} maxLen='255'
+					requirements={register({
+						required: {
+							value: true,
+							message: '*'
+						},
+						maxLength: {
+							value: 255,
+							message: 'max length 255'
+						},
+						pattern: {
+							value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{ | }~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+							message: 'not a valid email'
+						}
+					})} />
 
-				<div className="form-group">
-					<label>password</label><br />
-					<input className="form-control" name="password" type="password" defaultValue="" maxLength="50"
-						ref={register({ maxLength: {
-											value: 50,
-											message: "max length 50" },
-										minLength: {
-											value: 8,
-											message: "min length 8" },
-										pattern: {
-											value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-											message: "must contain a number, an upper and a lower case letter"
-										}})} />
-					{errors.password && (<p className="text-danger">{errors.password.message}</p>)}
-
-					<label>confirm password</label><br />
-					<input className="form-control" name="password2" type="password" defaultValue="" maxLength="50"
-						ref={register({ validate: value => value === password.current || "passwords don't match" })} />
-					{errors.password2 && (<p className="text-danger">{errors.password2.message}</p>)}
-				</div>
+				<PasswordFields watch={watch} register={register} errors={errors} />
 
 				<SelectGender gender={user.gender} control={control} errors={errors} />
 
@@ -129,9 +127,14 @@ const UpdateForm = ({ user, setUser }) => {
 
 				<div className="form-group">
 					<label>bio</label><br />
-					<textarea className="form-control" name="bio" defaultValue={user.bio}
-						maxLength="1000" ref={register({ maxLength: 1000 })} />
-					{errors.bio && errors.bio.type === 'maxLength' && (<p className="text-danger">Max length is 255</p>)}
+					<textarea className="form-control" name="bio" defaultValue={user.bio} maxLength="1000"
+						ref={register({
+							maxLength: {
+								value: 1000,
+								message: "max length 1000"
+							}
+						})} />
+					{errors.bio && (<p className="text-danger">{errors.bio.message}</p>)}
 				</div>
 
 				<button className="btn btn-success mt-3" type="submit">Update</button>

@@ -36,9 +36,9 @@ const App = () => {
 				.getUser(userFromLocalStorage.user_id)
 				.then(data => {
 					setUser(data)
+					loadingUser.current = false
 				})
 		}
-		loadingUser.current = false
 	}, [])
 
 	useEffect(() => {
