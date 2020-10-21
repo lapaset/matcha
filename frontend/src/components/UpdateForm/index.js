@@ -44,9 +44,9 @@ const UpdateForm = ({ user, setUser }) => {
 			.updateUser(updatedUser, user.user_id)
 			.then(data => {
 				//console.log('data when updated', data)
-				setUser(data)
 				setErrorMessage('')
 				setNotification('user updated')
+				setUser(data)
 			})
 			.catch(e => {
 				//console.log('error', e.response.data)
@@ -121,8 +121,6 @@ const UpdateForm = ({ user, setUser }) => {
 						}
 					})} />
 
-				<PasswordFields watch={watch} register={register} errors={errors} />
-
 				<SelectGender gender={user.gender} control={control} errors={errors} />
 
 				<SelectOrientation orientation={user.orientation} control={control} errors={errors} />
@@ -140,6 +138,8 @@ const UpdateForm = ({ user, setUser }) => {
 						})} />
 					{errors.bio && (<p className="text-danger">{errors.bio.message}</p>)}
 				</div>
+
+				<PasswordFields watch={watch} register={register} errors={errors} />
 
 				<button className="btn btn-success mt-3" type="submit">Update</button>
 			</form>
