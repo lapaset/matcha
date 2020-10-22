@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import loginService from '../../services/loginService';
 //import FlashMessage from 'react-flash-message';
 //import Alert from 'react-bootstrap/Alert';
@@ -52,6 +53,9 @@ const Login = ({ setUser, loadingUser }) => {
 						/>
 					</div>
 					<button className="btn btn-success mt-3" type="submit">Login</button>
+					<p className="forgot-password text-right">
+						<Link to={'/forgot'}>Forgot password?</Link>
+					</p>
 				</form>
 			</div>
 		</>

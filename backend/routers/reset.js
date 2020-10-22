@@ -25,7 +25,7 @@ resetRouter.post('/', (req, resp) => {
             //resp.status(200).send(res.rows[0])
         }
         else if (res)
-            resp.status(500).send({ error: 'No user found with that email'})
+            resp.status(401).send({ error: 'No user found with that email'})
         else
             resp.status(500).send({ error: err.detail })
     })
