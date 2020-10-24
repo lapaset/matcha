@@ -5,6 +5,7 @@ import Signup from '../Signup'
 import Login from '../Login'
 import Verify from '../Verify'
 import Forgot from '../ForgotPassword'
+import Reset from '../ForgotPassword/resetNewPasswd'
 import userService from '../../services/userService'
 
 
@@ -68,6 +69,9 @@ const UserView = ({ user, setUser }) => {
 				</Route>
 				<Route path="/forgot">
 					<Forgot />
+				</Route>
+				<Route path="/reset-password/:token">
+					<Reset />
 				</Route>
 				<Route path="/login" render={() =>
 					user.user_id ? <Redirect to="/" /> : <Login setUser={setUser} />

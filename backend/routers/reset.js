@@ -32,12 +32,13 @@ resetRouter.post('/', (req, resp) => {
 })
 
 resetRouter.post('/new-password', async (req, resp) => {
+    token = req.body.token;
     const saltRounts = 10
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounts)
-    db.query('SELECT token FROM users WHERE token = $1', [req.query.token], (err, res) => {
+    db.query('SELECT token FROM users WHERE token = $1', [token], (err, res) => {
         if (res && res.rows[0])
         {
-            db.query('UPDATE users SET password = $1 WHERE token = $2', [hashedPassword, req.query.token], (err, re) => {
+            db.query('UPDATE users SET password = $1 WHERE token = $2', [hashedPassword, token], (err, re) => {
                 if (re)
                     resp.status(200).send({message: "Password has been changed"})
                 else
