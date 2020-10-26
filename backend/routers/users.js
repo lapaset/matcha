@@ -33,7 +33,7 @@ usersRouter.post('/', async (req, resp) => {
 				pass: 'matcha1234'
 			}
 		});
-	
+
 		//could add user_id to the verify address
 		const mailOptions = {
 			from: 'testing.matcha@gmail.com',
@@ -41,7 +41,7 @@ usersRouter.post('/', async (req, resp) => {
 			subject: 'Sending Email using Node.js',
 			text: `Hello! Please click the following link to verify your email http://localhost:3001/verify?token=${token}`
 		};
-	
+
 		transporter.sendMail(mailOptions, function (error, info) {
 			if (error) {
 				console.log(error);
@@ -82,7 +82,24 @@ usersRouter.post('/', async (req, resp) => {
 usersRouter.put('/:id', async (req, resp) => {
 	const { firstName, lastName, username, email, gender, orientation, tags, bio } = req.body
 
-	if (req.body.password) {
+	if (req.body.profilePic) {
+		db.query("UPDATE users \
+		SET profile_pic=$1 WHERE user_id = $2 RETURNING *",
+			[req.body.profilePic, req.params.id], (err, res) => {
+
+				if (res && res.rows[0])
+					resp.status(200).send(res.rows[0])
+				else if (res)
+					resp.status(500).send({ error: 'User not found' })
+				else if (err.code === '22001')
+					resp.status(500).send({ error: 'Too big image, max size 350kb'})
+				else {
+					console.log(err)
+					resp.status(500).send(err)
+				}
+			})
+			
+	} else if (req.body.password) {
 		const hashedPassword = await bcrypt.hash(req.body.password, 10)
 		db.query('UPDATE users \
 			SET (first_name, last_name, username, email, gender, orientation, tags, bio, password) \
@@ -101,7 +118,7 @@ usersRouter.put('/:id', async (req, resp) => {
 					resp.status(409).send({ error: 'username already exists' })
 				else
 					resp.status(500).send(err)
-		})
+			})
 
 	} else {
 
@@ -122,7 +139,7 @@ usersRouter.put('/:id', async (req, resp) => {
 					resp.status(409).send({ error: 'username already exists' })
 				else
 					resp.status(500).send(err)
-		})
+			})
 	}
 })
 

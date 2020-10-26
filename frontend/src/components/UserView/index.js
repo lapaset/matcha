@@ -22,8 +22,6 @@ const UserList = ({ users }) => {
 const UserView = ({ user, setUser }) => {
 
 	const [users, setUsers] = useState(false)
-	
-	console.log('do we get here?');
 
 	useEffect(() => {
 		userService
@@ -39,8 +37,6 @@ const UserView = ({ user, setUser }) => {
 	const userInfoComplete = () => {
 		return user.firstName && user.lastName && user.username && user.email && user.gender && user.orientation
 	}
-	
-	console.log('here')
 	
 	return <Router>
 			<div className="nav">

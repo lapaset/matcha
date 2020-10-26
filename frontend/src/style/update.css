@@ -1,0 +1,13 @@
+.imgPreview {
+	width: 100%;
+	max-height: 15em;
+	margin: 0.5em, 0em;
+	text-align: center;
+	background: pink;
+}
+
+.imgPreview img {
+	height: 15em;
+	width: auto;
+	
+}

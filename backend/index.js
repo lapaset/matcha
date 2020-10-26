@@ -8,7 +8,8 @@ const loginRouter = require('./routers/login')
 const middleware = require('./utils/middleware')
 const verifyRouter = require('./routers/verify')
 
-app.use(express.json())
+app.use(express.json({limit: '10mb', extended: true}))
+app.use(express.urlencoded({limit: '10mb', extended: true}))
 app.use(cors())
 app.use(middleware.requestLogger)
 
