@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import userService from '../../services/userService'
 
-
 const UploadImg = ({ id, profilePic, setErrorMessage, setNotification, setUser }) => {
 	const [profilePicture, setProfilePicture] = useState({})
 
@@ -18,6 +17,7 @@ const UploadImg = ({ id, profilePic, setErrorMessage, setNotification, setUser }
 				setErrorMessage('')
 				setNotification('user updated')
 				setUser(data)
+				setProfilePicture({})
 			})
 			.catch(e => {
 				//console.log('error', e.response.data)
