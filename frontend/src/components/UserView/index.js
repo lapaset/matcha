@@ -7,6 +7,7 @@ import Verify from '../Verify'
 import Forgot from '../ForgotPassword'
 import Reset from '../ForgotPassword/resetNewPasswd'
 import userService from '../../services/userService'
+import logoutService from '../../services/logoutService'
 
 
 const UserList = ({ users }) => {
@@ -23,7 +24,6 @@ const UserList = ({ users }) => {
 }
 
 const UserView = ({ user, setUser }) => {
-
 	const [users, setUsers] = useState(false)
 	
 	console.log('do we get here?');
@@ -50,7 +50,8 @@ const UserView = ({ user, setUser }) => {
 				<Link to="/">home</Link>
 				{user.username
 					? <><Link to="/update">update</Link>
-						<div>user: {user.username}</div></>
+						<div>user: {user.username}</div>
+						<Link to="/login" onClick={logoutService.handleLogout}>Logout</Link></>
 					: <><Link to="/signup">signup</Link>
 						<Link to="/login">login</Link></>}
 			</div>
