@@ -61,7 +61,7 @@ const UserView = ({ user, setUser }) => {
 				} />
 				<Route path="/userphotos" render={() =>
 					user.user_id
-						? <UserPhotos />	
+						? <UserPhotos userId={user.user_id} />	
 						: <Redirect to="/login" />
 				} />
 				<Route path="/signup">

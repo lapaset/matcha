@@ -1,9 +1,9 @@
 import axios from 'axios'
 const baseUrl = 'http://localhost:3001/photos'
 
-const addPhotos = async photos => {
-	const resp = await axios.post(baseUrl, photos)
+const addPhoto = async photo => {
+	const resp = await axios.post(baseUrl, photo)
 	return resp.data
 }
 
-export default { addPhotos }
+export default { addPhoto }
