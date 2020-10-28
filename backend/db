@@ -24,6 +24,12 @@ CREATE TABLE tags (
 	tag VARCHAR(50) PRIMARY KEY
 );
 
+CREATE TABLE photos (
+	id SERIAL PRIMARY KEY,
+	user_id INT NOT NULL,
+	profile_pic SMALLINT NOT NULL DEFAULT '0',
+	photo_str VARCHAR(500000) NOT NULL
+);
 
 
 
