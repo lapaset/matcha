@@ -7,15 +7,17 @@ import SelectTags from './SelectTags'
 import userService from '../../services/userService'
 import RequiredInputField from './RequiredInputField'
 import PasswordFields from './PasswordFields'
-import UploadImg from './UploadImg'
 
-const UpdateForm = ({ user, setUser }) => {
+//todo
+// check that user state is correct after update when user has photos
+
+const UserProfile = ({ user, setUser }) => {
 	const { register, handleSubmit, errors, control, watch } = useForm()
 	const [errorMessage, setErrorMessage] = useState('')
 	const [notification, setNotification] = useState('')
 
 	const onSubmit = data => {
-		console.log('react-hook-form data', data)
+		//console.log('react-hook-form data', data)
 
 		const orientationToDb = selected => {
 
@@ -45,7 +47,10 @@ const UpdateForm = ({ user, setUser }) => {
 				console.log('data when updated', data)
 				setErrorMessage('')
 				setNotification('user updated')
-				setUser(data)
+				setUser({
+					...data,
+					photos: user.photos ? user.photos : []
+				})
 			})
 			.catch(e => {
 				//console.log('error', e.response.data)
@@ -64,10 +69,6 @@ const UpdateForm = ({ user, setUser }) => {
 		<div className="row justify-content-center align-items-center">
 
 			<div className="text-left mt-3 col-md-6 col-sm-6 col-lg-4 col-xs-8">
-
-				<UploadImg id={user.user_id} setErrorMessage={setErrorMessage}
-					setNotification={setNotification} setUser={setUser} profilePic={user.profile_pic} />
-
 
 				<form onSubmit={handleSubmit(onSubmit)}>
 
@@ -154,4 +155,4 @@ const UpdateForm = ({ user, setUser }) => {
 	</div>
 }
 
-export default UpdateForm;
+export default UserProfile;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Switch, Route, Link, Redirect } from 'react-router-dom'
-import UpdateForm from '../UpdateForm/'
+import UserProfile from '../UserProfile'
 import Signup from '../Signup'
 import Login from '../Login'
 import Verify from '../Verify'
@@ -43,25 +43,25 @@ const UserView = ({ user, setUser }) => {
 			<div className="nav">
 				<Link to="/">home</Link>
 				{user.username
-					? <><Link to="/update">update</Link>
+					? <><Link to="/profile">profile</Link>
 						<Link to="/userphotos">your photos</Link>
 						<div>user: {user.username}</div></>
 					: <><Link to="/signup">signup</Link>
 						<Link to="/login">login</Link></>}
 			</div>
 			<Switch>
-				<Route path="/update" render={() =>
+				<Route path="/profile" render={() =>
 					user.user_id
 						? userInfoComplete()
-							? <UpdateForm user={user} setUser={setUser} />
+							? <UserProfile user={user} setUser={setUser} />
 							: <><p className="text-center text-info">fill your info to start matching</p>
-							<UpdateForm user={user} setUser={setUser} /></>
+							<UserProfile user={user} setUser={setUser} /></>
 							
 						: <Redirect to="/login" />
 				} />
 				<Route path="/userphotos" render={() =>
 					user.user_id
-						? <UserPhotos userId={user.user_id} />	
+						? <UserPhotos user={user} setUser={setUser} />	
 						: <Redirect to="/login" />
 				} />
 				<Route path="/signup">
@@ -75,7 +75,7 @@ const UserView = ({ user, setUser }) => {
 				</Route>
 				<Route path="/" render={() =>
 					user.user_id
-						? userInfoComplete() ? <UserList users={users} /> : <Redirect to="/update" />
+						? userInfoComplete() ? <UserList users={users} /> : <Redirect to="/profile" />
 						: <><h1>Welcome</h1></>
 				} />
 			</Switch>

@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import photoService from '../../services/photoService'
-import { Container, Row, Col, Image, ResponsiveEmbed, Button, ButtonGroup } from 'react-bootstrap'
+import { Container, Row, Col, Image, ResponsiveEmbed, Button,
+	ButtonGroup, Modal } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faUser } from '@fortawesome/free-solid-svg-icons'
 
 const Photo = ({ photo }) => (
 	<>
-		<Image src={photo.imgUrl} alt="profile pic preview"
+		<Image src={photo.photoStr} alt="profile pic preview"
 			title="profile pic preview" fluid={true} className="d-block m-auto mh-100 mw-100" />
 		<ButtonGroup style={{
 			position: "absolute",
@@ -21,7 +22,7 @@ const Photo = ({ photo }) => (
 
 const PhotoContainer = ({ photo }) => {
 
-	const imagePreview = () => photo.imgUrl
+	const imagePreview = () => photo && photo.photoStr
 		? <Photo photo={photo} />
 		: <span className="d-block m-auto">add picture</span>
 
@@ -31,7 +32,6 @@ const PhotoContainer = ({ photo }) => {
 				{imagePreview()}
 			</div>
 		</ResponsiveEmbed>
-
 	</Col>
 
 }
@@ -64,13 +64,9 @@ const UploadPhoto = ({ photo, setPhoto, name }) => {
 
 	}
 
-	const handleDelete = e => {
-		console.log('delete', e)
-		setPhoto({})
-	}
-
 	const imagePreview = () => photo.imgUrl
-		? <img src={photo.imgUrl} alt="profile pic preview" title="profile pic preview" className="img-thumbnail" />
+		? <img src={photo.imgUrl} alt="profile pic preview" title="profile pic preview"
+			className="img-fluid mh-100 mw-100 d-block" />
 		: null
 	/*? <img src={photo1.imgUrl} alt="profile pic preview" title="profile pic preview" className="img-thumbnail" />
 	: profilePic
@@ -79,36 +75,41 @@ const UploadPhoto = ({ photo, setPhoto, name }) => {
 
 
 	return <>
-		<div>
+		<div style={{
+			width: "20em",
+			height: "20em",
+		}} className="border d-flex align-items-center" >
 			{imagePreview()}
 		</div>
 		<div className="input-group">
 
 			<input className="form-control" type="file" name={name}
 				accept=".png, .jpg, .jpeg" onChange={handleImageChange} />
-			<div className="input-group-append">
-				<button className="btn btn-danger" type="button" name={`${name}Delete`}
-					disabled={Object.entries(photo).length === 0} onClick={handleDelete}>
-					<b> x </b>
-				</button>
-			</div>
 		</div>
 		{errorMessage && <div className="text-center text-danger" >{errorMessage}</div>}
 	</>
 }
 
-const UserPhotos = ({ userId }) => {
-	const [photo1, setPhoto1] = useState({})
-	const [photo2, setPhoto2] = useState({})
+const UserPhotos = ({ user, setUser }) => {
+
+	const [showUpload, setShowUpload] = useState(false)
+
+	const handleCloseUpload = () => setShowUpload(false)
+	const handleOpenUpload = () => setShowUpload(true)
+
+	const handleUpload = e => {
+		e.preventDefault()
+		console.log('handle upload')
+	}
 
 	const handleSubmit = e => {
 		e.preventDefault();
 
-		photoService
+		/*photoService
 			.addPhoto({
-				user_id: userId,
+				user_id: user.user_id,
 				profilePic: 0,
-				photoStr: photo1.imgUrl
+				photoStr: photo2.imgUrl
 			})
 			.then(data => {
 				//console.log('data when updated', data)
@@ -123,29 +124,49 @@ const UserPhotos = ({ userId }) => {
 				//if (e.response && e.response.data)
 				//setErrorMessage(e.response.data.error)
 				//setNotification('')
-			})
+			})*/
 	}
-
-	if (photo2.file)
-		console.log(photo2.file)
 
 	return <>
 		<h2 className="text-center mt-3">User photos</h2>
 
 		<Container>
 			<Row noGutters={true} >
-				<PhotoContainer photo={photo2} />
-				<PhotoContainer photo={photo2} />
-				<PhotoContainer photo={photo2} />
-				<PhotoContainer photo={photo2} />
-				<PhotoContainer photo={photo2} />
+				{//map photos
+					user.photos
+						? user.photos.map(p => <PhotoContainer photo={p} key={p.id} />)
+						: null
+				}
+				{[...Array(5 - user.photos.length)].map((e, i) => <PhotoContainer photo={null} key={i} />)}
 			</Row>
 			<Row>
+				{/*
 				<form className="text-center" onSubmit={handleSubmit}>
 					<UploadPhoto photo={photo2} setPhoto={setPhoto2} name="photo2" />
 					<button className="btn btn-success mt-3" type="submit">Upload</button>
 				</form>
+				*/}
 			</Row>
+			<>
+				<Button variant="primary" onClick={handleOpenUpload}>
+					Launch demo modal
+      			</Button>
+
+				<Modal show={showUpload} onHide={handleCloseUpload}>
+					<Modal.Header closeButton>
+						<Modal.Title>Modal heading</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+					<Modal.Footer>
+						<Button variant="secondary" onClick={handleCloseUpload}>
+							Close
+          				</Button>
+						<Button variant="primary" onClick={handleUpload}>
+							Save Changes
+          				</Button>
+					</Modal.Footer>
+				</Modal>
+			</>
 		</Container>
 
 	</>
@@ -155,8 +176,9 @@ const UserPhotos = ({ userId }) => {
 export default UserPhotos
 
 //todo:
-// make a ruudukko for the five pictures
-// check if this can be done with react-hook-form
-// get photos from the db ( join user_id & photos )
-// add all the photos to db
-// should there be just one upload and possibility to delete existing photos or change them to profile_pic
+
+// upload photo modal only available when there are less than 5 pictures
+// what information is needed in the photo object?
+// possibility to delete photo
+// choose profile picture
+// should the amount of photos be checked from the db before adding one?

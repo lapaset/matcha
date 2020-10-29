@@ -30,6 +30,8 @@ const App = () => {
 		}
 	}, [])
 
+	console.log(user)
+
 	return loadingUser.current
 		? null
 		: <UserView user={user} setUser={setUser} />
