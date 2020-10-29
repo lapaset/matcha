@@ -14,4 +14,14 @@ photosRouter.post('/', (req, resp) => {
 		})
 })
 
+photosRouter.delete('/:id', (req, resp) => {
+
+	db.query('DELETE FROM photos WHERE id = $1',
+	[req.params.id], (err, res) => {
+		if (err)
+			console.log('error', err)
+		resp.status(204).end()
+	})
+})
+
 module.exports = photosRouter

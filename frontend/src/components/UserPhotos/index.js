@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
-import photoService from '../../services/photoService'
+import React from 'react'
 import {
 	Container, Row, Col, Image, ResponsiveEmbed, Button,
-	ButtonGroup, Modal
+	ButtonGroup
 } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faUser } from '@fortawesome/free-solid-svg-icons'
+import UploadModal from './UploadModal'
 
 const Photo = ({ photo }) => (
 	<>
@@ -22,11 +22,11 @@ const Photo = ({ photo }) => (
 	</>
 )
 
-const PhotoContainer = ({ photo }) => {
+const PhotoContainer = ({ photo, user, setUser }) => {
 
 	const imagePreview = () => photo && photo.photoStr
 		? <Photo photo={photo} />
-		: <span className="d-block m-auto">add picture</span>
+		: <UploadModal user={user} setUser={setUser} />
 
 	return <Col xs={6} md={4}>
 		<ResponsiveEmbed aspectRatio="1by1">
@@ -38,156 +38,23 @@ const PhotoContainer = ({ photo }) => {
 
 }
 
-const UploadPhoto = ({ photo, setPhoto, handleUpload }) => {
-	const [errorMessage, setErrorMessage] = useState(null)
-
-	const handleImageChange = e => {
-		e.preventDefault();
-
-		let reader = new FileReader();
-		let file = e.target.files[0];
-
-		if (!file)
-			return
-
-		if (file.size > 350000) {
-			setErrorMessage('Max photo size is 350kb')
-			return
-		}
-
-		reader.onloadend = () => {
-			setPhoto({
-				photoStr: reader.result,
-				profilePic: 0
-			})
-		}
-		reader.readAsDataURL(file)
-		setErrorMessage('')
-
-	}
-
-	const imagePreview = () => photo.photoStr
-		? <img src={photo.photoStr} alt="upload preview" title="upload preview"
-			className="img-fluid mh-100 mw-100 d-block" />
-		: null
-
-	return <>
-		<form className="text-center" onSubmit={handleUpload}>
-			<div style={{
-				width: "20em",
-				height: "20em",
-			}} className="border d-flex align-items-center" >
-				{imagePreview()}
-			</div>
-			<div className="input-group">
-				<input className="form-control" type="file"
-					accept=".png, .jpg, .jpeg" onChange={handleImageChange} />
-			</div>
-			{errorMessage && <div className="text-center text-danger" >{errorMessage}</div>}
-			<button className="btn btn-success mt-3" type="submit">Upload</button>
-		</form>
-	</>
-}
-
 const UserPhotos = ({ user, setUser }) => {
 
-	const [showUpload, setShowUpload] = useState(false)
-	const [photo, setPhoto] = useState({})
-
-	const handleCloseUpload = () => setShowUpload(false)
-	const handleOpenUpload = () => setShowUpload(true)
-
-	const handleUpload = e => {
-		e.preventDefault()
-		console.log('handle upload', photo)
-
-		photoService
-		.addPhoto({
-			user_id: user.user_id,
-			...photo
-		})
-		.then(data => {
-			console.log('data when updated', data)
-			//setErrorMessage('')
-			//setNotification('user updated')
-			//setUser(data)
-			//setProfilePicture({})
-			console.log('photo added', data)
-			//todo: setUser with the new photo
-		})
-		.catch(e => {
-			console.log('error', e)
-			//if (e.response && e.response.data)
-			//setErrorMessage(e.response.data.error)
-			//setNotification('')
-		})
-	}
-
-	/*const handleSubmit = e => {
-		e.preventDefault();
-
-		photoService
-			.addPhoto({
-				user_id: user.user_id,
-				profilePic: 0,
-				photoStr: photo2.imgUrl
-			})
-			.then(data => {
-				//console.log('data when updated', data)
-				//setErrorMessage('')
-				//setNotification('user updated')
-				//setUser(data)
-				//setProfilePicture({})
-				console.log('photo added', data)
-			})
-			.catch(e => {
-				console.log('error', e)
-				//if (e.response && e.response.data)
-				//setErrorMessage(e.response.data.error)
-				//setNotification('')
-			})
-	}*/
+	const emptyPhotos = () => user.photos ? 5 - user.photos.length : 5
 
 	return <>
 		<h2 className="text-center mt-3">User photos</h2>
 
 		<Container>
 			<Row noGutters={true} >
-				{//map photos
+				{
 					user.photos
-						? user.photos.map(p => <PhotoContainer photo={p} key={p.id} />)
+						? user.photos.map(p => <PhotoContainer photo={p} key={p.id} user={user} setUser={setUser} />)
 						: null
 				}
-				{[...Array(5 - user.photos.length)].map((e, i) => <PhotoContainer photo={null} key={i} />)}
+				{[...Array(emptyPhotos())].map((e, i) => <PhotoContainer photo={null} key={i} user={user} setUser={setUser} />)}
 			</Row>
-			<Row>
-				<UploadPhoto photo={photo} setPhoto={setPhoto} handleUpload={handleUpload} />
-			</Row>
-
-
-
-			<>
-				<Button variant="primary" onClick={handleOpenUpload}>
-					Launch demo modal
-      			</Button>
-
-				<Modal show={showUpload} onHide={handleCloseUpload}>
-					<Modal.Header closeButton>
-						<Modal.Title>Modal heading</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-					<Modal.Footer>
-						<Button variant="secondary" onClick={handleCloseUpload}>
-							Close
-          				</Button>
-						<Button variant="primary" onClick={handleUpload}>
-							Save Changes
-          				</Button>
-					</Modal.Footer>
-				</Modal>
-			</>
 		</Container>
-
 	</>
 
 }
