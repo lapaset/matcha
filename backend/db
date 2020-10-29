@@ -16,8 +16,7 @@ CREATE TABLE users (
 	gender gender,
 	orientation orientation,
 	bio VARCHAR(1000),
-	tags VARCHAR(255),
-	profile_pic VARCHAR(500000) 
+	tags VARCHAR(255)
 );
 
 CREATE TABLE tags (
@@ -31,7 +30,9 @@ CREATE TABLE photos (
 	photo_str VARCHAR(500000) NOT NULL
 );
 
-
+SELECT * FROM photos
+INNER JOIN users ON users.user_id = photos.user_id
+WHERE photos.user_id=2;
 
 INSERT INTO users (first_name, last_name, username, email, password)
 	VALUES ('kalle', 'laitela', 'kalle', 'kalle@kalle.fi', 'kalle') RETURNING *;

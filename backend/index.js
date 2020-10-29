@@ -7,6 +7,7 @@ const tagsRouter = require('./routers/tags')
 const loginRouter = require('./routers/login')
 const middleware = require('./utils/middleware')
 const verifyRouter = require('./routers/verify')
+const photosRouter = require('./routers/photos')
 
 app.use(express.json({limit: '10mb', extended: true}))
 app.use(express.urlencoded({limit: '10mb', extended: true}))
@@ -17,6 +18,7 @@ app.use('/users', usersRouter)
 app.use('/tags', tagsRouter)
 app.use('/login', loginRouter)
 app.use('/verify', verifyRouter)
+app.use('/photos', photosRouter)
 
 app.use(middleware.unknownEndpoint)
 
