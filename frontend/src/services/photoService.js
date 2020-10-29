@@ -6,4 +6,13 @@ const addPhoto = async photo => {
 	return resp.data
 }
 
-export default { addPhoto }
+const deletePhoto = async id => {
+	await axios.delete(`${baseUrl}/${id}`)
+}
+
+const toggleProfilePhoto = async (id, profilePic) => {
+	const resp = await axios.put(`${baseUrl}/${id}`, { profilePic: profilePic })
+	return resp.data
+}
+
+export default { addPhoto, deletePhoto, toggleProfilePhoto }

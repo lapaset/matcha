@@ -24,4 +24,14 @@ photosRouter.delete('/:id', (req, resp) => {
 	})
 })
 
+photosRouter.put('/:id', (req, resp) => {
+	db.query('UPDATE photos SET profile_pic = $1 WHERE id = $2',
+	[req.body.profilePic, req.params.id], (err, res) => {
+		if (res)
+			resp.status(200).send(res.rows[0])
+		else
+			resp.status(500).send(err)
+	})
+})
+
 module.exports = photosRouter
