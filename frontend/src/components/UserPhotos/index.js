@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import photoService from '../../services/photoService'
-import { Container, Row, Col, Image, ResponsiveEmbed, Button,
-	ButtonGroup, Modal } from 'react-bootstrap'
+import {
+	Container, Row, Col, Image, ResponsiveEmbed, Button,
+	ButtonGroup, Modal
+} from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faUser } from '@fortawesome/free-solid-svg-icons'
 
@@ -36,7 +38,7 @@ const PhotoContainer = ({ photo }) => {
 
 }
 
-const UploadPhoto = ({ photo, setPhoto, name }) => {
+const UploadPhoto = ({ photo, setPhoto, handleUpload }) => {
 	const [errorMessage, setErrorMessage] = useState(null)
 
 	const handleImageChange = e => {
@@ -55,8 +57,8 @@ const UploadPhoto = ({ photo, setPhoto, name }) => {
 
 		reader.onloadend = () => {
 			setPhoto({
-				file: file,
-				imgUrl: reader.result
+				photoStr: reader.result,
+				profilePic: 0
 			})
 		}
 		reader.readAsDataURL(file)
@@ -64,48 +66,67 @@ const UploadPhoto = ({ photo, setPhoto, name }) => {
 
 	}
 
-	const imagePreview = () => photo.imgUrl
-		? <img src={photo.imgUrl} alt="profile pic preview" title="profile pic preview"
+	const imagePreview = () => photo.photoStr
+		? <img src={photo.photoStr} alt="upload preview" title="upload preview"
 			className="img-fluid mh-100 mw-100 d-block" />
 		: null
-	/*? <img src={photo1.imgUrl} alt="profile pic preview" title="profile pic preview" className="img-thumbnail" />
-	: profilePic
-		? <img src={profilePic} alt="profile pic preview" title="profile pic preview" className="img-thumbnail" />
-		: null*/
-
 
 	return <>
-		<div style={{
-			width: "20em",
-			height: "20em",
-		}} className="border d-flex align-items-center" >
-			{imagePreview()}
-		</div>
-		<div className="input-group">
-
-			<input className="form-control" type="file" name={name}
-				accept=".png, .jpg, .jpeg" onChange={handleImageChange} />
-		</div>
-		{errorMessage && <div className="text-center text-danger" >{errorMessage}</div>}
+		<form className="text-center" onSubmit={handleUpload}>
+			<div style={{
+				width: "20em",
+				height: "20em",
+			}} className="border d-flex align-items-center" >
+				{imagePreview()}
+			</div>
+			<div className="input-group">
+				<input className="form-control" type="file"
+					accept=".png, .jpg, .jpeg" onChange={handleImageChange} />
+			</div>
+			{errorMessage && <div className="text-center text-danger" >{errorMessage}</div>}
+			<button className="btn btn-success mt-3" type="submit">Upload</button>
+		</form>
 	</>
 }
 
 const UserPhotos = ({ user, setUser }) => {
 
 	const [showUpload, setShowUpload] = useState(false)
+	const [photo, setPhoto] = useState({})
 
 	const handleCloseUpload = () => setShowUpload(false)
 	const handleOpenUpload = () => setShowUpload(true)
 
 	const handleUpload = e => {
 		e.preventDefault()
-		console.log('handle upload')
+		console.log('handle upload', photo)
+
+		photoService
+		.addPhoto({
+			user_id: user.user_id,
+			...photo
+		})
+		.then(data => {
+			console.log('data when updated', data)
+			//setErrorMessage('')
+			//setNotification('user updated')
+			//setUser(data)
+			//setProfilePicture({})
+			console.log('photo added', data)
+			//todo: setUser with the new photo
+		})
+		.catch(e => {
+			console.log('error', e)
+			//if (e.response && e.response.data)
+			//setErrorMessage(e.response.data.error)
+			//setNotification('')
+		})
 	}
 
-	const handleSubmit = e => {
+	/*const handleSubmit = e => {
 		e.preventDefault();
 
-		/*photoService
+		photoService
 			.addPhoto({
 				user_id: user.user_id,
 				profilePic: 0,
@@ -124,8 +145,8 @@ const UserPhotos = ({ user, setUser }) => {
 				//if (e.response && e.response.data)
 				//setErrorMessage(e.response.data.error)
 				//setNotification('')
-			})*/
-	}
+			})
+	}*/
 
 	return <>
 		<h2 className="text-center mt-3">User photos</h2>
@@ -140,13 +161,11 @@ const UserPhotos = ({ user, setUser }) => {
 				{[...Array(5 - user.photos.length)].map((e, i) => <PhotoContainer photo={null} key={i} />)}
 			</Row>
 			<Row>
-				{/*
-				<form className="text-center" onSubmit={handleSubmit}>
-					<UploadPhoto photo={photo2} setPhoto={setPhoto2} name="photo2" />
-					<button className="btn btn-success mt-3" type="submit">Upload</button>
-				</form>
-				*/}
+				<UploadPhoto photo={photo} setPhoto={setPhoto} handleUpload={handleUpload} />
 			</Row>
+
+
+
 			<>
 				<Button variant="primary" onClick={handleOpenUpload}>
 					Launch demo modal
