@@ -141,10 +141,7 @@ const UserPhotos = ({ user, setUser }) => {
 
 	//console.log('profile pic', profilePic)
 
-	return <>
-		<h2 className="text-center mt-3">User photos</h2>
-
-		<Container>
+	return <Container>
 			<Row noGutters={true} >
 				<Col>
 				{
@@ -169,12 +166,12 @@ const UserPhotos = ({ user, setUser }) => {
 				{[...Array(emptyPhotos())].map((e, i) => <PhotoContainer photo={null} key={i} user={user} setUser={setUser} />)}
 			</Row>
 		</Container>
-	</>
 
 }
 
 export default UserPhotos
 
 //todo:
-
+// refactor
+// profile pic container
 // should the amount of photos be checked from the db before adding one?
