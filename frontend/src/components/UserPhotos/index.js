@@ -8,7 +8,7 @@ import { faTrash, faUser } from '@fortawesome/free-solid-svg-icons'
 import UploadModal from './UploadModal'
 import photoService from '../../services/photoService'
 
-const Photo = ({ photo, name, user, setUser }) => {
+const Photo = ({ photo, name, user, setUser, profilePic }) => {
 
 	const handleDelete = () => {
 
@@ -20,7 +20,7 @@ const Photo = ({ photo, name, user, setUser }) => {
 					...user,
 					photos: user.photos.filter(p => p.id !== photo.id)
 				}
-
+				//todo if profile pic, select another!
 				setUser(updatedUser)
 			})
 			.catch(e => {
@@ -30,19 +30,27 @@ const Photo = ({ photo, name, user, setUser }) => {
 
 	const toggleProfilePic = () => {
 
-		console.log('toggle profile pic');
+		console.log('toggle profile pic', photo);
 		photoService
 			.toggleProfilePhoto(photo.id, 1)
-			.then(res => {
-				//console.log('toggled', res);
-				const updatedPhotos = user.photos.map(p => p.id === photo.id ? { ...p, profilePic: 1 } : p)
-				const updatedUser = {
-					...user,
-					photos: updatedPhotos
-				}
-
-				//console.log(updatedPhotos);
-				setUser(updatedUser)
+			.then(() => {
+				photoService
+					.toggleProfilePhoto(profilePic.id, 0)
+					.then(() => {
+						const updatedUser = {
+							...user,
+							photos: user.photos.map(p => p.id === photo.id
+								? { ...p, profilePic: 1 }
+								: p.id = profilePic.id
+									? { ...p, profilePic: 0 }
+									: p)
+						}
+						//console.log(updatedPhotos);
+						setUser(updatedUser)
+					})
+					.catch(e => {
+						console.log('error at toggle profile pic', e);
+					})
 			})
 			.catch(e => {
 				console.log('error at toggle profile pic', e);
@@ -75,10 +83,11 @@ const Photo = ({ photo, name, user, setUser }) => {
 	</>
 }
 
-const PhotoContainer = ({ photo, user, setUser }) => {
+const PhotoContainer = ({ photo, user, setUser, profilePic }) => {
 
 	const content = () => photo && photo.photoStr
-		? <Photo photo={photo} name={user.username} user={user} setUser={setUser} />
+		? <Photo photo={photo} name={user.username} user={user}
+			setUser={setUser} profilePic={profilePic} />
 		: <UploadModal user={user} setUser={setUser} />
 
 	return <Col xs={6} md={4}>
@@ -99,18 +108,33 @@ const UserPhotos = ({ user, setUser }) => {
 	useEffect(() => {
 		if (user.photos)
 			setProfilePic(user.photos.find(p => p.profilePic))
-	}, [])
+	}, [user.photos])
 
-	console.log('profile pic', profilePic)
+	//console.log('profile pic', profilePic)
 
 	return <>
 		<h2 className="text-center mt-3">User photos</h2>
 
 		<Container>
 			<Row noGutters={true} >
+				<Col>
+				{
+					profilePic
+						? <div className="border d-flex align-items-center">
+							<Photo photo={profilePic} name={user.username} user={user}
+								setUser={setUser} profilePic={profilePic} />
+						</div>
+						: null
+				}
+				</Col>
+			</Row>
+			<Row noGutters={true} >
 				{
 					user.photos
-						? user.photos.map(p => <PhotoContainer photo={p} key={p.id} user={user} setUser={setUser} />)
+						? user.photos.map(p => p.profilePic
+							? null
+							: <PhotoContainer photo={p} key={p.id} user={user} setUser={setUser} profilePic={profilePic} /> )
+
 						: null
 				}
 				{[...Array(emptyPhotos())].map((e, i) => <PhotoContainer photo={null} key={i} user={user} setUser={setUser} />)}

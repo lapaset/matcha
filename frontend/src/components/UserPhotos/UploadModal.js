@@ -22,15 +22,21 @@ const UploadModal = ({ user, setUser }) => {
             })
             .then(data => {
                 //console.log('photo added', data)
+
+                const newPhoto = {
+                    id: data.id,
+                    ...photo
+                }
                 const updatedUser = {
                     ...user,
-                    photos: user.photos.concat({
-                        id: data.id,
-                        ...photo
-                    })}
+                    photos: user.photos
+                        ? user.photos.concat(newPhoto)
+                        : [newPhoto]
+                    }
 
                 //console.log('updatedUser', updatedUser)
                 setShowUpload(false)
+                setPhoto({})
                 setUser(updatedUser)
             })
             .catch(e => {
@@ -40,6 +46,10 @@ const UploadModal = ({ user, setUser }) => {
                 //setNotification('')
             })
     }
+
+    const isProfilePic = () => user.photos && user.photos.length > 0
+        ? 0
+        : 1
 
     return <div className="d-block m-auto">
         <Button variant="primary" onClick={handleOpenUpload}>
@@ -51,7 +61,7 @@ const UploadModal = ({ user, setUser }) => {
                 <Modal.Title>Upload photo</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <UploadPhoto photo={photo} setPhoto={setPhoto} handleUpload={handleUpload} />
+                <UploadPhoto photo={photo} setPhoto={setPhoto} profilePic={isProfilePic()}/>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleCloseUpload}>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const UploadPhoto = ({ photo, setPhoto }) => {
+const UploadPhoto = ({ photo, setPhoto, profilePic }) => {
     const [errorMessage, setErrorMessage] = useState(null)
 
     const handleImageChange = e => {
@@ -20,7 +20,7 @@ const UploadPhoto = ({ photo, setPhoto }) => {
         reader.onloadend = () => {
             setPhoto({
                 photoStr: reader.result,
-                profilePic: 0
+                profilePic
             })
         }
         reader.readAsDataURL(file)
