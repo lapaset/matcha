@@ -10,24 +10,6 @@ import photoService from '../../services/photoService'
 
 const Photo = ({ photo, name, user, setUser, profilePic }) => {
 
-	const handleDelete = () => {
-
-		photoService
-			.deletePhoto(photo.id)
-			.then(() => {
-
-				const updatedUser = {
-					...user,
-					photos: user.photos.filter(p => p.id !== photo.id)
-				}
-				//todo if profile pic, select another!
-				setUser(updatedUser)
-			})
-			.catch(e => {
-				console.log('error at delete photo', e)
-			})
-	}
-
 	const toggleProfilePic = () => {
 
 		console.log('toggle profile pic', photo);
@@ -56,6 +38,47 @@ const Photo = ({ photo, name, user, setUser, profilePic }) => {
 				console.log('error at toggle profile pic', e);
 			})
 	}
+
+	const handleDelete = () => {
+
+		photoService
+			.deletePhoto(photo.id)
+			.then(() => {
+
+				if (photo.profilePic) {
+					const newProfilePic = user.photos.find(p => !p.profilePic)
+					
+					if (newProfilePic) {
+						photoService
+							.toggleProfilePhoto(newProfilePic.id, 1)
+							.then(() => {
+								const updatedUser = {
+									...user,
+									photos: user.photos
+										.filter(p => p.id !== photo.id)
+										.map(p => p.id === newProfilePic.id
+											? { ...p, profilePic: 1 }
+											: p )
+								}
+								setUser(updatedUser)
+							})
+					}
+				} else {
+					const updatedUser = {
+						...user,
+						photos: user.photos.filter(p => p.id !== photo.id)
+					}
+
+					//todo if profile pic, select another!
+					setUser(updatedUser)
+				}
+			})
+			.catch(e => {
+				console.log('error at delete photo', e)
+			})
+	}
+
+
 
 	return <>
 		<Image src={photo.photoStr} alt={name}
