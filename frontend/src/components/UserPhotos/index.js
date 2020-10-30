@@ -12,7 +12,7 @@ const Photo = ({ photo, name, user, setUser, profilePic }) => {
 
 	const toggleProfilePic = () => {
 
-		console.log('toggle profile pic', photo);
+		//console.log('toggle profile pic', photo);
 		photoService
 			.toggleProfilePhoto(photo.id, 1)
 			.then(() => {
@@ -62,14 +62,18 @@ const Photo = ({ photo, name, user, setUser, profilePic }) => {
 								}
 								setUser(updatedUser)
 							})
+					} else {
+						const updatedUser = {
+							...user,
+							photos: user.photos.filter(p => p.id !== photo.id)
+						}
+						setUser(updatedUser)
 					}
 				} else {
 					const updatedUser = {
 						...user,
 						photos: user.photos.filter(p => p.id !== photo.id)
 					}
-
-					//todo if profile pic, select another!
 					setUser(updatedUser)
 				}
 			})
@@ -129,8 +133,10 @@ const UserPhotos = ({ user, setUser }) => {
 	const emptyPhotos = () => user.photos ? 5 - user.photos.length : 5
 
 	useEffect(() => {
-		if (user.photos)
+		if (user.photos && user.photos.length > 0) 
 			setProfilePic(user.photos.find(p => p.profilePic))
+		else
+			setProfilePic(null)
 	}, [user.photos])
 
 	//console.log('profile pic', profilePic)
@@ -171,8 +177,4 @@ export default UserPhotos
 
 //todo:
 
-// set first uploaded photo to profilePic
-// what information is needed in the photo object?
-// choose profile picture
 // should the amount of photos be checked from the db before adding one?
-// profile pic bigger on the top??

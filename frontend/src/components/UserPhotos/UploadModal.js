@@ -32,7 +32,7 @@ const UploadModal = ({ user, setUser }) => {
                     photos: user.photos
                         ? user.photos.concat(newPhoto)
                         : [newPhoto]
-                    }
+                }
 
                 //console.log('updatedUser', updatedUser)
                 setShowUpload(false)
@@ -51,28 +51,31 @@ const UploadModal = ({ user, setUser }) => {
         ? 0
         : 1
 
-    return <div className="d-block m-auto">
-        <Button variant="primary" onClick={handleOpenUpload}>
-            Upload Photo
-		</Button>
+    return <>
+        <div className="d-block m-auto">
+            <Button variant="primary" onClick={handleOpenUpload}>
+                Upload Photo
+            </Button>
+
+        </div>
 
         <Modal show={showUpload} onHide={handleCloseUpload}>
             <Modal.Header closeButton>
                 <Modal.Title>Upload photo</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <UploadPhoto photo={photo} setPhoto={setPhoto} profilePic={isProfilePic()}/>
+                <UploadPhoto photo={photo} setPhoto={setPhoto} profilePic={isProfilePic()} />
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleCloseUpload}>
                     Close
-		  		</Button>
+                </Button>
                 <Button variant="primary" onClick={handleUpload}>
                     Upload
-		  		</Button>
+                </Button>
             </Modal.Footer>
         </Modal>
-    </div>
+    </>
 }
 
 export default UploadModal
