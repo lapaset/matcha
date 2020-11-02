@@ -30,7 +30,7 @@ const App = () => {
 		}
 	}, [])
 
-	console.log(user)
+	//console.log(user)
 
 	return loadingUser.current
 		? null
