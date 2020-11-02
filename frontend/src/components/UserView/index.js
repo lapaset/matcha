@@ -41,11 +41,14 @@ const UserView = ({ user, setUser }) => {
 		return user.firstName && user.lastName && user.username && user.email && user.gender && user.orientation
 	}
 	
+	console.log(user, userInfoComplete())
+
+
 	return <Router>
 			<div className="nav">
 				<Link to="/">home</Link>
 				{user.username
-					? <><Link to="/update">update</Link>
+					? <><Link to="/profile">profile</Link>
 						<div>user: {user.username}</div>
 						<Link to="/login" onClick={logoutService.handleLogout}>Logout</Link></>
 

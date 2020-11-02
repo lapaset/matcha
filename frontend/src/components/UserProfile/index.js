@@ -1,5 +1,5 @@
 import React from 'react'
-import UserPhotos from '../UserPhotos'
+import UserPhotos from './UserPhotos'
 import UpdateUserForm from './UpdateUserForm'
 
 const UserProfile = ({ user, setUser }) => {
