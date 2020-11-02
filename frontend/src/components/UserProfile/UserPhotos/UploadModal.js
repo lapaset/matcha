@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, Button } from 'react-bootstrap'
-import photoService from '../../services/photoService'
+import photoService from '../../../services/photoService'
 import UploadPhoto from './UploadPhoto'
 
 const UploadModal = ({ user, setUser, showModal, closeModal }) => {
