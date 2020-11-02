@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Switch, Route, Link, Redirect } from 'react-router-dom'
-import UpdateForm from '../UpdateForm/'
+import UserProfile from '../UserProfile'
 import Signup from '../Signup'
 import Login from '../Login'
 import Verify from '../Verify'
@@ -25,8 +25,6 @@ const UserList = ({ users }) => {
 
 const UserView = ({ user, setUser }) => {
 	const [users, setUsers] = useState(false)
-	
-	console.log('do we get here?');
 
 	useEffect(() => {
 		userService
@@ -43,8 +41,6 @@ const UserView = ({ user, setUser }) => {
 		return user.firstName && user.lastName && user.username && user.email && user.gender && user.orientation
 	}
 	
-	console.log('here')
-	
 	return <Router>
 			<div className="nav">
 				<Link to="/">home</Link>
@@ -52,16 +48,17 @@ const UserView = ({ user, setUser }) => {
 					? <><Link to="/update">update</Link>
 						<div>user: {user.username}</div>
 						<Link to="/login" onClick={logoutService.handleLogout}>Logout</Link></>
+
 					: <><Link to="/signup">signup</Link>
 						<Link to="/login">login</Link></>}
 			</div>
 			<Switch>
-				<Route path="/update" render={() =>
+				<Route path="/profile" render={() =>
 					user.user_id
 						? userInfoComplete()
-							? <UpdateForm user={user} setUser={setUser} />
+							? <UserProfile user={user} setUser={setUser} />
 							: <><p className="text-center text-info">fill your info to start matching</p>
-							<UpdateForm user={user} setUser={setUser} /></>
+							<UserProfile user={user} setUser={setUser} /></>
 							
 						: <Redirect to="/login" />
 				} />
@@ -82,7 +79,7 @@ const UserView = ({ user, setUser }) => {
 				</Route>
 				<Route path="/" render={() =>
 					user.user_id
-						? userInfoComplete() ? <UserList users={users} /> : <Redirect to="/update" />
+						? userInfoComplete() ? <UserList users={users} /> : <Redirect to="/profile" />
 						: <><h1>Welcome</h1></>
 				} />
 			</Switch>

@@ -10,10 +10,10 @@ const App = () => {
 
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem('loggedMatchaUser')
-		console.log('first here')
+
 		if (loggedUserJSON) {
 			const userFromLocalStorage = JSON.parse(loggedUserJSON)
-			console.log('then here')
+
 			userService
 				.getUser(userFromLocalStorage.user_id)
 				.then(data => {
@@ -24,13 +24,13 @@ const App = () => {
 					console.log(e)	
 				})
 		} else {
-			console.log('then here');
+
 			loadingUser.current = false
 			setUser({})
 		}
 	}, [])
 
-	console.log('loadingUser', loadingUser.current)
+	//console.log(user)
 
 	return loadingUser.current
 		? null
