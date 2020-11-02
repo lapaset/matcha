@@ -3,12 +3,14 @@ import {
 	Container, Row, Col, Image, ResponsiveEmbed, Button,
 	ButtonGroup
 } from 'react-bootstrap'
+import '../../style/profile.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faUser, faPlus } from '@fortawesome/free-solid-svg-icons'
 import UploadModal from './UploadModal'
 import photoService from '../../services/photoService'
+import { NonceProvider } from 'react-select'
 
-const Photo = ({ photo, name, user, setUser, profilePic }) => {
+const PhotoButtons = ({ photo, user, setUser, profilePic, show }) => {
 
 	const toggleProfilePic = () => {
 
@@ -47,7 +49,7 @@ const Photo = ({ photo, name, user, setUser, profilePic }) => {
 
 				if (photo.profilePic) {
 					const newProfilePic = user.photos.find(p => !p.profilePic)
-					
+
 					if (newProfilePic) {
 						photoService
 							.toggleProfilePhoto(newProfilePic.id, 1)
@@ -58,7 +60,7 @@ const Photo = ({ photo, name, user, setUser, profilePic }) => {
 										.filter(p => p.id !== photo.id)
 										.map(p => p.id === newProfilePic.id
 											? { ...p, profilePic: 1 }
-											: p )
+											: p)
 								}
 								setUser(updatedUser)
 							})
@@ -82,90 +84,141 @@ const Photo = ({ photo, name, user, setUser, profilePic }) => {
 			})
 	}
 
+	const profilePicButton = () => photo.profilePic
+		? <Button size="sm" variant="light" disabled>
+			<FontAwesomeIcon icon={faUser} color="gold" />
+		</Button>
+		: <Button size="sm" variant="light" onClick={toggleProfilePic}>
+			<FontAwesomeIcon icon={faUser} />
+		</Button>
 
-
-	return <>
-		<Image src={photo.photoStr} alt={name}
-			title={name} fluid={true} className="d-block m-auto mh-100 mw-100" />
-		<ButtonGroup style={{
+	const buttonStyle = show
+		? {
+			display: "block",
 			position: "absolute",
 			bottom: "5px",
-			right: "5px",
-		}}>
+			right: "5px"
+		}
+		: {
+			display: "none",
+			position: "absolute",
+			bottom: "5px",
+			right: "5px"
+		}
 
-			{
-				photo.profilePic
-					? <Button size="sm" variant="light" disabled>
-						<FontAwesomeIcon icon={faUser} color="gold" />
-					</Button>
-					: <Button size="sm" variant="light" onClick={toggleProfilePic}>
-						<FontAwesomeIcon icon={faUser} />
-					</Button>
-			}
+	return <ButtonGroup style={buttonStyle}>
 
-			<Button size="sm" variant="danger" onClick={handleDelete}>
-				<FontAwesomeIcon icon={faTrash} />
-			</Button>
-		</ButtonGroup>
-	</>
+		{profilePicButton()}
+
+		<Button size="sm" variant="danger" onClick={handleDelete}>
+			<FontAwesomeIcon icon={faTrash} />
+		</Button>
+
+	</ButtonGroup>
 }
 
-const PhotoContainer = ({ photo, user, setUser, profilePic }) => {
+const EmptyBox = ({ user, setUser }) => {
 
-	const content = () => photo && photo.photoStr
-		? <Photo photo={photo} name={user.username} user={user}
-			setUser={setUser} profilePic={profilePic} />
-		: <UploadModal user={user} setUser={setUser} />
+	const [showModal, setShowModal] = useState(false)
+	const openModal = () => setShowModal(true)
+	const closeModal = () => setShowModal(false)
 
-	return <Col xs={6} md={4}>
-		<ResponsiveEmbed aspectRatio="1by1">
-			<div className="border d-flex align-items-center">
-				{content()}
-			</div>
-		</ResponsiveEmbed>
-	</Col>
+	const buttonStyle = {
+		position: "absolute",
+		bottom: "5px",
+		right: "5px"
+	}
 
+	return <ResponsiveEmbed aspectRatio="1by1">
+		<div className="border d-flex align-items-center">
+			<Button size="sm" variant="light" onClick={openModal} style={buttonStyle}>
+				<FontAwesomeIcon icon={faPlus} />
+			</Button>
+			<UploadModal user={user} setUser={setUser} showModal={showModal}
+				closeModal={closeModal} />
+		</div>
+	</ResponsiveEmbed>
+}
+
+const PhotoBox = ({ photo, user, setUser, profilePic }) => {
+
+	const [hovered, setHovered] = useState(false)
+
+	const buttons = () => <PhotoButtons photo={photo} user={user} setUser={setUser} profilePic={profilePic}
+		show={hovered} />
+
+
+	const imgStyle = () => hovered
+		? {
+			display: 'block',
+			margin: 'auto',
+			maxWidth: '105%',
+			maxHeight: '105%'
+		}
+		: {
+			display: 'block',
+			margin: 'auto',
+			maxWidth: '100%',
+			maxHeight: '100%'
+		}
+
+	//console.log('hovered', hovered )
+	return <ResponsiveEmbed aspectRatio="1by1">
+		<div className="border d-flex align-items-center img-fluid"
+			onMouseEnter={() => setHovered(true)}
+			onMouseLeave={() => setHovered(false)}>
+			<Image src={photo.photoStr} alt={user.username}
+				title={user.username}
+				style={imgStyle()} />
+			{buttons()}
+		</div>
+	</ResponsiveEmbed>
 }
 
 const UserPhotos = ({ user, setUser }) => {
 
 	const [profilePic, setProfilePic] = useState(null)
-	const emptyPhotos = () => user.photos ? 5 - user.photos.length : 5
+	const maxPhotos = 5
+	const emptyPhotos = () => user.photos ? maxPhotos - user.photos.length : maxPhotos
 
 	useEffect(() => {
-		if (user.photos && user.photos.length > 0) 
+		if (user.photos && user.photos.length > 0)
 			setProfilePic(user.photos.find(p => p.profilePic))
 		else
 			setProfilePic(null)
 	}, [user.photos])
 
+	const profilePhoto = () => profilePic
+		? <PhotoBox photo={profilePic} user={user}
+			setUser={setUser} profilePic={profilePic} />
+		: null
+
 	//console.log('profile pic', profilePic)
 
 	return <Container>
-			<Row noGutters={true} >
-				<Col>
-				{
-					profilePic
-						? <div className="border d-flex align-items-center">
-							<Photo photo={profilePic} name={user.username} user={user}
-								setUser={setUser} profilePic={profilePic} />
-						</div>
-						: null
-				}
-				</Col>
-			</Row>
-			<Row noGutters={true} >
-				{
-					user.photos
-						? user.photos.map(p => p.profilePic
-							? null
-							: <PhotoContainer photo={p} key={p.id} user={user} setUser={setUser} profilePic={profilePic} /> )
-
-						: null
-				}
-				{[...Array(emptyPhotos())].map((e, i) => <PhotoContainer photo={null} key={i} user={user} setUser={setUser} />)}
-			</Row>
-		</Container>
+		<Row noGutters={true} >
+			<Col>
+				{profilePhoto()}
+			</Col>
+		</Row>
+		<Row noGutters={true} >
+			{
+				user.photos
+					? user.photos.map(p => p.profilePic
+						? null
+						: <Col xs={6} key={p.id}>
+							<PhotoBox photo={p} user={user} setUser={setUser} profilePic={profilePic} />
+						</Col>)
+					: null
+			}
+			{
+				[...Array(emptyPhotos())]
+					.map((e, i) =>
+						<Col xs={6} key={i}>
+							<EmptyBox photo={null} user={user} setUser={setUser} />
+						</Col>)}
+		</Row>
+	</Container>
 
 }
 

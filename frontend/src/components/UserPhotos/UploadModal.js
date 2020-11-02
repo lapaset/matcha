@@ -3,17 +3,12 @@ import { Modal, Button } from 'react-bootstrap'
 import photoService from '../../services/photoService'
 import UploadPhoto from './UploadPhoto'
 
-const UploadModal = ({ user, setUser }) => {
+const UploadModal = ({ user, setUser, showModal, closeModal }) => {
 
     const [photo, setPhoto] = useState({})
-    const [showUpload, setShowUpload] = useState(false)
-    const handleCloseUpload = () => setShowUpload(false)
-    const handleOpenUpload = () => setShowUpload(true)
 
     const handleUpload = e => {
         e.preventDefault()
-        console.log('handle upload', photo)
-        console.log('user', user)
 
         photoService
             .addPhoto({
@@ -21,8 +16,6 @@ const UploadModal = ({ user, setUser }) => {
                 ...photo
             })
             .then(data => {
-                //console.log('photo added', data)
-
                 const newPhoto = {
                     id: data.id,
                     ...photo
@@ -34,8 +27,7 @@ const UploadModal = ({ user, setUser }) => {
                         : [newPhoto]
                 }
 
-                //console.log('updatedUser', updatedUser)
-                setShowUpload(false)
+                closeModal()
                 setPhoto({})
                 setUser(updatedUser)
             })
@@ -49,17 +41,10 @@ const UploadModal = ({ user, setUser }) => {
 
     const isProfilePic = () => user.photos && user.photos.length > 0
         ? 0
-        : 1
+		: 1
+		
 
-    return <>
-        <div className="d-block m-auto">
-            <Button variant="primary" onClick={handleOpenUpload}>
-                Upload Photo
-            </Button>
-
-        </div>
-
-        <Modal show={showUpload} onHide={handleCloseUpload}>
+    return <Modal show={showModal} onHide={closeModal}>
             <Modal.Header closeButton>
                 <Modal.Title>Upload photo</Modal.Title>
             </Modal.Header>
@@ -67,7 +52,7 @@ const UploadModal = ({ user, setUser }) => {
                 <UploadPhoto photo={photo} setPhoto={setPhoto} profilePic={isProfilePic()} />
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleCloseUpload}>
+                <Button variant="secondary" onClick={closeModal}>
                     Close
                 </Button>
                 <Button variant="primary" onClick={handleUpload}>
@@ -75,7 +60,6 @@ const UploadModal = ({ user, setUser }) => {
                 </Button>
             </Modal.Footer>
         </Modal>
-    </>
 }
 
 export default UploadModal

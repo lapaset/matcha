@@ -4,7 +4,6 @@ import UserProfile from '../UserProfile'
 import Signup from '../Signup'
 import Login from '../Login'
 import Verify from '../Verify'
-import UserPhotos from '../UserPhotos'
 import userService from '../../services/userService'
 
 const UserList = ({ users }) => {
@@ -44,7 +43,6 @@ const UserView = ({ user, setUser }) => {
 				<Link to="/">home</Link>
 				{user.username
 					? <><Link to="/profile">profile</Link>
-						<Link to="/userphotos">your photos</Link>
 						<div>user: {user.username}</div></>
 					: <><Link to="/signup">signup</Link>
 						<Link to="/login">login</Link></>}
@@ -57,11 +55,6 @@ const UserView = ({ user, setUser }) => {
 							: <><p className="text-center text-info">fill your info to start matching</p>
 							<UserProfile user={user} setUser={setUser} /></>
 							
-						: <Redirect to="/login" />
-				} />
-				<Route path="/userphotos" render={() =>
-					user.user_id
-						? <UserPhotos user={user} setUser={setUser} />	
 						: <Redirect to="/login" />
 				} />
 				<Route path="/signup">
