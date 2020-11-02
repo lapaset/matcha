@@ -5,7 +5,8 @@ import UploadPhoto from './UploadPhoto'
 
 const UploadModal = ({ user, setUser, showModal, closeModal }) => {
 
-    const [photo, setPhoto] = useState({})
+	const [photo, setPhoto] = useState({})
+	const [uploadDisabled, setUploadDisabled] = useState(true)
 
     const handleUpload = e => {
         e.preventDefault()
@@ -28,7 +29,8 @@ const UploadModal = ({ user, setUser, showModal, closeModal }) => {
                 }
 
                 closeModal()
-                setPhoto({})
+				setPhoto({})
+				setUploadDisabled(true)
                 setUser(updatedUser)
             })
             .catch(e => {
@@ -49,13 +51,14 @@ const UploadModal = ({ user, setUser, showModal, closeModal }) => {
                 <Modal.Title>Upload photo</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <UploadPhoto photo={photo} setPhoto={setPhoto} profilePic={isProfilePic()} />
+				<UploadPhoto photo={photo} setPhoto={setPhoto} profilePic={isProfilePic()}
+					setUploadDisabled={setUploadDisabled} />
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={closeModal}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={handleUpload}>
+                <Button variant="primary" onClick={handleUpload} disabled={uploadDisabled}>
                     Upload
                 </Button>
             </Modal.Footer>

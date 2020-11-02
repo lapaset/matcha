@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faUser, faPlus } from '@fortawesome/free-solid-svg-icons'
 import UploadModal from './UploadModal'
 import photoService from '../../services/photoService'
-import { NonceProvider } from 'react-select'
 
 const PhotoButtons = ({ photo, user, setUser, profilePic, show }) => {
 

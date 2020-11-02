@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const UploadPhoto = ({ photo, setPhoto, profilePic }) => {
+const UploadPhoto = ({ photo, setPhoto, profilePic, setUploadDisabled }) => {
     const [errorMessage, setErrorMessage] = useState(null)
 
     const handleImageChange = e => {
@@ -13,7 +13,9 @@ const UploadPhoto = ({ photo, setPhoto, profilePic }) => {
             return
 
         if (file.size > 350000) {
-            setErrorMessage('Max photo size is 350kb')
+			setErrorMessage('Max photo size is 350kb')
+			if (!photo)
+				setUploadDisabled(true)
             return
         }
 
@@ -23,9 +25,9 @@ const UploadPhoto = ({ photo, setPhoto, profilePic }) => {
                 profilePic
             })
         }
-        reader.readAsDataURL(file)
+		reader.readAsDataURL(file)
+		setUploadDisabled(false)
         setErrorMessage('')
-
     }
 
     const imagePreview = () => photo.photoStr
