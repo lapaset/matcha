@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import userService from '../../services/userService'
+import userService from '../../../services/userService'
 import RequiredInputField from './RequiredInputField'
 import PasswordFields from './PasswordFields'
 import SelectGender from './SelectGender'

@@ -5,7 +5,7 @@ import UpdateUserForm from './UpdateUserForm'
 const UserProfile = ({ user, setUser }) => {
 
 	return <div>
-		<h2 className="text-center mt-3">Update user</h2>
+		<h1 className="text-center mt-3">{user.username}</h1>
 
 		<div className="row justify-content-center align-items-center">
 

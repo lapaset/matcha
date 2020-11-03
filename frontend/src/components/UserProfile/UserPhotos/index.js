@@ -43,7 +43,8 @@ const UserPhotos = ({ user, setUser }) => {
 		</Row>
 		<Row noGutters={true} >
 			{photoBoxes()}
-			{emptyBoxes()}
+			{console.log(emptyPhotos())}
+			{emptyPhotos() ? emptyBoxes() : null}
 		</Row>
 	</Container>
 
