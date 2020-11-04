@@ -15,7 +15,7 @@ const UserView = ({ user, setUser }) => {
 		return user.firstName && user.lastName && user.username && user.email && user.gender && user.orientation
 	}
 
-	console.log(user, userInfoComplete())
+	console.log(user)
 
 
 	return <Router>
@@ -65,7 +65,7 @@ const UserView = ({ user, setUser }) => {
 		</Switch>
 		<footer>
 			this is footer
-			</footer>
+		</footer>
 	</Router>
 }
 

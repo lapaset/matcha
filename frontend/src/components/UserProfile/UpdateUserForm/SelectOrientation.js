@@ -4,27 +4,15 @@ import { Controller } from 'react-hook-form'
 
 const SelectOrientation = ({ orientation, control, errors }) => {
 
-	const orientationFromDb = () => {
-		const o = []
-
-		if (!orientation)
-			return o
-		if (orientation.includes('f'))
-			o.push({ value: 'female', label: 'female' })
-		if (orientation.includes('m'))
-			o.push({ value: 'male', label: 'male' })
-		if (orientation.includes('o'))
-			o.push({ value: 'other', label: 'other' })
-		return o
-	}
-
 	const options = [
 		{ value: 'female', label: 'female' },
 		{ value: 'male', label: 'male' },
 		{ value: 'other', label: 'other' }
 	]
 
-	const defVal = () => orientation ? orientationFromDb() : ""
+	//console.log('orientation at select orientation', orientation)
+
+	const defVal = () => orientation ? orientation.map(o => ({ value: o, label: o })) : ""
 
 	return 	<div className="form-group">
 				<label>looking for</label>
@@ -35,7 +23,7 @@ const SelectOrientation = ({ orientation, control, errors }) => {
 					name="orientation"
 					as={Select}
 					options={options}
-					value={orientationFromDb()}
+					value={defVal()}
 					defaultValue={defVal()}
 					control={control}
 					rules={{ required: true }}
