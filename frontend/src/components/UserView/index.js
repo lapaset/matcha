@@ -21,7 +21,7 @@ const UserView = ({ user, setUser }) => {
 	return <Router>
 		<div className="nav">
 			<div className="navLeft">
-				<Link to="/">home</Link>
+				<Link to="/">matcha</Link>
 			</div>
 			<div className="navRight">
 				{user.username

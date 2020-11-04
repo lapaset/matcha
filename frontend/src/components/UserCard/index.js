@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCircle, faHeart } from '@fortawesome/free-solid-svg-icons'
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 
 const UserCard = ({ user }) => {
@@ -49,10 +49,19 @@ const UserCard = ({ user }) => {
 						: o
 					)}
 			</ListGroupItem>
-			<ListGroupItem>{user.tags}</ListGroupItem>
+
+			{user.tags
+				? <ListGroupItem>
+					{user.tags.split('#')
+						.map((t, i) => i > 1
+							? ` #${t}`
+							: i === 1 ? `#${t}` : null
+						)}
+				</ListGroupItem>
+				: null}
 		</ListGroup>
 		<Card.Body>
-			<Card.Link href="#">Like</Card.Link>
+			<Card.Link href="#"><FontAwesomeIcon icon={faHeart} /> Like</Card.Link>
 			<Card.Link href="#">Next</Card.Link>
 		</Card.Body>
 	</Card>
