@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import loginService from '../../services/loginService';
+import {userGeoLocation} from '../../modules/geolocate'
 //import FlashMessage from 'react-flash-message';
 //import Alert from 'react-bootstrap/Alert';
 
@@ -9,12 +10,21 @@ const Login = ({ setUser, loadingUser }) => {
 	const [password, setPassword] = useState("");
 	const [errorMessage, setErrorMessage] = useState(null)
 
+	useEffect(() => {
+		userGeoLocation();
+		//var data = JSON.parse(localStorage.getItem("coordinates"));
+		//console.log(window.localStorage.getItem("coordinates"));
+		//console.log(data["latitude"]);
+		//console.log(data["longitude"]);
+	}, []);
+
 	const handleLogin = event => {
 		event.preventDefault();
 		loginService
 			.login({ username, password })
 			.then(data => {
 				console.log('Login data:', data)
+				console.log(window.localStorage.getItem("coordinates"));
 				window.localStorage.setItem(
 					'loggedMatchaUser', JSON.stringify(data)
 				)

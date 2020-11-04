@@ -3,11 +3,11 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const db = require('../utils/db')
 const tokenSecret = require('../utils/config').TOKEN_SECRET
+const {getLoginCoordinates} = require('../utils/getLoginCoordinates')
 
 loginRouter.post('/', (request, response) => {
     const body = request.body;
     db.query("SELECT * FROM users WHERE username= $1", [body.username], async (err, res) => {
-
 		if (err)
 			return response.status(500).send(err)
 		if (res.rowCount === 0)
