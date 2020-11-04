@@ -7,6 +7,10 @@ import SelectGender from './SelectGender'
 import SelectOrientation from './SelectOrientation'
 import SelectTags from './SelectTags'
 
+
+//todo get all the info from the db in a nice object and make it work
+
+
 const UpdateUserForm = ({ user, setUser }) => {
 
 	const [errorMessage, setErrorMessage] = useState('')
@@ -17,6 +21,8 @@ const UpdateUserForm = ({ user, setUser }) => {
 		//console.log('react-hook-form data', data)
 
 		const orientationToDb = selected => {
+
+			console.log('orientation to db', selected)
 
 			if (!selected)
 				return ''
