@@ -22,7 +22,7 @@ const UpdateUserForm = ({ user, setUser }) => {
 
 		const orientationToDb = selected => {
 
-			console.log('orientation to db', selected)
+			//console.log('orientation to db', selected)
 
 			if (!selected)
 				return ''

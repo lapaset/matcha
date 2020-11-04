@@ -10,7 +10,7 @@ const SelectOrientation = ({ orientation, control, errors }) => {
 		{ value: 'other', label: 'other' }
 	]
 
-	console.log('orientation at select orientation', orientation)
+	//console.log('orientation at select orientation', orientation)
 
 	const defVal = () => orientation ? orientation.map(o => ({ value: o, label: o })) : ""
 
