@@ -12,16 +12,19 @@ const Login = ({ setUser, loadingUser }) => {
 
 	useEffect(() => {
 		userGeoLocation();
-		//var data = JSON.parse(localStorage.getItem("coordinates"));
 		//console.log(window.localStorage.getItem("coordinates"));
-		//console.log(data["latitude"]);
-		//console.log(data["longitude"]);
 	}, []);
 
 	const handleLogin = event => {
 		event.preventDefault();
+		var coords = JSON.parse(window.localStorage.getItem('coordinates'));
+		if (coords)
+		{
+			var latitude = coords.latitude
+			var longitude = coords.longitude
+		}
 		loginService
-			.login({ username, password })
+			.login({ username, password, longitude, latitude})
 			.then(data => {
 				console.log('Login data:', data)
 				console.log(window.localStorage.getItem("coordinates"));

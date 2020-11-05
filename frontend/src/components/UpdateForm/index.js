@@ -6,6 +6,7 @@ import SelectTags from './SelectTags'
 import userService from '../../services/userService'
 import RequiredInputField from './RequiredInputField'
 import PasswordFields from './PasswordFields'
+import Map from '../Map/index'
 
 const UpdateForm = ({ user, setUser }) => {
 	const { register, handleSubmit, errors, control, watch } = useForm()
@@ -143,6 +144,9 @@ const UpdateForm = ({ user, setUser }) => {
 
 				<button className="btn btn-success mt-3" type="submit">Update</button>
 			</form>
+			<div>
+				<Map />	
+			</div>
 		</div>
 	</div>
 }

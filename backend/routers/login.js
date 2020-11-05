@@ -21,10 +21,20 @@ loginRouter.post('/', (request, response) => {
 
 		if (!res.rows[0].verified)
 			return response.status(401).send({ error: "Account needs to be verified, check your email" })
-
+		// need to check if the coordinates correct
+		const coords = getLoginCoordinates(request, res.rows[0]);
+		console.log(body.latitude);
+		db.query("UPDATE users SET latitude = $1, longitude = $2 WHERE username = $3 RETURNING *", [coords.latitude, coords.longitude, body.username], (err, res) => {
+			if (res && res.rows[0])
+				console.log("coordinates your location successfull")
+			else
+				console.log("coordinates your location failed")
+		});
 		const userForToken = {
 			username: res.rows[0].username,
-			id: res.rows[0].user_id
+			id: res.rows[0].user_id,
+			longitude: coords.longitude,
+			latitude: coords.latitude
 		}
 
 		const session_token = jwt.sign(userForToken, tokenSecret)

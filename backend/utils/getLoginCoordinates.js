@@ -2,17 +2,17 @@ const express = require('express');
 var geoIP = require('geoip-lite');
 
 const validateCoordinate = coordinate => {
-	const coordFloat = parseFloat(coordinate);
+	const coordFloat = coordinate;
 	return !isNaN(coordFloat) && coordFloat >= -180 && coordFloat <= 180;
 };
 
 const getLoginCoordinates = (req, userData) => {
 	// Check if valid coordinates are provided through browser geolocation and just return them
 	if (validateCoordinate(req.body.latitude) && validateCoordinate(req.body.longitude))
-		return {'latitude': parseFloat(req.body.latitude), 'longitude': parseFloat(req.body.longitude)};
+		return {'latitude': req.body.latitude, 'longitude': req.body.longitude};
 
 	const lookup = geoIP.lookup(req.ip);
-
+	console.log(req.ip);
 	// Couldn't geolocate IP, falling back to previous location data
 	if (!lookup || !lookup.ll)
 		if (userData.latitude === null || userData.longitude === null)
