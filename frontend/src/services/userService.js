@@ -30,7 +30,8 @@ const responseDataToApp = data => {
 		...user,
 		firstName: first_name,
 		lastName: last_name,
-		orientation: orientationFromDb(orientation)
+		orientation: orientationFromDb(orientation),
+		age: data[0].age.years
 	})
 }
 
@@ -53,7 +54,8 @@ const updateUser = async (userObject, id) => {
 		...user,
 		firstName: first_name,
 		lastName: last_name,
-		orientation: orientationFromDb(orientation)
+		orientation: orientationFromDb(orientation),
+		age: resp.data.age.years
 	})
 }
 
@@ -62,4 +64,4 @@ const createUser = async userObject => {
 	return resp.data
 }
 
-export default { getAll, getUser, updateUser, createUser }
+export default { getAll, getUser, updateUser, createUser, responseDataToApp }

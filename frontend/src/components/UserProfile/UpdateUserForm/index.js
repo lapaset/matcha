@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { Form } from 'react-bootstrap'
 import userService from '../../../services/userService'
 import RequiredInputField from './RequiredInputField'
 import PasswordFields from './PasswordFields'
@@ -66,6 +67,13 @@ const UpdateUserForm = ({ user, setUser }) => {
 
 		{errorMessage && <div className="text-center text-danger" >{errorMessage}</div>}
 		{notification && <div className="text-center text-success" >{notification}</div>}
+
+		<Form.Group>
+			<Form.Label>
+				age
+    		</Form.Label>
+			<Form.Control plaintext readOnly defaultValue={user.age} />
+		</Form.Group>
 
 		<RequiredInputField label='first name' errors={errors.firstName}
 			name="firstName" defVal={user.firstName} maxLen='50'

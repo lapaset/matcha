@@ -35,7 +35,8 @@ const UserCard = ({ user }) => {
 				</Card.Link>)}
 		</Card.Body>
 		<Card.Body>
-			<Card.Title>{user.firstName} {user.lastName} ({user.username})</Card.Title>
+			<Card.Title>{user.username}, {user.age}</Card.Title>
+			<Card.Text>{user.firstName} {user.lastName}</Card.Text>
 			<Card.Text>
 				{user.bio}
 			</Card.Text>

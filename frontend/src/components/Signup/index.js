@@ -11,7 +11,8 @@ import BirthdateField from './BirthdateField'
 
 const Signup = () => {
 	const { register, handleSubmit, errors, watch } = useForm()
-	const [signupStatus, setSignupStatus] = useState("");
+	const [errorMessage, setErrorMessage] = useState('')
+	const [notification, setNotification] = useState('')
 
 	// generating token
 	const rand = () => Math.random(0).toString(36).substr(2);
@@ -19,7 +20,7 @@ const Signup = () => {
 	const token = token_check(100);
 
 	const onSubmit = (data, e) => {
-		console.log('data', data);
+		//console.log('data', data);
 
 		const userObject = {
 			...data,
@@ -31,21 +32,23 @@ const Signup = () => {
 			.createUser(userObject)
 			.then(() => {
 				console.log('user added')
-				setSignupStatus('signup succesfull, check your email')
+				setNotification('signup succesfull, check your email')
 				e.target.reset()
 			})
 			.catch(e => {
-				setSignupStatus(e.response.data.error)
+				setErrorMessage(e.response.data.error)
 			})
 	}
 	return (
 		<>
-			{ signupStatus &&
-				<div><strong>{signupStatus}</strong></div>
-			}
 			<h2 className="text-center mt-3">Signup Form</h2>
+
 			<div className="row justify-content-center align-items-center">
 				<form className="text-center mt-3 col-md-6 col-sm-6 col-lg-4 col-xs-8" onSubmit={handleSubmit(onSubmit)}>
+					
+					{errorMessage && <div className="text-center text-danger" >{errorMessage}</div>}
+					{notification && <div className="text-center text-success" >{notification}</div>}
+
 					<Form.Row>
 						<Col>
 							<RequiredInputField label='first name' errors={errors.firstName}

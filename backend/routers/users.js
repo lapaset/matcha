@@ -14,7 +14,7 @@ usersRouter.get('/', (req, resp) => {
 
 usersRouter.get('/:id', (req, resp) => {
 
-	db.query('SELECT first_name, last_name, username, email, verified, \
+	db.query('SELECT user_id, first_name, last_name, username, email, verified, \
 	token, password, gender, orientation, bio, tags, AGE(birthdate) as age, \
 	id, profile_pic, photo_str \
 	FROM users \
@@ -94,7 +94,9 @@ usersRouter.put('/:id', async (req, resp) => {
 		db.query('UPDATE users \
 			SET (first_name, last_name, username, email, gender, orientation, tags, bio, password) \
 			= ($1, $2, $3, $4, $5, $6, $7, $8, $9) \
-			WHERE user_id = $10 RETURNING *',
+			WHERE user_id = $10 \
+			RETURNING user_id, first_name, last_name, username, email, verified, \
+			token, password, gender, orientation, bio, tags, AGE(birthdate) as age',
 			[firstName, lastName, username, email, gender, orientation, tags, bio, hashedPassword, req.params.id],
 			(err, res) => {
 
@@ -115,7 +117,9 @@ usersRouter.put('/:id', async (req, resp) => {
 		db.query('UPDATE users \
 			SET (first_name, last_name, username, email, gender, orientation, tags, bio) \
 			= ($1, $2, $3, $4, $5, $6, $7, $8) \
-			WHERE user_id = $9 RETURNING *',
+			WHERE user_id = $9 \
+			RETURNING user_id, first_name, last_name, username, email, verified, \
+			token, password, gender, orientation, bio, tags, AGE(birthdate) as age',
 			[firstName, lastName, username, email, gender, orientation, tags, bio, req.params.id],
 			(err, res) => {
 
