@@ -12,6 +12,7 @@ const resetRouter = require('./routers/reset')
 app.use(express.json())
 app.use(cors())
 app.use(middleware.requestLogger)
+app.enable('trust proxy')
 
 app.use('/users', usersRouter)
 app.use('/tags', tagsRouter)

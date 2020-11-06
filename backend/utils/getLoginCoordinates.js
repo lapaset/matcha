@@ -1,24 +1,33 @@
 const express = require('express');
-var geoIP = require('geoip-lite');
+const geoIP = require('geoip-lite');
+const axios = require('axios');
+
 
 const validateCoordinate = coordinate => {
 	const coordFloat = coordinate;
 	return !isNaN(coordFloat) && coordFloat >= -180 && coordFloat <= 180;
 };
 
-const getLoginCoordinates = (req, userData) => {
+
+const getLoginCoordinates = async (req, userData) => {
 	// Check if valid coordinates are provided through browser geolocation and just return them
 	if (validateCoordinate(req.body.latitude) && validateCoordinate(req.body.longitude))
 		return {'latitude': req.body.latitude, 'longitude': req.body.longitude};
-
+	//194.136.126.51
+	console.log("This is not happening again :(")
+	console.log(req.ip)
 	const lookup = geoIP.lookup(req.ip);
-	console.log(req.ip);
 	// Couldn't geolocate IP, falling back to previous location data
 	if (!lookup || !lookup.ll)
-		if (userData.latitude === null || userData.longitude === null)
+	{
+		var location = await axios.get('https://ipinfo.io/geo')
+		var locs = location.data.loc.split(',');
+		return { latitude: locs[0], longitude: locs[1] }
+	}
+		/*if (userData.latitude === null || userData.longitude === null)
 			return {'latitude': 0, 'longitude': 0};
 		else
-			return {'latitude': userData.latitude, 'longitude': userData.longitude};
+			return {'latitude': userData.latitude, 'longitude': userData.longitude};*/
 	
 	// Return data from successful lookup
 	return {'latitude': lookup.ll[0], 'longitude': lookup.ll[1]};

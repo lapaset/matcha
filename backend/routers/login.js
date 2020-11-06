@@ -5,7 +5,7 @@ const db = require('../utils/db')
 const tokenSecret = require('../utils/config').TOKEN_SECRET
 const {getLoginCoordinates} = require('../utils/getLoginCoordinates')
 
-loginRouter.post('/', (request, response) => {
+loginRouter.post('/', async (request, response) => {
     const body = request.body;
     db.query("SELECT * FROM users WHERE username= $1", [body.username], async (err, res) => {
 		if (err)
@@ -22,8 +22,10 @@ loginRouter.post('/', (request, response) => {
 		if (!res.rows[0].verified)
 			return response.status(401).send({ error: "Account needs to be verified, check your email" })
 		// need to check if the coordinates correct
-		const coords = getLoginCoordinates(request, res.rows[0]);
-		console.log(body.latitude);
+		const ip = request.ip;
+		console.log(ip);
+		console.log("Is this?")
+		const coords = await getLoginCoordinates(request, res.rows[0]);
 		db.query("UPDATE users SET latitude = $1, longitude = $2 WHERE username = $3 RETURNING *", [coords.latitude, coords.longitude, body.username], (err, res) => {
 			if (res && res.rows[0])
 				console.log("coordinates your location successfull")
