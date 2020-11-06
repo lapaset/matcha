@@ -4,8 +4,9 @@ Content-Type: application/json
 {
 	"firstName": "ulla",
 	"lastName": "taalasmaa",
-	"username": "ulla",
-	"email": "ulla2@ulla",
+	"username": "ullaboo",
+	"email": "ulla@ulla",
 	"password": "pulla",
-	"token": "oirhafjraglkf4802945"
+	"token": "oirhafjraglkf4802945",
+	"birthdate": "1990-01-23"
 }

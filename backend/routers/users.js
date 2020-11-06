@@ -14,7 +14,10 @@ usersRouter.get('/', (req, resp) => {
 
 usersRouter.get('/:id', (req, resp) => {
 
-	db.query('SELECT * FROM users \
+	db.query('SELECT first_name, last_name, username, email, verified, \
+	token, password, gender, orientation, bio, tags, AGE(birthdate) as age, \
+	id, profile_pic, photo_str \
+	FROM users \
 	LEFT OUTER JOIN photos USING (user_id) \
 	WHERE users.user_id = $1', [req.params.id], (err, res) => {
 		if (res && res.rows)
@@ -58,18 +61,18 @@ usersRouter.post('/', async (req, resp) => {
 	//const { error } = registerValidation(req.body);
 	//if (error) return res.status(400).send({ message: error.details[0].message });
 
-	const { firstName, lastName, username, email, token } = req.body;
+	const { firstName, lastName, username, email, token, birthdate } = req.body;
 
 	// Hash password	
 	const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
 	// Add user
-	db.query('INSERT INTO users (first_name, last_name, username, email, password, token) \
-		VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-		[firstName, lastName, username, email, hashedPassword, token],
+	db.query('INSERT INTO users (first_name, last_name, username, email, password, token, birthdate) \
+		VALUES ($1, $2, $3, $4, $5, $6, $7)',
+		[firstName, lastName, username, email, hashedPassword, token, birthdate],
 		(err, res) => {
 			if (res)
-				resp.status(200).send(res.rows[0])
+				resp.status(201).send(res.rows[0])
 			else if (err.detail && err.detail.startsWith('Key (email)'))
 				resp.status(409).send({ error: 'email already exists' })
 			else if (err.detail && err.detail.startsWith('Key (username)'))
@@ -131,8 +134,12 @@ usersRouter.put('/:id', async (req, resp) => {
 })
 
 usersRouter.delete('/:id', (req, resp) => {
-	db.query('DELETE FROM users WHERE user_id = $1', [req.params.id], () => {
-		resp.status(204).end()
+	db.query('DELETE FROM users WHERE user_id = $1', [req.params.id], (err, res) => {
+		if (res) {
+			db.query('DELETE FROM photos WHERE user_id = $1', [req.params.id], () => {
+				resp.status(204).end()
+			})
+		}
 	})
 })
 

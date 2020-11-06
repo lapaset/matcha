@@ -16,7 +16,8 @@ CREATE TABLE users (
 	gender gender,
 	orientation orientation,
 	bio VARCHAR(1000),
-	tags VARCHAR(255)
+	tags VARCHAR(255),
+	birthdate DATE NOT NULL
 );
 
 CREATE TABLE tags (

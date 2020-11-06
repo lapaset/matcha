@@ -35,7 +35,7 @@ const UserCard = ({ user }) => {
 				</Card.Link>)}
 		</Card.Body>
 		<Card.Body>
-			<Card.Title>{user.username}</Card.Title>
+			<Card.Title>{user.firstName} {user.lastName} ({user.username})</Card.Title>
 			<Card.Text>
 				{user.bio}
 			</Card.Text>
@@ -69,3 +69,14 @@ const UserCard = ({ user }) => {
 }
 
 export default UserCard
+
+//todo: user age to db when signing up
+// make username unmodifyable
+// make orientation default fmo
+// get tags as a list from db
+
+// list interesting users, name, age, profile pic?
+// must be sortable by age, location, fame rating, common tags
+// ( matching tags: SELECT tags FROM users WHERE tags LIKE '%#wow%' )
+// show them as a card collection? probably not since visit history has to be recorded
+// show card as a modal??
