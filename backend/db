@@ -17,6 +17,8 @@ CREATE TABLE users (
 	orientation orientation,
 	bio VARCHAR(1000),
 	tags VARCHAR(255),
+	latitude DOUBLE PRECISION,
+	longitude DOUBLE PRECISION,
 	birthdate DATE NOT NULL
 );
 
