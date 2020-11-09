@@ -1,7 +1,7 @@
 import React from 'react'
 
 const RequiredInputField = ({ label, errors, name, defVal, maxLen, requirements }) => (
-	<div className="form-group"
+	<div className="form-group text-left"
 	>
 		<label>{label}</label>
 		{errors && (<span className="text-danger"> {errors.message}</span>)}<br />

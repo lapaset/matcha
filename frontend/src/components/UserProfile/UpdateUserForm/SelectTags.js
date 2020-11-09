@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import CreatableSelect from 'react-select'
 import { Controller } from 'react-hook-form'
-import tagService from '../../services/tagService'
+import tagService from '../../../services/tagService'
 
-const SelectTags = ({ userTags, control, errors }) => {
+const SelectTags = ({ userTags, control }) => {
 
 	const [ inputValue, setInputValue ] = useState('')
 	const [ tags, setTags ] = useState(false)
@@ -40,7 +40,7 @@ const SelectTags = ({ userTags, control, errors }) => {
 
 	const handleKeyDown = event => {
 
-		//todo: can enter pick the tag if it already exists
+		//todo: enter to pick the tag if it already exists
 		// and should it close after enter
 		if (!inputValue) return
 		switch (event.key) {
