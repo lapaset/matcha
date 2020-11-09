@@ -24,11 +24,7 @@ const getLoginCoordinates = async (req, userData) => {
 		var locs = location.data.loc.split(',');
 		return { latitude: locs[0], longitude: locs[1] }
 	}
-		/*if (userData.latitude === null || userData.longitude === null)
-			return {'latitude': 0, 'longitude': 0};
-		else
-			return {'latitude': userData.latitude, 'longitude': userData.longitude};*/
-	
+
 	// Return data from successful lookup
 	return {'latitude': lookup.ll[0], 'longitude': lookup.ll[1]};
 };
