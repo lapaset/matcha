@@ -1,5 +1,6 @@
 import axios from 'axios'
 const baseUrl = 'http://localhost:3001/users'
+const mapUrl = 'http://localhost:3001/users/map'
 
 const responseDataToApp = data => {
 	const { first_name, last_name, ...user } = data
@@ -32,4 +33,9 @@ const createUser = async userObject => {
 	return resp.data
 }
 
-export default { getAll, getUser, updateUser, createUser }
+const updateMap = async (userData) => {
+	const resp = await axios.put(mapUrl, userData)
+	return resp.data
+}
+
+export default { getAll, getUser, updateUser, createUser, updateMap }

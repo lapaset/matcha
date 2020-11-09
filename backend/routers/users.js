@@ -146,4 +146,15 @@ usersRouter.get('/verify', (req, resp) => {
 	})*/
 })
 
+usersRouter.get('/map', (req, resp) => {
+	db.query("UPDATE users SET latitude = $1, longitude = $2 WHERE user_id = $3 RETURNING *", 
+	[req.body.lati, req.body.lngi, req.body.user_id], 
+	(err, res) => {
+		if (res && res.rows[0])
+			resp.status(200).send(res.rows[0])
+		else
+			resp.status(500).send({ error: 'Update your location failed' })
+	});
+})
+
 module.exports = usersRouter
