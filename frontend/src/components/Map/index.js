@@ -10,9 +10,9 @@ const containerStyle = {
 const MyProfileMap = () => {
 	const [mapCentre, setMapCentre] = useState({lat: 0, lng: 0});
 	var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
-	console.log("Start This is from loggedmatchuser")
-	console.log(coords.latitude);
-	console.log("End This is from loggedmatchuser")
+	//console.log("Start This is from loggedmatchuser")
+	//console.log(coords.latitude);
+	//console.log("End This is from loggedmatchuser")
 
 
 	/* eslint-disable react-hooks/exhaustive-deps */

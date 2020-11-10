@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const db = require('../utils/db')
 const tokenSecret = require('../utils/config').TOKEN_SECRET
-const {getLoginCoordinates} = require('../utils/getLoginCoordinates')
+const { getLoginCoordinates } = require('../utils/getLoginCoordinates')
 
 loginRouter.post('/', (request, response) => {
 	const body = request.body;
@@ -27,26 +27,37 @@ loginRouter.post('/', (request, response) => {
 
 		if (!res.rows[0].verified)
 			return response.status(401).send({ error: "Account needs to be verified, check your email" })
+
+		//todo: a separate location service!!
+
+
 		// need to check if the coordinates correct
 		const ip = request.ip;
-		console.log(ip);
-		console.log("Is this?")
+		//console.log(ip);
+		//console.log("Is this?")
 		const coords = await getLoginCoordinates(request, res.rows[0]);
-		db.query("UPDATE users SET latitude = $1, longitude = $2 WHERE username = $3 RETURNING *", [coords.latitude, coords.longitude, body.username], (err, res) => {
-			if (res && res.rows[0])
-				console.log("coordinates your location successfull")
-			else
-				console.log("coordinates your location failed")
-		});
-		const userForToken = {
-			username: res.rows[0].username,
-			id: res.rows[0].user_id,
-			longitude: coords.longitude,
-			latitude: coords.latitude
-		}
+		db.query("UPDATE users SET latitude = $1, longitude = $2 WHERE username = $3 RETURNING *",
+			[coords.latitude, coords.longitude, body.username], (err, result) => {
+				if (result && result.rows[0]) {
+					console.log("coordinates your location successfull")
 
-		const session_token = jwt.sign(userForToken, tokenSecret)
-		response.header('auth-token', session_token).send({ ...res.rows, session_token })
+					const userForToken = {
+						username: res.rows[0].username,
+						id: res.rows[0].user_id,
+						longitude: coords.longitude,
+						latitude: coords.latitude
+					}
+					console.log('user for token', userForToken)
+					const session_token = jwt.sign(userForToken, tokenSecret)
+					console.log('here')
+
+					response.header('auth-token', session_token).send({ rows: res.rows, session_token })
+
+				} else
+					console.log("coordinates your location failed")
+			});
+
+
 	})
 })
 

@@ -13,15 +13,21 @@ const getLoginCoordinates = async (req, userData) => {
 	// Check if valid coordinates are provided through browser geolocation and just return them
 	if (validateCoordinate(req.body.latitude) && validateCoordinate(req.body.longitude))
 		return {'latitude': req.body.latitude, 'longitude': req.body.longitude};
+
 	//194.136.126.51
-	console.log("This is not happening again :(")
-	console.log(req.ip)
+	//console.log("This is not happening again :(")
+	//console.log(req.ip)
+
 	const lookup = geoIP.lookup(req.ip);
+
 	// Couldn't geolocate IP, falling back to previous location data
+	
 	if (!lookup || !lookup.ll)
 	{
 		var location = await axios.get('https://ipinfo.io/geo')
 		var locs = location.data.loc.split(',');
+
+		console.log('locs', locs)
 		return { latitude: locs[0], longitude: locs[1] }
 	}
 

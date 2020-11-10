@@ -37,7 +37,8 @@ const Login = ({ setUser, loadingUser }) => {
 				setUser(data)
 			})
 			.catch(e => {
-				setErrorMessage(e.response.data.error)
+				console.log('error at login front', e)
+			//	setErrorMessage(e.response.data.error)
 			})
 	}
 

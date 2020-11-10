@@ -15,8 +15,7 @@ const UserView = ({ user, setUser }) => {
 		return user.firstName && user.lastName && user.username && user.email && user.gender && user.orientation
 	}
 
-	console.log(user)
-
+	console.log('user', user)
 
 	return <Router>
 		<div className="nav">

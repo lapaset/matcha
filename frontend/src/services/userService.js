@@ -17,6 +17,8 @@ const orientationFromDb = orientation => {
 
 const responseDataToApp = data => {
 
+	console.log('response data to app', data)
+
 	const { first_name, last_name, id, profile_pic, photo_str, orientation, ...user } = data[0]
 
 	if (data[0].id && data[0].profile_pic !== undefined && data[0].photo_str) {

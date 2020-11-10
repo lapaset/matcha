@@ -1,6 +1,7 @@
 import React from 'react'
 import UserPhotos from './UserPhotos'
 import UpdateUserForm from './UpdateUserForm'
+import Map from '../Map/index'
 
 const UserProfile = ({ user, setUser }) => {
 
@@ -13,6 +14,7 @@ const UserProfile = ({ user, setUser }) => {
 
 				<UserPhotos user={user} setUser={setUser} />
 				<UpdateUserForm user={user} setUser={setUser} />
+				<Map />	
 
 			</div>
 		</div>
