@@ -32,7 +32,7 @@ const UserSearch = ({ user }) => {
 
 	useEffect(() => {
 		userService
-			.getAll()
+			.getByGenderOrientation(user.gender, user.orientation)
 			.then(res => {
 				setResults(res.filter(u => u.user_id !== user.user_id &&
 					calculateDistance(user.latitude, user.longitude, u.latitude, u.longitude) < maxDistance))
@@ -40,7 +40,7 @@ const UserSearch = ({ user }) => {
 			.catch(e => {
 				console.log('error', e);
 			})
-	}, [])
+	}, [user.latitude, user.longitude, user.gender, user.orientation, user.user_id, maxDistance])
 
 	console.log('results', results);
 

@@ -13,19 +13,36 @@ usersRouter.get('/', (req, resp) => {
 
 	//console.log('query parameters', req.query)
 
-	if (req.query.gender) {
-		query = query.concat(` WHERE gender=$${parameters.length + 1}`)
-		parameters.push(req.query.gender)
-	}
-
 	if (req.query.orientation) {
-
 		query = query
-			.concat(` ${parameters.length === 0 
-				? 'WHERE' 
-				: 'AND'} CAST(orientation AS text) LIKE $${parameters.length + 1}`)
+			.concat(`
+			WHERE CAST(orientation AS text) LIKE $1`)
 
 		parameters.push(`%${req.query.orientation}%`)
+	}
+
+	if (req.query.gender) {
+
+		query = query.concat(` ${parameters.length === 0
+			? 'WHERE'
+			: 'AND'}`)
+
+		req.query.gender
+			.split('')
+			.forEach((g, i) => {
+				parameters.push(g === 'f'
+					? 'female'
+					: g === 'm'
+						? 'male'
+						: 'other')
+
+				query = query.concat(`${i === 0
+					? ''
+					: ' OR'} gender=$${parameters.length}`)
+
+			})
+
+
 	}
 
 	//console.log('query', query)

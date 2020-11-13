@@ -64,4 +64,9 @@ const createUser = async userObject => {
 	return resp.data
 }
 
-export default { getAll, getUser, updateUser, createUser }
+const getByGenderOrientation = async () => {
+	const resp = await axios.get(`baseUrl`)
+	return resp.data
+}
+
+export default { getAll, getUser, updateUser, createUser, getByGenderOrientation }
