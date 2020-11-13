@@ -28,8 +28,7 @@ loginRouter.post('/', (request, response) => {
 		if (!res.rows[0].verified)
 			return response.status(401).send({ error: "Account needs to be verified, check your email" })
 
-		//todo: a separate location service!!
-
+		//todo: a separate location service!
 
 		// need to check if the coordinates correct
 		const ip = request.ip;

@@ -9,7 +9,7 @@ const PhotoBox = ({ photo, user, setUser, profilePic }) => {
 	
 	const imgStyle = {
 		maxWidth: hovered ? '105%' : '100%',
-		maxHeight: hovered ? '105%' : '100%'
+		maxHeight: hovered ? '105%' : '100%',
 	}
 
 	const buttonStyle = {

@@ -2,10 +2,10 @@ POST http://localhost:3001/users
 Content-Type: application/json
 
 {
-	"firstName": "ulla",
-	"lastName": "taalasmaa",
+	"firstName": "elli",
+	"lastName": "t",
 	"username": "ullaboo",
-	"email": "ulla@ulla",
+	"email": "elli@ulla",
 	"password": "pulla",
 	"token": "oirhafjraglkf4802945",
 	"birthdate": "1990-01-23"

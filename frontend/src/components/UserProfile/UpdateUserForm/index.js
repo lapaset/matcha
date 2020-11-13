@@ -42,6 +42,8 @@ const UpdateUserForm = ({ user, setUser }) => {
 			tags: data.tags ? data.tags.map(t => t.value).join('') : '',
 		}
 
+		//console.log('update', updatedUser)
+
 		userService
 			.updateUser(updatedUser, user.user_id)
 			.then(data => {
@@ -60,7 +62,6 @@ const UpdateUserForm = ({ user, setUser }) => {
 				setNotification('')
 			})
 	}
-
 
 	return <form onSubmit={handleSubmit(onSubmit)} className="mt-3">
 

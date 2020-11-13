@@ -4,7 +4,34 @@ const bcrypt = require('bcryptjs')
 const nodemailer = require('nodemailer')
 
 usersRouter.get('/', (req, resp) => {
-	db.query('SELECT username, user_id FROM users', [], (err, res) => {
+
+	let query = `SELECT username, user_id, longitude, latitude, 
+	AGE(birthdate) as age, tags, gender, orientation 
+	FROM users`
+
+	const parameters = []
+
+	//console.log('query parameters', req.query)
+
+	if (req.query.gender) {
+		query = query.concat(` WHERE gender=$${parameters.length + 1}`)
+		parameters.push(req.query.gender)
+	}
+
+	if (req.query.orientation) {
+
+		query = query
+			.concat(` ${parameters.length === 0 
+				? 'WHERE' 
+				: 'AND'} CAST(orientation AS text) LIKE $${parameters.length + 1}`)
+
+		parameters.push(`%${req.query.orientation}%`)
+	}
+
+	//console.log('query', query)
+	//console.log('parameters', parameters)
+
+	db.query(query, parameters, (err, res) => {
 		if (err)
 			resp.status(500).send(err)
 		else
@@ -16,7 +43,7 @@ usersRouter.get('/:id', (req, resp) => {
 
 	db.query('SELECT user_id, first_name, last_name, username, email, verified, \
 	token, password, gender, orientation, bio, tags, AGE(birthdate) as age, \
-	id, profile_pic, photo_str \
+	id, profile_pic, photo_str, longitude, latitude \
 	FROM users \
 	LEFT OUTER JOIN photos USING (user_id) \
 	WHERE users.user_id = $1', [req.params.id], (err, res) => {

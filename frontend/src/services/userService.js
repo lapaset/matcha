@@ -15,36 +15,34 @@ const orientationFromDb = orientation => {
 	return o
 }
 
-const responseDataToApp = data => {
+const getAll = async () => {
+	const resp = await axios.get(baseUrl)
 
-	console.log('response data to app', data)
+	return resp.data.map(u => ({
+		...u,
+		orientation: orientationFromDb(u.orientation)
+	}))
+}
 
-	const { first_name, last_name, id, profile_pic, photo_str, orientation, ...user } = data[0]
+const getUser = async userId => {
+	const resp = await axios.get(`${baseUrl}/${userId}`)
 
-	if (data[0].id && data[0].profile_pic !== undefined && data[0].photo_str) {
+	const { first_name, last_name, id, profile_pic, photo_str, orientation, ...user } = resp.data[0]
 
-		user.photos = data.map(r => {
+	if (resp.data[0].id && resp.data[0].profile_pic && resp.data[0].photo_str) {
+
+		user.photos = resp.data.map(r => {
 			return ({ id: r.id, photoStr: r.photo_str, profilePic: r.profile_pic })
 		})
 	}
-	
+
 	return ({
 		...user,
 		firstName: first_name,
 		lastName: last_name,
 		orientation: orientationFromDb(orientation),
-		age: data[0].age.years
+		age: resp.data[0].age.years
 	})
-}
-
-const getAll = async () => {
-	const resp = await axios.get(baseUrl)
-	return resp.data
-}
-
-const getUser = async id => {
-	const resp = await axios.get(`${baseUrl}/${id}`)
-	return responseDataToApp(resp.data)
 }
 
 const updateUser = async (userObject, id) => {
@@ -66,4 +64,4 @@ const createUser = async userObject => {
 	return resp.data
 }
 
-export default { getAll, getUser, updateUser, createUser, responseDataToApp }
+export default { getAll, getUser, updateUser, createUser }

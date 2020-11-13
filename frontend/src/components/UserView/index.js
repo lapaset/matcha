@@ -6,7 +6,7 @@ import Login from '../Login'
 import Verify from '../Verify'
 import Forgot from '../ForgotPassword'
 import Reset from '../ForgotPassword/resetNewPasswd'
-import UserCard from '../UserCard'
+import UserSearch from '../UserSearch'
 import logoutService from '../../services/logoutService'
 
 const UserView = ({ user, setUser }) => {
@@ -58,7 +58,7 @@ const UserView = ({ user, setUser }) => {
 			</Route>
 			<Route path="/" render={() =>
 				user.user_id
-					? userInfoComplete() ? <UserCard user={user} /> : <Redirect to="/profile" />
+					? userInfoComplete() ? <UserSearch user={user} /> : <Redirect to="/profile" />
 					: <><h1>Welcome</h1></>
 			} />
 		</Switch>
