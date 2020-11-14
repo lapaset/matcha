@@ -25,7 +25,15 @@ const getAll = async () => {
 }
 
 const getUser = async userId => {
+	if (!userId)
+		return
+		
 	const resp = await axios.get(`${baseUrl}/${userId}`)
+
+	console.log(resp)
+
+	if (!resp.data[0])
+		return resp.data
 
 	const { first_name, last_name, id, profile_pic, photo_str, orientation, ...user } = resp.data[0]
 
@@ -64,8 +72,11 @@ const createUser = async userObject => {
 	return resp.data
 }
 
-const getByGenderOrientation = async () => {
-	const resp = await axios.get(`baseUrl`)
+const getByGenderOrientation = async (gender, orientation) => {
+	const genderStr = gender
+		.map(o => o.substring(0,1))
+		.join('')
+	const resp = await axios.get(`${baseUrl}?gender=${genderStr}&orientation=${orientation.substring(0,1)}`)
 	return resp.data
 }
 

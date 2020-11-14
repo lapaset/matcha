@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { BrowserRouter as Router } from 'react-router-dom'
 import userService from './services/userService'
 import './style/app.css'
 import UserView from './components/UserView'
@@ -34,7 +35,9 @@ const App = () => {
 
 	return loadingUser.current
 		? null
-		: <UserView user={user} setUser={setUser} />
+		: <Router>
+			<UserView user={user} setUser={setUser} />
+		</Router>
 }
 
 export default App;
