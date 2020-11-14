@@ -14,7 +14,7 @@ const SelectOrientation = ({ orientation, control, errors }) => {
 
 	const defVal = () => orientation ? orientation.map(o => ({ value: o, label: o })) : ""
 
-	return 	<div className="form-group">
+	return 	<div className="form-group text-left">
 				<label>looking for</label>
 				{errors.orientation && errors.orientation.type === 'required' && (<span className="text-danger"> *</span>)}<br />
 

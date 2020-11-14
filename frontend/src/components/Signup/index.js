@@ -42,47 +42,44 @@ const Signup = () => {
 	return (
 		<>
 			<h2 className="text-center mt-3">Signup Form</h2>
+			<form onSubmit={handleSubmit(onSubmit)}>
 
-			<div className="row justify-content-center align-items-center">
-				<form className="text-center mt-3 col-md-6 col-sm-6 col-lg-4 col-xs-8" onSubmit={handleSubmit(onSubmit)}>
-					
-					{errorMessage && <div className="text-center text-danger" >{errorMessage}</div>}
-					{notification && <div className="text-center text-success" >{notification}</div>}
+				{errorMessage && <div className="text-center text-danger" >{errorMessage}</div>}
+				{notification && <div className="text-center text-success" >{notification}</div>}
 
-					<Form.Row>
-						<Col>
-							<RequiredInputField label='first name' errors={errors.firstName}
-								name='firstName' defVal='' maxLen='50'
-								register={register} />
-						</Col>
-						<Col>
-							<RequiredInputField label='last name' errors={errors.lastName}
-								name='lastName' defVal='' maxLen='50'
-								register={register} />
-						</Col>
-					</Form.Row>
+				<Form.Row>
+					<Col>
+						<RequiredInputField label='first name' errors={errors.firstName}
+							name='firstName' defVal='' maxLen='50'
+							register={register} />
+					</Col>
+					<Col>
+						<RequiredInputField label='last name' errors={errors.lastName}
+							name='lastName' defVal='' maxLen='50'
+							register={register} />
+					</Col>
+				</Form.Row>
 
-					<RequiredInputField label='username' errors={errors.username}
-						name='username' defVal='' maxLen='255'
-						register={register} />
+				<RequiredInputField label='username' errors={errors.username}
+					name='username' defVal='' maxLen='255'
+					register={register} />
 
-					<BirthdateField register={register} errors={errors.birthdate} watch={watch} />
+				<BirthdateField register={register} errors={errors.birthdate} watch={watch} />
 
-					<RequiredInputField label='email' errors={errors.email}
-						name='email' defVal='' maxLen='255'
-						register={register} requirements={{
-							pattern: {
-								value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{ | }~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-								message: 'not a valid email'
-							}
-						}} />
+				<RequiredInputField label='email' errors={errors.email}
+					name='email' defVal='' maxLen='255'
+					register={register} requirements={{
+						pattern: {
+							value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{ | }~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+							message: 'not a valid email'
+						}
+					}} />
 
-					<PasswordFields watch={watch} register={register} errors={errors}
-						required={true} />
+				<PasswordFields watch={watch} register={register} errors={errors}
+					required={true} />
 
-					<button className="btn btn-success mt-3" type="submit">Register</button>
-				</form>
-			</div>
+				<button className="btn btn-success mt-3" type="submit">Register</button>
+			</form>
 		</>
 	)
 }

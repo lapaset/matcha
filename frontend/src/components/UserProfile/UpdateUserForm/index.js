@@ -138,7 +138,7 @@ const UpdateUserForm = ({ user, setUser }) => {
 
 		<SelectTags name='tags' userTags={user.tags} control={control} errors={errors} />
 
-		<div className="form-group">
+		<div className="form-group text-left">
 			<label>bio</label><br />
 			<textarea className="form-control" name="bio" defaultValue={user.bio} maxLength="1000"
 				ref={register({

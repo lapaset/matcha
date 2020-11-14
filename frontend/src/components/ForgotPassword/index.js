@@ -21,9 +21,9 @@ const ForgotPassword = () => {
 		})
     }
     return <>
-            <h2 className="text-center mt-3">Forgot password</h2>
-			<div className="row justify-content-center align-items-center">
-				<form className="text-center mt-3 col-md-6 col-sm-6 col-lg-4 col-xs-8" onSubmit={forgotHandler}>
+            <h2 className="mt-3">Forgot password</h2>
+			<div className="align-items-center">
+				<form onSubmit={forgotHandler}>
 					{errMessage && <div className="text-danger" ><strong>{errMessage}</strong></div>}
 					{message && <div className="text-success" ><strong>{message}</strong></div>}
 					<div className="form-group mt-3">

@@ -12,7 +12,7 @@ const SelectGender = ({ gender, control, errors }) => {
 
 	const defVal = () => gender ? { value: gender, label: gender } : ""
 
-	return 	<div className="form-group">
+	return 	<div className="form-group text-left">
 				<label>gender</label>
 				{errors.gender && errors.gender.type === 'required' && (<span className="text-danger"> *</span>)}<br />
 				<Controller

@@ -73,7 +73,7 @@ const SelectTags = ({ userTags, control }) => {
 	//console.log('tags:', tags)
 
 	return tags
-		? <div className="form-group">
+		? <div className="form-group text-left">
 			<label>tags</label><br />
 			<Controller
 				class="form-control"

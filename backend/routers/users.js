@@ -64,7 +64,7 @@ usersRouter.get('/:id', (req, resp) => {
 	FROM users \
 	LEFT OUTER JOIN photos USING (user_id) \
 	WHERE users.user_id = $1', [req.params.id], (err, res) => {
-		if (res && res.rows)
+		if (res && res.rows[0])
 			resp.status(200).send(res.rows)
 		else if (res)
 			resp.status(500).send({ error: 'User not found' })

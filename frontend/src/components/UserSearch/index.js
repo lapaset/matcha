@@ -4,7 +4,7 @@ import userService from '../../services/userService'
 
 const UserList = ({ users }) => (
 	users
-	? <ListGroup>
+	? <ListGroup className="text-left">
 		{ users.map(u => <ListGroup.Item key={u.user_id}>{u.username}, {u.age.years} </ListGroup.Item>) }
 	</ListGroup>
 	: null
@@ -32,7 +32,7 @@ const UserSearch = ({ user }) => {
 
 	useEffect(() => {
 		userService
-			.getByGenderOrientation(user.gender, user.orientation)
+			.getByGenderOrientation(user.orientation, user.gender)
 			.then(res => {
 				setResults(res.filter(u => u.user_id !== user.user_id &&
 					calculateDistance(user.latitude, user.longitude, u.latitude, u.longitude) < maxDistance))
@@ -57,7 +57,6 @@ export default UserSearch
 
 
 //todo
-// a list of users
 // show user card when clicked
 // search form
 // update results

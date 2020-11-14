@@ -4,7 +4,7 @@ const PasswordFields = ({ watch, register, errors }) => {
 	const password = useRef({})
 	password.current = watch("password", "")
 
-	return 	<div className="form-group">
+	return 	<div className="form-group text-left">
 				<label>change password</label><br />
 				<input className="form-control" name="password" type="password"
 					defaultValue="" maxLength="50" placeholder="new password"
