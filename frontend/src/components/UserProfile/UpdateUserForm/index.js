@@ -52,7 +52,9 @@ const UpdateUserForm = ({ user, setUser }) => {
 				setNotification('user updated')
 				setUser({
 					...data,
-					photos: user.photos ? user.photos : []
+					photos: user.photos ? user.photos : [],
+					latitude: user.latitude,
+					longitude: user.longitude
 				})
 			})
 			.catch(e => {

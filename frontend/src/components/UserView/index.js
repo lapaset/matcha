@@ -24,19 +24,18 @@ const UserView = ({ user, setUser }) => {
 	}
 
 	useEffect(() => {
-		//console.log('here', id)
 		userService
 			.getUser(id)
 			.then(data => {
-				console.log('data', data, 'id', id)
+				//console.log('data', data, 'id', id)
 				setShowUser(data)
 			})
 			.catch(e => {
 				console.log(`Error: could not get user id ${id}`)
 			})
-	}, [])
+	}, [id])
 
-	console.log('showUser', showUser ? showUser : null)
+	//console.log('showUser', showUser)
 
 	//console.log('id', matchRoute.params.id)
 	//console.log('user', user)

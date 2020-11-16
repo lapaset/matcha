@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { ListGroup } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
+import { ListGroup } from 'react-bootstrap'
 import userService from '../../services/userService'
 
 const UserList = ({ users }) => (
 	users
-	? <ListGroup className="text-left">
-		{ users.map(u => <ListGroup.Item key={u.user_id}>{u.username}, {u.age.years} </ListGroup.Item>) }
-	</ListGroup>
-	: null
+		? <ListGroup className="text-left">
+			{users.map(u => <ListGroup.Item key={u.user_id}>
+				<Link to={`/users/${u.user_id}`}>
+					{u.username}, {u.age.years}
+				</Link>
+			</ListGroup.Item>)}
+		</ListGroup>
+		: null
 )
 
 const UserSearch = ({ user }) => {
@@ -21,12 +26,12 @@ const UserSearch = ({ user }) => {
 		const φ2 = lat2 * Math.PI / 180;
 		const Δφ = (lat2 - lat1) * Math.PI / 180;
 		const Δλ = (lon2 - lon1) * Math.PI / 180;
-	
+
 		const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
 			Math.cos(φ1) * Math.cos(φ2) *
 			Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
 		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-	
+
 		return R * c; //in metres
 	}
 
@@ -42,7 +47,7 @@ const UserSearch = ({ user }) => {
 			})
 	}, [user.latitude, user.longitude, user.gender, user.orientation, user.user_id, maxDistance])
 
-	console.log('results', results);
+	//console.log('results', results);
 
 	return <UserList users={results} />
 }
@@ -51,10 +56,6 @@ export default UserSearch
 
 //Advance search based on age, tags, fame rating, GPS location
 //List of suggetions that match their profile based on geo location, tags, fame rating. Same geo location will get priority
-
-// count max lat and lon and get them from db?
-// or get just all?
-
 
 //todo
 // show user card when clicked

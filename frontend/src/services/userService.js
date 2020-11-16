@@ -27,22 +27,24 @@ const getAll = async () => {
 const getUser = async userId => {
 	if (!userId)
 		return
-		
+
 	const resp = await axios.get(`${baseUrl}/${userId}`)
 
-	console.log(resp)
+	//console.log('response data at getuser', resp.data)
 
 	if (!resp.data[0])
 		return resp.data
 
 	const { first_name, last_name, id, profile_pic, photo_str, orientation, ...user } = resp.data[0]
 
-	if (resp.data[0].id && resp.data[0].profile_pic && resp.data[0].photo_str) {
+	if (resp.data[0].id && resp.data[0].profile_pic !== undefined && resp.data[0].photo_str) {
 
 		user.photos = resp.data.map(r => {
 			return ({ id: r.id, photoStr: r.photo_str, profilePic: r.profile_pic })
 		})
 	}
+
+	//console.log('user photos at getuser', user.photos)
 
 	return ({
 		...user,
