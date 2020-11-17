@@ -10,7 +10,7 @@ CREATE TABLE users (
 	last_name VARCHAR(50) NOT NULL,
 	username VARCHAR(50) NOT NULL UNIQUE,
 	email VARCHAR(255) NOT NULL UNIQUE,
-	verified SMALLINT NOT NULL DEFAULT '0',
+	verified SMALLINT NOT NULL DEFAULT 0,
 	token varchar(255) DEFAULT NULL,
 	password VARCHAR(255) NOT NULL,
 	gender gender,
@@ -19,7 +19,8 @@ CREATE TABLE users (
 	tags VARCHAR(255),
 	latitude DOUBLE PRECISION,
 	longitude DOUBLE PRECISION,
-	birthdate DATE NOT NULL
+	birthdate DATE NOT NULL,
+	fame INTEGER DEFAULT 100
 );
 
 CREATE TABLE tags (
@@ -33,12 +34,12 @@ CREATE TABLE photos (
 	photo_str VARCHAR(500000) NOT NULL
 );
 
-SELECT * FROM photos
-INNER JOIN users ON users.user_id = photos.user_id
-WHERE photos.user_id=2;
+INSERT INTO users (first_name, last_name, username, email, verified, password, gender, orientation, tags, latitude, longitude, birthdate, fame)
+VALUES 
+('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 90)
 
-INSERT INTO users (first_name, last_name, username, email, password)
-	VALUES ('kalle', 'laitela', 'kalle', 'kalle@kalle.fi', 'kalle') RETURNING *;
 
-INSERT INTO users (name, username, email, password, gender, orientation)
-	VALUES ($1, $2, $3, $4, $5, $6) RETURNING *
+
+
+
+('heikki', 'h', 'heikki', 'heikki@heikki', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'male', 'fmo', '#hot', 60.1695, 24.9354, '1987-02-1', 90)

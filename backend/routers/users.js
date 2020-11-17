@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer')
 usersRouter.get('/', (req, resp) => {
 
 	let query = `SELECT username, user_id, longitude, latitude, 
-	AGE(birthdate) as age, tags, gender, orientation 
+	AGE(birthdate) as age, tags, gender, orientation, fame 
 	FROM users`
 
 	const parameters = []
@@ -41,14 +41,12 @@ usersRouter.get('/', (req, resp) => {
 					: ' OR'} gender=$${parameters.length}`)
 
 			})
-
-
 	}
 
 	//console.log('query', query)
 	//console.log('parameters', parameters)
 
-	db.query(query, parameters, (err, res) => {
+	db.query(`${query} ORDER BY fame DESC`, parameters, (err, res) => {
 		if (err)
 			resp.status(500).send(err)
 		else
@@ -60,7 +58,7 @@ usersRouter.get('/:id', (req, resp) => {
 
 	db.query('SELECT user_id, first_name, last_name, username, email, verified, \
 	token, password, gender, orientation, bio, tags, AGE(birthdate) as age, \
-	id, profile_pic, photo_str, longitude, latitude \
+	id, profile_pic, photo_str, longitude, latitude, fame \
 	FROM users \
 	LEFT OUTER JOIN photos USING (user_id) \
 	WHERE users.user_id = $1', [req.params.id], (err, res) => {
@@ -130,18 +128,22 @@ usersRouter.post('/', async (req, resp) => {
 })
 
 usersRouter.put('/:id', async (req, resp) => {
-	const { firstName, lastName, username, email, gender, orientation, tags, bio } = req.body
+	const { firstName, lastName, email, gender, orientation, tags, bio } = req.body
 
+	console.log('got here')
 
 	if (req.body.password) {
+
+		console.log('why here???');
+
 		const hashedPassword = await bcrypt.hash(req.body.password, 10)
 		db.query('UPDATE users \
-			SET (first_name, last_name, username, email, gender, orientation, tags, bio, password) \
-			= ($1, $2, $3, $4, $5, $6, $7, $8, $9) \
-			WHERE user_id = $10 \
+			SET (first_name, last_name, email, gender, orientation, tags, bio, password) \
+			= ($1, $2, $3, $4, $5, $6, $7, $8) \
+			WHERE user_id = $9 \
 			RETURNING user_id, first_name, last_name, username, email, verified, \
 			token, password, gender, orientation, bio, tags, AGE(birthdate) as age',
-			[firstName, lastName, username, email, gender, orientation, tags, bio, hashedPassword, req.params.id],
+			[firstName, lastName, email, gender, orientation, tags, bio, hashedPassword, req.params.id],
 			(err, res) => {
 
 				if (res && res.rows[0])
@@ -158,14 +160,19 @@ usersRouter.put('/:id', async (req, resp) => {
 
 	} else {
 
+		console.log('should have got here')
+
+
 		db.query('UPDATE users \
-			SET (first_name, last_name, username, email, gender, orientation, tags, bio) \
-			= ($1, $2, $3, $4, $5, $6, $7, $8) \
-			WHERE user_id = $9 \
+			SET (first_name, last_name, email, gender, orientation, tags, bio) \
+			= ($1, $2, $3, $4, $5, $6, $7) \
+			WHERE user_id = $8 \
 			RETURNING user_id, first_name, last_name, username, email, verified, \
 			token, password, gender, orientation, bio, tags, AGE(birthdate) as age',
-			[firstName, lastName, username, email, gender, orientation, tags, bio, req.params.id],
+			[firstName, lastName, email, gender, orientation, tags, bio, req.params.id],
 			(err, res) => {
+
+				console.log('err', err)
 
 				if (res && res.rows[0])
 					resp.status(200).send(res.rows[0])

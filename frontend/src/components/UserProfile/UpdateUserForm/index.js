@@ -71,7 +71,7 @@ const UpdateUserForm = ({ user, setUser }) => {
 		{errorMessage && <div className="text-center text-danger" >{errorMessage}</div>}
 		{notification && <div className="text-center text-success" >{notification}</div>}
 
-		<Form.Group>
+		<Form.Group className="text-left">
 			<Form.Label>
 				age
     		</Form.Label>
@@ -93,19 +93,6 @@ const UpdateUserForm = ({ user, setUser }) => {
 
 		<RequiredInputField label='last name' errors={errors.lastName}
 			name="lastName" defVal={user.lastName} maxLen='50'
-			requirements={register({
-				required: {
-					value: true,
-					message: '*'
-				},
-				maxLength: {
-					value: 50,
-					message: 'max length 50'
-				}
-			})} />
-
-		<RequiredInputField label='username' errors={errors.username}
-			name="username" defVal={user.username} maxLen='50'
 			requirements={register({
 				required: {
 					value: true,
@@ -140,9 +127,9 @@ const UpdateUserForm = ({ user, setUser }) => {
 
 		<SelectTags name='tags' userTags={user.tags} control={control} errors={errors} />
 
-		<div className="form-group text-left">
-			<label>bio</label><br />
-			<textarea className="form-control" name="bio" defaultValue={user.bio} maxLength="1000"
+		<Form.Group className="text-left">
+			<Form.Label>bio</Form.Label><br />
+			<Form.Control as="textarea" name="bio" defaultValue={user.bio} maxLength="1000"
 				ref={register({
 					maxLength: {
 						value: 1000,
@@ -150,7 +137,7 @@ const UpdateUserForm = ({ user, setUser }) => {
 					}
 				})} />
 			{errors.bio && (<p className="text-danger">{errors.bio.message}</p>)}
-		</div>
+		</Form.Group>
 
 		<PasswordFields watch={watch} register={register} errors={errors} />
 
