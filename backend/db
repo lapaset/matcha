@@ -36,10 +36,12 @@ CREATE TABLE photos (
 
 INSERT INTO users (first_name, last_name, username, email, verified, password, gender, orientation, tags, latitude, longitude, birthdate, fame)
 VALUES 
-('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 90)
-
-
-
-
-
-('heikki', 'h', 'heikki', 'heikki@heikki', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'male', 'fmo', '#hot', 60.1695, 24.9354, '1987-02-1', 90)
+('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 100),
+('liina', 'lol', 'liina', 'liina@h', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'female', 'fmo', '#hot', 60.1695, 24.9354, '1984-02-1', 100),
+('kaisa', 'varis', 'hiihtaja', 'ski@hi', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'female', 'm', '#hot', 60.1695, 24.9354, '1990-02-1', 50),
+('muumi', 'maa', 'muumi', 'peikko@born', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'other', 'mo', '#hot', 60.1695, 24.9354, '2000-02-1', 100),
+('ada', 'l', 'ada', 'binar@h', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'other', 'f', '#hot', 60.1695, 24.9354, '1999-02-1', 100),
+('heikki', 'h', 'heikki', 'heikki@heikki', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'male', 'fmo', '#hot', 60.1695, 24.9354, '1987-02-1', 90),
+('muumi', 'maa', 'muumio', 'peikko@born1', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'other', 'mo', '#hot', 61.1695, 24.9354, '2000-02-1', 100),
+('ada', 'l', 'adalmiina', 'binar@h1', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'other', 'f', '#hot', 60.1695, 25.1354, '1999-02-1', 100),
+('heikki', 'h', 'heikkila', 'heikki@heikki1', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90)

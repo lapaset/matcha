@@ -58,7 +58,7 @@ const UserView = ({ user, setUser }) => {
 				}
 			</div>
 		</Nav>
-		<Container id="main-container" fluid="md" className="w-50 m-auto text-center mt-3">
+		<Container id="main-container" fluid="lg" className="m-auto text-center mt-3">
 			<Switch>
 				<Route path="/users/:id">
 					{

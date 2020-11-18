@@ -76,7 +76,6 @@ const UserCard = ({ user }) => {
 			</ListGroupItem>
 			<ListGroupItem>
 				<Card.Link as={Link} to="/">Back to the list</Card.Link>
-				<Card.Link href="#">Next</Card.Link>
 			</ListGroupItem>
 		</ListGroup>
 	</Card>
