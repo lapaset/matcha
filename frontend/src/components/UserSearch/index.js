@@ -1,27 +1,24 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Form } from 'react-bootstrap'
+import { Form, Col } from 'react-bootstrap'
 import userService from '../../services/userService'
 import ListOfUsers from './ListOfUsers'
 
-//todo
-// toggle options
-// make the user list inviting
-
 // fix adding tags
 
-
-
-
 const UserSearch = ({ user }) => {
+
+	const filterFromStorage = (name, def) => window.localStorage.getItem(name)
+		? window.localStorage.getItem(name)
+		: def
+
 	const [results, setResults] = useState([])
 	const [resultsToShow, setResultsToShow] = useState([])
-	const [maxDistance, setMaxDistance] = useState(window.localStorage.getItem('matchaMaxDistance')
-		? window.localStorage.getItem('matchaMaxDistance')
-		: 100)
-	const [minAge, setMinAge] = useState(20)
-	const [maxAge, setMaxAge] = useState(120)
-	const [minFame, setMinFame] = useState(100)
-	const [requiredTag, setRequiredTag] = useState(null)
+	const [maxDistance, setMaxDistance] = useState(filterFromStorage('matchaMaxDistance', 100))
+	const [minAge, setMinAge] = useState(filterFromStorage('matchaMinAge', 20))
+	const [maxAge, setMaxAge] = useState(filterFromStorage('matchaMaxAge', 120))
+	const [minFame, setMinFame] = useState(filterFromStorage('matchaMinFame', 100))
+	const [requiredTag, setRequiredTag] = useState(filterFromStorage('matchaRequiredTag', null))
+	const [hideFilterForm, setHideFilterForm] = useState(true)
 
 	const calculateDistance = (lat1, lon1, lat2, lon2) => {
 
@@ -106,7 +103,10 @@ const UserSearch = ({ user }) => {
 	const handleMinAge = e => handleIntValue(e.target.value, 'matchaMinAge', setMinAge)
 	const handleMaxAge = e => handleIntValue(e.target.value, 'matchaMaxAge', setMaxAge)
 	const handleMinFame = e => handleIntValue(e.target.value, 'matchaMinFame', setMinFame)
-	const handleFilterTag = e => setRequiredTag(e.target.value)
+	const handleFilterTag = e => {
+		window.localStorage.setItem('matchaRequiredTag', e.target.value)
+		setRequiredTag(e.target.value)
+	}
 
 	const requiredTagFound = tags => tags && requiredTag
 		? tags.split('#').includes(requiredTag)
@@ -161,40 +161,68 @@ const UserSearch = ({ user }) => {
 					? window.localStorage.getItem('matchaSortBy')
 					: 'fame'} onChange={handleSort}>
 					<option value="fame">fame</option>
-					<option value="tags">tags</option>
-					<option value="age ascending">age ascending</option>
-					<option value="age descending">age descending</option>
+					<option value="tags">mutual tags</option>
+					<option value="age ascending">age (from youngest to oldest)</option>
+					<option value="age descending">age (from oldest to youngest)</option>
 					<option value="distance">distance</option>
 
 				</Form.Control>
 			</Form.Group>
-			<Form.Group>
-				<Form.Label>Max distance</Form.Label>
-				<Form.Control type="number" defaultValue={maxDistance} onChange={handleMaxDistance} />
-			</Form.Group>
-			<Form.Group>
-				<Form.Label>Min age</Form.Label>
-				<Form.Control type="number" defaultValue={minAge} onChange={handleMinAge} />
-			</Form.Group>
-			<Form.Group>
-				<Form.Label>Max age</Form.Label>
-				<Form.Control type="number" defaultValue={maxAge} onChange={handleMaxAge} />
-			</Form.Group>
-			<Form.Group>
-				<Form.Label>Min fame</Form.Label>
-				<Form.Control type="number" defaultValue={minFame} onChange={handleMinFame} />
-			</Form.Group>
+		</Form>
+
+		<Form hidden={hideFilterForm}>
+
 			{user.tags
 				? <Form.Group>
 					<Form.Label>Tag</Form.Label>
-					<Form.Control as="select" onChange={handleFilterTag}>
-						{ user.tags
+					<Form.Control as="select" defaultValue={requiredTag} onChange={handleFilterTag}>
+						{user.tags
 							.split('#')
 							.map(t => <option key={t} value={t}>{t}</option>)}
 					</Form.Control>
 				</Form.Group>
-				: null}
+				: null
+			}
+
+			<Form.Row>
+				<Col>
+					<Form.Group>
+						<Form.Label>Max distance</Form.Label>
+						<Form.Control type="number" defaultValue={maxDistance} onChange={handleMaxDistance} />
+					</Form.Group>
+				</Col>
+				<Col>
+					<Form.Group>
+						<Form.Label>Min fame</Form.Label>
+						<Form.Control type="number" defaultValue={minFame} onChange={handleMinFame} />
+					</Form.Group>
+				</Col>
+			</Form.Row>
+
+			<Form.Row>
+				<Col>
+					<Form.Group>
+						<Form.Label>Min age</Form.Label>
+						<Form.Control type="number" defaultValue={minAge} onChange={handleMinAge} />
+					</Form.Group>
+				</Col>
+				<Col>
+					<Form.Group>
+						<Form.Label>Max age</Form.Label>
+						<Form.Control type="number" defaultValue={maxAge} onChange={handleMaxAge} />
+					</Form.Group>
+				</Col>
+			</Form.Row>
 		</Form>
+
+		<div className="text-info text-right mb-3" onClick={() => setHideFilterForm(!hideFilterForm)}>
+			{
+				hideFilterForm
+					? <>show filters</>
+					: <>hide filters</>
+			}
+		</div>
+
 		<ListOfUsers users={filterResults()} />
 
 	</>

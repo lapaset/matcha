@@ -1,3 +1,39 @@
 #main-container {
 	max-width: 400px;
+	padding-top: 4em;
+}
+
+.nav {
+	height: 3em;
+	width: 100%;
+	position: fixed;
+	background: white;
+	z-index: 1;
+}
+
+.nav a, .nav div {
+	padding: 0.5em;
+}
+
+.nav {
+	margin-bottom: 1em;
+	padding: 0.5em;
+}
+
+.navLeft {
+	width: 30%;
+	float: left;
+}
+
+.navRight {
+	width: 70%;
+	float: left;
+	text-align: right;
+}
+
+footer {
+	margin-top: 1em;
+	padding-top: 0.5em;
+	border-top: 0.1em solid black;
+	font-style: italic;
 }

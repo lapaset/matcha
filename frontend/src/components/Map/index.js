@@ -3,8 +3,11 @@ import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import {api} from '../../secret.json';
 
 const containerStyle = {
-	width: '400px',
-	height: '400px'
+	width: '90vw',
+	height: '90vw',
+	maxWidth: '400px',
+	maxHeight: '400px',
+	margin: '2em auto'
 };
 
 const MyProfileMap = () => {
