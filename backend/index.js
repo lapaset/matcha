@@ -9,6 +9,7 @@ const middleware = require('./utils/middleware')
 const verifyRouter = require('./routers/verify')
 const resetRouter = require('./routers/reset')
 const photosRouter = require('./routers/photos')
+const mapRouter = require('./routers/map')
 
 app.use(express.json({limit: '10mb', extended: true}))
 app.use(express.urlencoded({limit: '10mb', extended: true}))
@@ -22,6 +23,7 @@ app.use('/login', loginRouter)
 app.use('/verify', verifyRouter)
 app.use('/reset', resetRouter)
 app.use('/photos', photosRouter)
+app.use('/map', mapRouter)
 
 app.use(middleware.unknownEndpoint)
 
