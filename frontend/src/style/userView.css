@@ -37,3 +37,7 @@ footer {
 	border-top: 0.1em solid black;
 	font-style: italic;
 }
+
+#toggleFilterForm {
+	cursor: pointer;
+}
