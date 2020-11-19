@@ -29,7 +29,7 @@ const PhotoBox = ({ photo, user, setUser, profilePic }) => {
 			<ButtonGroup style={buttonStyle}>
 				<ProfilePicButton photo={photo} profilePic={profilePic} user={user} setUser={setUser} />
 				<DeletePhotoButton photo={photo} user={user} setUser={setUser} />
-			</ButtonGroup>
+			</ButtonGroup> 
 		</div>
 	</ResponsiveEmbed>
 }
