@@ -4,9 +4,6 @@ import ListOfUsers from './ListOfUsers'
 import SortForm from './SortForm'
 import FilterForm from './FilterForm'
 
-// fix adding tags
-// fix upload photo preview layout
-
 const UserSearch = ({ user }) => {
 
 	const [resultsToShow, setResultsToShow] = useState([])
