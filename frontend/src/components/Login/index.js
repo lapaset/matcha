@@ -25,8 +25,8 @@ const Login = ({ setUser, loadingUser }) => {
 		loginService
 			.login({ username, password, longitude, latitude })
 			.then(data => {
-				console.log('Login data:', data)
-				console.log(window.localStorage.getItem("coordinates"));
+				//console.log('Login data:', data)
+				//console.log('coordinates from local storage:', window.localStorage.getItem("coordinates"));
 				window.localStorage.setItem(
 					'loggedMatchaUser', JSON.stringify(data)
 				)
@@ -36,8 +36,7 @@ const Login = ({ setUser, loadingUser }) => {
 				setUser(data)
 			})
 			.catch(e => {
-				console.log('error at login front', e)
-				//	setErrorMessage(e.response.data.error)
+				setErrorMessage(e.response.data.error)
 			})
 	}
 

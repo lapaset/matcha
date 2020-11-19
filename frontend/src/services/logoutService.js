@@ -1,6 +1,5 @@
 const handleLogout = () => {
-	localStorage.removeItem('loggedMatchaUser');
-	localStorage.removeItem('coordinates');
+	localStorage.clear()
 	window.location.href="/login";
 }
 
