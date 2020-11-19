@@ -58,7 +58,7 @@ const UserView = ({ user, setUser }) => {
 				}
 			</div>
 		</Nav>
-		<Container id="main-container" fluid="md" className="w-50 m-auto text-center mt-3">
+		<Container id="main-container" fluid="lg" className="m-auto text-center">
 			<Switch>
 				<Route path="/users/:id">
 					{
@@ -88,13 +88,13 @@ const UserView = ({ user, setUser }) => {
 				<Route path="/login" render={() =>
 					user.user_id ? <Redirect to="/" /> : <Login setUser={setUser} />
 				} />
-				<Route path="/verify">
-					<Verify setUser={setUser} />
-				</Route>
+				<Route path="/verify" render={() =>
+					user.user_id ? <Redirect to="/" /> : <Verify setUser={setUser} />
+				} />å
 				<Route path="/" render={() =>
 					user.user_id
 						? userInfoComplete() ? <UserSearch user={user} /> : <Redirect to="/profile" />
-						: <><h1>Welcome</h1></>
+						: <Redirect to="/login" />
 				} />
 			</Switch>
 		</Container>

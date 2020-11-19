@@ -4,8 +4,11 @@ import {api} from '../../secret.json';
 import mapService from '../../services/mapService'
 
 const containerStyle = {
-	width: '400px',
-	height: '400px'
+	width: '90vw',
+	height: '90vw',
+	maxWidth: '400px',
+	maxHeight: '400px',
+	margin: '2em auto'
 };
 
 const MyProfileMap = () => {

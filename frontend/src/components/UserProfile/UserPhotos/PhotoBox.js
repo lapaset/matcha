@@ -8,8 +8,8 @@ const PhotoBox = ({ photo, user, setUser, profilePic }) => {
 	const [hovered, setHovered] = useState(false)
 	
 	const imgStyle = {
-		maxWidth: hovered ? '105%' : '100%',
-		maxHeight: hovered ? '105%' : '100%',
+		maxWidth: hovered ? '101%' : '100%',
+		maxHeight: hovered ? '101%' : '100%',
 	}
 
 	const buttonStyle = {

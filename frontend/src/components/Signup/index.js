@@ -32,6 +32,7 @@ const Signup = () => {
 			.createUser(userObject)
 			.then(() => {
 				console.log('user added')
+				setErrorMessage('')
 				setNotification('signup succesfull, check your email')
 				e.target.reset()
 			})
