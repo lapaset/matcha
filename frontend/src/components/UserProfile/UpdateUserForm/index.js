@@ -11,8 +11,18 @@ import SelectTags from './SelectTags'
 
 const UpdateUserForm = ({ user, setUser }) => {
 
+
+	const userTagsFromDb = () => {
+		const tagsFromUser = user.tags.split('#').map(t => ({ label: `#${t}`, value: `#${t}` }))
+		return tagsFromUser.slice(1)
+	}
+
 	const [errorMessage, setErrorMessage] = useState('')
 	const [notification, setNotification] = useState('')
+	const [userTagsState, setUserTagsState] = useState({
+		value: user.tags ? userTagsFromDb() : [],
+		inputValue: ''
+	})
 	const { register, handleSubmit, errors, control, watch } = useForm()
 
 	const onSubmit = data => {
@@ -39,7 +49,8 @@ const UpdateUserForm = ({ user, setUser }) => {
 			...data,
 			gender: data.gender.value,
 			orientation: orientationToDb(data.orientation),
-			tags: data.tags ? data.tags.map(t => t.value).join('') : '',
+			tags: userTagsState.value && userTagsState.value.length !== 0
+				? userTagsState.value.map(t => t.value).join('') : '',
 		}
 
 		//console.log('update', updatedUser)
@@ -47,7 +58,7 @@ const UpdateUserForm = ({ user, setUser }) => {
 		userService
 			.updateUser(updatedUser, user.user_id)
 			.then(data => {
-				console.log('data when updated', data)
+				//console.log('data when updated', data)
 				setErrorMessage('')
 				setNotification('user updated')
 				setUser({
@@ -125,7 +136,7 @@ const UpdateUserForm = ({ user, setUser }) => {
 
 		<SelectOrientation orientation={user.orientation} control={control} errors={errors} />
 
-		<SelectTags name='tags' userTags={user.tags} control={control} errors={errors} />
+		<SelectTags name='tags' state={userTagsState} setState={setUserTagsState} control={control} errors={errors} />
 
 		<Form.Group className="text-left">
 			<Form.Label>bio</Form.Label><br />

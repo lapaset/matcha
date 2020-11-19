@@ -1,95 +1,101 @@
 import React, { useState, useEffect } from 'react'
+import { Form } from 'react-bootstrap'
 import CreatableSelect from 'react-select'
-import { Controller } from 'react-hook-form'
 import tagService from '../../../services/tagService'
 
-const SelectTags = ({ userTags, control }) => {
+const SelectTags = ({ state, setState }) => {
 
-	const [ inputValue, setInputValue ] = useState('')
-	const [ tags, setTags ] = useState(false)
+	const [options, setOptions] = useState([])
 
-	useEffect(() => {
-		tagService
-			.getTags()
-			.then(data => {
-				setTags(data)
-			})
-			.catch((error) => {
-				console.log(error)
-			})
-	}, [])
-
-	const addNewTag = () => {
-
-		const newTag = inputValue.startsWith('#')
-			? inputValue
-			: '#' + inputValue
-
-		tagService
-			.addTag({ tag: newTag })
-			.then(res => {
-				setTags(tags.concat({ tag: res }))
-				setInputValue('')
-			})
-			.catch((e) => {
-				console.log('Failed to add tag', e.response.data)
-			})
+	const handleChange = value => {
+		setState({ value })
 	}
 
-	const handleInputChange = value => setInputValue(value)
+	const handleInputChange = (inputValue) => {
+		setState({ inputValue, value })
+	}
 
-	const handleKeyDown = event => {
+	const createOption = label => ({ label, value: label })
 
-		//todo: enter to pick the tag if it already exists
-		// and should it close after enter
-		if (!inputValue) return
+	const handleKeyDown = (event) => {
+		const { inputValue, value } = state;
+
+		if (!inputValue) return;
 		switch (event.key) {
 			case 'Enter':
 			case 'Tab':
-				event.preventDefault()
-				addNewTag()
+				event.preventDefault();
+
+				const newTag = inputValue.startsWith('#')
+					? inputValue
+					: '#' + inputValue
+
+				if (value.find(o => o.label === newTag) !== undefined) {
+					setState({
+						inputValue: '',
+						value
+					})
+					return
+				}
+				else if (options.find(o => o.label === newTag) !== undefined) {
+
+					setState({
+						inputValue: '',
+						value: [...value, createOption(newTag)]
+					})
+
+					setOptions(options.filter(o => o.label !== newTag))
+					return
+				}
+
+				tagService
+					.addTag({ tag: newTag })
+					.then(() => {
+
+						setState({
+							inputValue: '',
+							value: [...value, createOption(newTag)]
+						})
+
+						setOptions(options.concat(createOption(newTag)))
+
+					})
+					.catch((e) => {
+						console.log('Failed to add tag', e.response.data)
+					})
 				break
 			default:
 				return
 		}
 	}
 
-	const getOptions = () => tags.map(t => {
-		return { value: t.tag, label: t.tag }
-	})
+	useEffect(() => {
+		tagService
+			.getTags()
+			.then(data => {
+				setOptions(data.map(t => createOption(t.tag)))
+			})
+			.catch((error) => {
+				console.log(error)
+			})
+	}, [])
 
-	const userTagsFromDb = () => {
-		if (!userTags)
-			return []
+	const { value } = state
 
-		const tagsFromUser = userTags.split('#').map(t => {
-			return { value: '#' + t, label: '#' + t }
-		})
-		return tagsFromUser.slice(1)
-	}
-
-
-	//console.log('user tags:', userTags)
-	//console.log('tags:', tags)
-
-	return tags
-		? <div className="form-group text-left">
-			<label>tags</label><br />
-			<Controller
-				class="form-control"
-				name="tags"
-				as={CreatableSelect}
-				options={getOptions()}
-				value={userTagsFromDb()}
-				defaultValue={userTagsFromDb()}
-				onKeyDown={handleKeyDown}
-				onInputChange={handleInputChange}
-				inputValue={inputValue}
-				control={control}
-				isMulti
-				isClearable />
-		</div>
-		: null
+	return <Form.Group className="text-left">
+		<Form.Label>tags</Form.Label>
+		<CreatableSelect
+			inputValue={state.inputValue}
+			isClearable
+			isMulti
+			onChange={handleChange}
+			onInputChange={handleInputChange}
+			onKeyDown={handleKeyDown}
+			value={value}
+			options={options}
+			name="tags"
+		/>
+	</Form.Group>
 }
 
 export default SelectTags
