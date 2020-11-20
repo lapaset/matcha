@@ -5,6 +5,9 @@ import { faCircle, faHeart, faFlag } from '@fortawesome/free-solid-svg-icons'
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 
 const UserCard = ({ user }) => {
+	var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
+	var from_user_id = coords.user_id;
+	var to_user_id = user.user_id;
 
 	const [selectedPhoto, setSelectedPhoto] = useState(null)
 	const profilePic = user.photos
@@ -24,6 +27,7 @@ const UserCard = ({ user }) => {
 		: null
 
 	//console.log('profile pic', profilePic, 'photos', user.photos);
+	
 
 	return <Card className="w-100 m-auto">
 		<Card.Img variant="top" src={selectedPhoto ? selectedPhoto.photoStr : null} />
