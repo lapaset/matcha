@@ -1,5 +1,5 @@
 ###
-POST http://localhost:3001/likes
+GET http://localhost:3001/likeDisplay
 Content-Type: application/json
 
 {

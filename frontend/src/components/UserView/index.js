@@ -12,9 +12,11 @@ import UserSearch from '../UserSearch'
 import UserCard from '../UserCard'
 import logoutService from '../../services/logoutService'
 import userService from '../../services/userService'
+import likeDisplayService from '../../services/likeDisplayService'
 
 const UserView = ({ user, setUser }) => {
 
+	const [like, setLike] = useState(0)
 	const [showUser, setShowUser] = useState(null)
 	const matchRoute = useRouteMatch('/users/:id')
 	const id = matchRoute ? matchRoute.params.id : null
@@ -35,6 +37,23 @@ const UserView = ({ user, setUser }) => {
 			})
 	}, [id])
 
+/// Here for like unlike
+	var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
+	var from_user_id = coords.user_id;
+	var to_user_id = id;
+
+	useEffect(() => {
+		const userObject = {
+			from_user_id,
+			to_user_id
+		}
+		likeDisplayService.likeDisplay(userObject)
+		.then(res => {
+			console.log("This is now added "+ res.value);
+			setLike(res.value)
+		})
+	}, [])
+////////End like unlike
 	//console.log('showUser', showUser)
 
 	//console.log('id', matchRoute.params.id)
@@ -42,7 +61,8 @@ const UserView = ({ user, setUser }) => {
 	//console.log('userToShow', matchRoute ? userToShow(matchRoute.params.id) : null)
 
 	//kannattaako tata lahestya nain jos kayttajan saa user searchista???
-
+//console.log("is thiss??")
+//console.log(like);
 	return <>
 		<Nav className="nav">
 			<div className="navLeft">
@@ -63,7 +83,7 @@ const UserView = ({ user, setUser }) => {
 				<Route path="/users/:id">
 					{
 						showUser
-							? <UserCard user={showUser} />
+							? <UserCard user={showUser} like_show={like}/>
 							: null
 					}
 				</Route>

@@ -11,6 +11,8 @@ const resetRouter = require('./routers/reset')
 const photosRouter = require('./routers/photos')
 const mapRouter = require('./routers/map')
 const likeRouter = require('./routers/likes')
+const likeunlikeDisplayRouter = require('./routers/likeDisplay')
+const reportRouter = require('./routers/report')
 
 app.use(express.json({limit: '10mb', extended: true}))
 app.use(express.urlencoded({limit: '10mb', extended: true}))
@@ -26,6 +28,8 @@ app.use('/reset', resetRouter)
 app.use('/photos', photosRouter)
 app.use('/map', mapRouter)
 app.use('/likes', likeRouter)
+app.use('/likeDisplay', likeunlikeDisplayRouter)
+app.use('/report', reportRouter)
 
 app.use(middleware.unknownEndpoint)
 
