@@ -11,6 +11,7 @@ const UserCard = ({ user }) => {
 	var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
 	var from_user_id = coords.user_id;
 	var to_user_id = user.user_id;
+	
 	const userObject = {
 		from_user_id,
 		to_user_id

@@ -47,10 +47,13 @@ const UserView = ({ user, setUser }) => {
 			from_user_id,
 			to_user_id
 		}
-		likeDisplayService.likeDisplay(userObject)
+		likeDisplayService.unlikeDisplay(userObject)
 		.then(res => {
-			console.log("This is now added "+ res.value);
+			console.log("This is like return value "+ res.value);
 			setLike(res.value)
+		})
+		.catch(e => {
+			console.log(("Error: couldn't get like info"))
 		})
 	}, [])
 ////////End like unlike
