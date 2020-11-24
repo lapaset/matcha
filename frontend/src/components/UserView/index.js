@@ -10,6 +10,7 @@ import Forgot from '../ForgotPassword'
 import Reset from '../ForgotPassword/resetNewPasswd'
 import UserSearch from '../UserSearch'
 import UserCard from '../UserCard'
+import Chat from '../Chat'
 import logoutService from '../../services/logoutService'
 import userService from '../../services/userService'
 
@@ -38,10 +39,9 @@ const UserView = ({ user, setUser }) => {
 	//console.log('showUser', showUser)
 
 	//console.log('id', matchRoute.params.id)
-	//console.log('user', user)
+	console.log('user', user)
 	//console.log('userToShow', matchRoute ? userToShow(matchRoute.params.id) : null)
 
-	//kannattaako tata lahestya nain jos kayttajan saa user searchista???
 
 	return <>
 		<Nav className="nav">
@@ -85,12 +85,15 @@ const UserView = ({ user, setUser }) => {
 				<Route path="/reset-password/:token">
 					<Reset />
 				</Route>
+				<Route path="/matches" render={() =>
+					user.user_id ? <Chat user={user} /> : <Redirect to="/" />
+				} />
 				<Route path="/login" render={() =>
 					user.user_id ? <Redirect to="/" /> : <Login setUser={setUser} />
 				} />
 				<Route path="/verify" render={() =>
 					user.user_id ? <Redirect to="/" /> : <Verify setUser={setUser} />
-				} />å
+				} />
 				<Route path="/" render={() =>
 					user.user_id
 						? userInfoComplete() ? <UserSearch user={user} /> : <Redirect to="/profile" />
