@@ -1,0 +1,8 @@
+###
+POST http://localhost:3001/likes
+Content-Type: application/json
+
+{
+	"from_user_id": 1,
+	"to_user_id": 3
+}

@@ -42,7 +42,8 @@ const UserView = ({ user, setUser }) => {
 	//console.log('userToShow', matchRoute ? userToShow(matchRoute.params.id) : null)
 
 	//kannattaako tata lahestya nain jos kayttajan saa user searchista???
-
+//console.log("is thiss??")
+//console.log(like);
 	return <>
 		<Nav className="nav">
 			<div className="navLeft">

@@ -1,0 +1,8 @@
+###
+GET http://localhost:3001/likeDisplay
+Content-Type: application/json
+
+{
+	"from_user_id": 1,
+	"to_user_id": 4
+}

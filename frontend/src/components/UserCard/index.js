@@ -3,18 +3,58 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircle, faHeart, faFlag } from '@fortawesome/free-solid-svg-icons'
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
+import likeService from '../../services/likeService'
+import reportService from '../../services/reportService'
+import likeDisplayService from '../../services/likeDisplayService'
 
 const UserCard = ({ user }) => {
+	var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
+	var from_user_id = coords.user_id;
+	var to_user_id = user.user_id;
+	
+	const users = {
+		from_user_id,
+		to_user_id
+	}
 
 	const [selectedPhoto, setSelectedPhoto] = useState(null)
 	const profilePic = user.photos
 		? user.photos.find(p => p.profilePic)
 		: null
-
+	
 	useEffect(() => {
 		setSelectedPhoto(profilePic)
 	}, [profilePic])
 
+	const [like, setLike] = useState(0)
+	useEffect(() => {
+		likeDisplayService.unlikeDisplay(users)
+		.then(res => {
+			setLike(res.value)
+		})
+		.catch(e => {
+			console.log(("Error: couldn't get like info"))
+		})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
+	const likeHandler = event => {
+		event.preventDefault();
+		likeService.likeUnlike(users)
+		.then(res => {
+			setLike(res.value)
+		})
+	}
+
+	const reportHandler = event => {
+		event.preventDefault();
+
+		reportService.report(users)
+		.then(res => {
+			alert(res.message);
+		})
+	}
+	//console.log(user.like_show);
 	const changePhoto = id => setSelectedPhoto(user.photos.find(p => p.id === id))
 
 	const photoSelector = id => selectedPhoto
@@ -24,7 +64,7 @@ const UserCard = ({ user }) => {
 		: null
 
 	//console.log('profile pic', profilePic, 'photos', user.photos);
-
+	
 	return <Card className="w-100 m-auto">
 		<Card.Img variant="top" src={selectedPhoto ? selectedPhoto.photoStr : null} />
 		<Card.Body className="text-center">
@@ -71,8 +111,11 @@ const UserCard = ({ user }) => {
 				</ListGroupItem>
 				: null}
 			<ListGroupItem>
-				<Card.Link href="#"><FontAwesomeIcon icon={faHeart} /> Like</Card.Link>
-				<Card.Link href="#"><FontAwesomeIcon icon={faFlag} /> Report</Card.Link>
+				{like
+					? <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Unlike</Card.Link>
+					: <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Like</Card.Link>
+				}
+				<Card.Link href="#" onClick={event => reportHandler(event)}><FontAwesomeIcon icon={faFlag} /> Report</Card.Link>
 			</ListGroupItem>
 			<ListGroupItem>
 				<Card.Link as={Link} to="/">Back to the list</Card.Link>
