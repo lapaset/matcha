@@ -5,14 +5,14 @@ import { faCircle, faHeart, faFlag } from '@fortawesome/free-solid-svg-icons'
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 import likeService from '../../services/likeService'
 import reportService from '../../services/reportService'
-// import likeDisplayService from '../../services/likeDisplayService'
+import likeDisplayService from '../../services/likeDisplayService'
 
 const UserCard = ({ user }) => {
 	var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
 	var from_user_id = coords.user_id;
 	var to_user_id = user.user_id;
 	
-	const userObject = {
+	const users = {
 		from_user_id,
 		to_user_id
 	}
@@ -26,19 +26,30 @@ const UserCard = ({ user }) => {
 		setSelectedPhoto(profilePic)
 	}, [profilePic])
 
+	const [like, setLike] = useState(0)
+	useEffect(() => {
+		likeDisplayService.unlikeDisplay(users)
+		.then(res => {
+			setLike(res.value)
+		})
+		.catch(e => {
+			console.log(("Error: couldn't get like info"))
+		})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
 	const likeHandler = event => {
 		event.preventDefault();
-
-		likeService.likeUnlike(userObject)
+		likeService.likeUnlike(users)
 		.then(res => {
-			console.log(res.message);
+			setLike(res.value)
 		})
 	}
 
 	const reportHandler = event => {
 		event.preventDefault();
 
-		reportService.report(userObject)
+		reportService.report(users)
 		.then(res => {
 			alert(res.message);
 		})
@@ -100,7 +111,7 @@ const UserCard = ({ user }) => {
 				</ListGroupItem>
 				: null}
 			<ListGroupItem>
-				{user.show_like
+				{like
 					? <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Unlike</Card.Link>
 					: <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Like</Card.Link>
 				}

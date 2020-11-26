@@ -8,7 +8,7 @@ likesRouter.post('/', (req, resp) => {
 				db.query('DELETE FROM likes WHERE from_user_id = $1 AND to_user_id = $2',
 				[req.body.from_user_id, req.body.to_user_id], (error, result) => {
 					if (result)
-						resp.status(200).send({message: "You just unliked this user"})
+						resp.status(200).send({value: 0})
 					else
 						resp.status(500).send(error)
 				})
@@ -21,7 +21,7 @@ likesRouter.post('/', (req, resp) => {
 				db.query('INSERT INTO likes (from_user_id, to_user_id) VALUES ($1, $2) RETURNING *',
 				[req.body.from_user_id, req.body.to_user_id], (error, result) => {
 					if (result)
-						resp.status(200).send({message: "You just liked this user "})
+						resp.status(200).send({value: 1})
 					else
 						resp.status(500).send(error)
 				})

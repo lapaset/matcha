@@ -20,7 +20,7 @@ const login = async credentials => {
 
 
 	const resp = await axios.post(baseUrl, credentials)
-	console.log('response data', resp.data)
+	//console.log('response data', resp.data)
 
 	const row = resp.data.rows[0]
 	const { first_name, last_name, id, profile_pic, photo_str, orientation, ...user } = row

@@ -12,11 +12,9 @@ import UserSearch from '../UserSearch'
 import UserCard from '../UserCard'
 import logoutService from '../../services/logoutService'
 import userService from '../../services/userService'
-import likeDisplayService from '../../services/likeDisplayService'
 
 const UserView = ({ user, setUser }) => {
 
-	const [like, setLike] = useState(0)
 	const [showUser, setShowUser] = useState(null)
 	const matchRoute = useRouteMatch('/users/:id')
 	const id = matchRoute ? matchRoute.params.id : null
@@ -37,26 +35,6 @@ const UserView = ({ user, setUser }) => {
 			})
 	}, [id])
 
-/// Here for like unlike
-	var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
-	var from_user_id = coords.user_id;
-	var to_user_id = id;
-
-	useEffect(() => {
-		const userObject = {
-			from_user_id,
-			to_user_id
-		}
-		likeDisplayService.unlikeDisplay(userObject)
-		.then(res => {
-			console.log("This is like return value "+ res.value);
-			setLike(res.value)
-		})
-		.catch(e => {
-			console.log(("Error: couldn't get like info"))
-		})
-	}, [])
-////////End like unlike
 	//console.log('showUser', showUser)
 
 	//console.log('id', matchRoute.params.id)
@@ -86,7 +64,7 @@ const UserView = ({ user, setUser }) => {
 				<Route path="/users/:id">
 					{
 						showUser
-							? <UserCard user={showUser} like_show={like}/>
+							? <UserCard user={showUser} />
 							: null
 					}
 				</Route>
