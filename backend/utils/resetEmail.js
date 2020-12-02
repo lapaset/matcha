@@ -1,4 +1,3 @@
-const emailRouter = require('express').Router()
 const nodemailer = require('nodemailer');
 
 const resetEmail = (email, token) => {
