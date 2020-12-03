@@ -5,9 +5,10 @@ const config = require('./utils/config')
 const middleware = require('./utils/middleware')
 const routes = require('./routes')
 const webSocketServer = require('websocket').server
+const db = require('./utils/db')
 
-app.use(express.json({limit: '10mb', extended: true}))
-app.use(express.urlencoded({limit: '10mb', extended: true}))
+app.use(express.json({ limit: '10mb', extended: true }))
+app.use(express.urlencoded({ limit: '10mb', extended: true }))
 app.use(cors())
 app.use(middleware.requestLogger)
 app.enable('trust proxy')
@@ -34,7 +35,7 @@ wsServer.on('request', request => {
 	//console.log('request', request)
 
 	const connection = request.accept(null, request.origin)
-	
+
 	console.log(`connected`)
 
 	connection.on('message', message => {
@@ -65,29 +66,28 @@ wsServer.on('request', request => {
 			if (messageArray.type === 'message') {
 
 				console.log('message to:', messageArray.to, 'from: ', messageArray.from)
+				db.query(`INSERT INTO chat (sender, receiver, msg) VALUES($1, $2, $3) RETURNING *`,
+					[messageArray.from, messageArray.to, messageArray.msg], (err, res) => {
 
-				//console.log('to client', clients[messageArray.to].connected)
+						if (res && res.rows[0]) {
+							if (clients[messageArray.to] && clients[messageArray.to].connected)
+								clients[messageArray.to].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
+							clients[messageArray.from].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
+						}
 
-				if (clients[messageArray.to] && clients[messageArray.to].connected) {
-					clients[messageArray.to].sendUTF(message.utf8Data)
-					clients[messageArray.from].sendUTF(message.utf8Data)
-				} else {
-					// save message to db
-					clients[messageArray.from].sendUTF(
-						JSON.stringify({ ...messageArray, type: 'rejected' })
-					)
-
-					console.log('recipient not available')
-				}
-
+						else {
+							clients[messageArray.from].sendUTF(
+								JSON.stringify({ ...messageArray, type: 'rejected' })
+							)
+							console.log(err)
+						}
+					})
 			}
-
-			//console.log('clients', clients)
 		}
 	})
 
 	connection.on('close', () => {
 		console.log((new Date()) + " Peer disconnected.");
-	//	delete clients[userId];
+		//	delete clients[userId];
 	})
 })

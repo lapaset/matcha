@@ -5,7 +5,7 @@ router.get('/:id', (req, resp) => {
 
 	db.query(`SELECT * FROM chat
 	WHERE sender=$1 OR receiver=$1
-	ORDER BY date DESC`, [req.params.id], (err, res) => {
+	ORDER BY date ASC`, [req.params.id], (err, res) => {
 		if (res)
 			resp.status(200).send(res.rows)
 		else
