@@ -53,22 +53,36 @@ wsServer.on('request', request => {
 			const messageArray = JSON.parse(message.utf8Data)
 			console.log(`received message type: ${messageArray.type}`)
 
-			if (messageArray.type === "connected")
+			if (messageArray.type === 'connected')
 				clients[messageArray.from] = connection
 
-			if (messageArray.type === "message") {
+			if (messageArray.type === 'close') {
+				clients[messageArray.from].close()
+				console.log(`connection ${messageArray.from} closed`)
+
+			}
+
+			if (messageArray.type === 'message') {
+
 				console.log('message to:', messageArray.to, 'from: ', messageArray.from)
-				if (clients[messageArray.to]) {
+
+				//console.log('to client', clients[messageArray.to].connected)
+
+				if (clients[messageArray.to] && clients[messageArray.to].connected) {
 					clients[messageArray.to].sendUTF(message.utf8Data)
 					clients[messageArray.from].sendUTF(message.utf8Data)
 				} else {
 					// save message to db
+					clients[messageArray.from].sendUTF(
+						JSON.stringify({ ...messageArray, type: 'rejected' })
+					)
+
 					console.log('recipient not available')
 				}
 
 			}
 
-			console.log('clients', clients)
+			//console.log('clients', clients)
 		}
 	})
 

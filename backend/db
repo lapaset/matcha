@@ -34,6 +34,14 @@ CREATE TABLE photos (
 	photo_str VARCHAR(500000) NOT NULL
 );
 
+CREATE TABLE chat (
+	id SERIAL PRIMARY KEY,
+	sender INT NOT NULL,
+	receiver INT NOT NULL,
+	msg VARCHAR(1000),
+	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 INSERT INTO users (first_name, last_name, username, email, verified, password, gender, orientation, tags, latitude, longitude, birthdate, fame)
 VALUES 
 ('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 100),
