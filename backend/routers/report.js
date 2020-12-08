@@ -13,7 +13,15 @@ reportRouter.post('/', (req, resp) => {
 				db.query('INSERT INTO report (from_user_id, to_user_id) VALUES ($1, $2) RETURNING *',
 				[req.body.from_user_id, req.body.to_user_id], (error, result) => {
 					if (result)
-						resp.status(200).send({message: "Your report has been submitted!"})
+					{
+						db.query('UPDATE users SET fame = fame - 5 WHERE user_id = $1', 
+						[req.body.to_user_id], (errors, results) => {
+							if (results)
+								resp.status(200).send({message: "Your report has been submitted!"})
+							else
+								resp.status(500).send(errors)
+						})
+					}
 					else
 						resp.status(500).send(error)
 				})
