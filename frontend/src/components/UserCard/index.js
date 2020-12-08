@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircle, faHeart, faFlag } from '@fortawesome/free-solid-svg-icons'
+import { faCircle, faHeart, faFlag, faBan } from '@fortawesome/free-solid-svg-icons'
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 import likeService from '../../services/likeService'
 import reportService from '../../services/reportService'
 import likeDisplayService from '../../services/likeDisplayService'
+import blockService from '../../services/blockService'
 
-const UserCard = ({ user }) => {
+const UserCard = ({ user, loggedUser }) => {
 	var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
+	//console.log(loggedUser.user_id);
 	var from_user_id = coords.user_id;
 	var to_user_id = user.user_id;
 	
@@ -21,7 +23,23 @@ const UserCard = ({ user }) => {
 	const profilePic = user.photos
 		? user.photos.find(p => p.profilePic)
 		: null
-	
+	//console.log(profilePic);
+	const [access, setAccess] = useState(0);
+	useEffect(() => {
+		blockService.blockedUser(users)
+		.then(res => {
+			setAccess(res.value);
+			if (res.value === 1)
+			{
+				window.location.href = "http://localhost:3000";
+			}
+		})
+		.catch(e => {
+			console.log(("Error: couldn't get block info"))
+		})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
 	useEffect(() => {
 		setSelectedPhoto(profilePic)
 	}, [profilePic])
@@ -54,6 +72,15 @@ const UserCard = ({ user }) => {
 			alert(res.message);
 		})
 	}
+
+	const blockHandler = event => {
+		event.preventDefault();
+		blockService.block(users)
+		.then(res => {
+			alert(res.message+user.username)
+			window.location.href = "http://localhost:3000";
+		})
+	}
 	//console.log(user.like_show);
 	const changePhoto = id => setSelectedPhoto(user.photos.find(p => p.id === id))
 
@@ -66,63 +93,70 @@ const UserCard = ({ user }) => {
 	//console.log('profile pic', profilePic, 'photos', user.photos);
 	
 	return <Card className="w-100 m-auto">
-		<Card.Img variant="top" src={selectedPhoto ? selectedPhoto.photoStr : null} />
-		<Card.Body className="text-center">
-			{profilePic
-				? <>
-					<Card.Link onClick={() => changePhoto(profilePic.id)}>
-						{photoSelector(profilePic.id)}
-					</Card.Link>
-					{user.photos
-						.filter(p => !p.profilePic)
-						.map(p => <Card.Link key={p.id} onClick={() => changePhoto(p.id)}>
-							{photoSelector(p.id)}
-						</Card.Link>)
+		{!access 
+			? <>
+				<Card.Img variant="top" src={selectedPhoto ? selectedPhoto.photoStr : null} />
+				<Card.Body className="text-center">
+					{profilePic && !access
+						? <>
+							<Card.Link onClick={() => changePhoto(profilePic.id)}>
+								{photoSelector(profilePic.id)}
+							</Card.Link>
+							{user.photos
+								.filter(p => !p.profilePic)
+								.map(p => <Card.Link key={p.id} onClick={() => changePhoto(p.id)}>
+									{photoSelector(p.id)}
+								</Card.Link>)
+							}
+						</>
+						: null
 					}
-				</>
-				: null
-			}
 
-		</Card.Body>
-		<Card.Body>
-			<Card.Title>{user.username}, {user.age}</Card.Title>
-			<Card.Text>{user.firstName} {user.lastName}</Card.Text>
-			<Card.Text>
-				{user.bio}
-			</Card.Text>
-		</Card.Body>
-		<ListGroup className="list-group-flush">
-			<ListGroupItem>{user.gender}</ListGroupItem>
-			<ListGroupItem>
-				looking for {user.orientation
-					.map((o, i) => i < user.orientation.length - 1
-						? `${o}, `
-						: o
-					)}
-			</ListGroupItem>
+				</Card.Body>
+				<Card.Body>
+					<Card.Title>{user.username}, {user.age}</Card.Title>
+					<Card.Text>{user.firstName} {user.lastName}</Card.Text>
+					<Card.Text>
+						{user.bio}
+					</Card.Text>
+				</Card.Body>
+				<ListGroup className="list-group-flush">
+					<ListGroupItem>{user.gender}</ListGroupItem>
+					<ListGroupItem>
+						looking for {user.orientation
+							.map((o, i) => i < user.orientation.length - 1
+								? `${o}, `
+								: o
+							)}
+					</ListGroupItem>
 
-			{user.tags
-				? <ListGroupItem>
-					{user.tags.split('#')
-						.map((t, i) => i > 1
-							? ` #${t}`
-							: i === 1 ? `#${t}` : null
-						)}
-				</ListGroupItem>
-				: null}
-			<ListGroupItem>
-				{like
-					? <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Unlike</Card.Link>
-					: <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Like</Card.Link>
-				}
-				<Card.Link href="#" onClick={event => reportHandler(event)}><FontAwesomeIcon icon={faFlag} /> Report</Card.Link>
-			</ListGroupItem>
-			<ListGroupItem>
-				<Card.Link as={Link} to="/">Back to the list</Card.Link>
-			</ListGroupItem>
-		</ListGroup>
+					{user.tags
+						? <ListGroupItem>
+							{user.tags.split('#')
+								.map((t, i) => i > 1
+									? ` #${t}`
+									: i === 1 ? `#${t}` : null
+								)}
+						</ListGroupItem>
+						: null}
+					{loggedUser.photos &&
+						<ListGroupItem>
+							{like
+								? <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Unlike</Card.Link>
+								: <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Like</Card.Link>
+							}
+							<Card.Link href="#" onClick={event => reportHandler(event)}><FontAwesomeIcon icon={faFlag} /> Report</Card.Link>
+							<Card.Link href="#" onClick={event => blockHandler(event)}><FontAwesomeIcon icon={faBan} /> Block</Card.Link>
+						</ListGroupItem>
+					}
+					<ListGroupItem>
+						<Card.Link as={Link} to="/">Back to the list</Card.Link>
+					</ListGroupItem>
+				</ListGroup>
+			</>
+			: null
+		}
 	</Card>
-
 }
 
 export default UserCard
