@@ -38,19 +38,19 @@ CREATE TABLE likes (
 	like_id SERIAL PRIMARY KEY,
 	from_user_id INT NOT NULL,
 	to_user_id INT NOT NULL
-)
+);
 
 CREATE TABLE report (
 	report_id SERIAL PRIMARY KEY,
 	from_user_id INT NOT NULL,
 	to_user_id INT NOT NULL
-)
+);
 
 CREATE TABLE blocked (
 	block_id SERIAL PRIMARY KEY,
 	from_user_id INT NOT NULL,
 	to_user_id INT NOT NULL
-)
+);
 
 INSERT INTO users (first_name, last_name, username, email, verified, password, gender, orientation, tags, latitude, longitude, birthdate, fame)
 VALUES 
