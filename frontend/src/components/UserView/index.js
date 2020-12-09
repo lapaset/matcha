@@ -10,15 +10,20 @@ import Forgot from '../ForgotPassword'
 import Reset from '../ForgotPassword/resetNewPasswd'
 import UserSearch from '../UserSearch'
 import UserCard from '../UserCard'
-import Chat from '../Chat'
+import Matches from '../Matches'
 import logoutService from '../../services/logoutService'
 import userService from '../../services/userService'
 
 const UserView = ({ user, setUser }) => {
 
 	const [showUser, setShowUser] = useState(null)
-	const matchRoute = useRouteMatch('/users/:id')
-	const id = matchRoute ? matchRoute.params.id : null
+	const matchUserRoute = useRouteMatch('/users/:id')
+	const matchChatRoute = useRouteMatch('/chat/:id')
+	const id = matchUserRoute
+		? matchUserRoute.params.id
+		: matchChatRoute
+			? matchChatRoute.params.id
+			: null
 
 	const userInfoComplete = () => {
 		return user.firstName && user.lastName && user.username && user.email && user.gender && user.orientation
@@ -50,7 +55,8 @@ const UserView = ({ user, setUser }) => {
 			</div>
 			<div className="navRight">
 				{user.username
-					? <><Link to="/profile">{user.username}</Link>
+					? <><Link to="/matches">matches</Link>
+						<Link to="/profile">{user.username}</Link>
 						<Link to="/login" onClick={logoutService.handleLogout}>logout</Link></>
 
 					: <><Link to="/signup">signup</Link>
@@ -61,10 +67,9 @@ const UserView = ({ user, setUser }) => {
 		<Container id="main-container" fluid="lg" className="m-auto text-center">
 			<Switch>
 				<Route path="/users/:id">
-					{
-						showUser
-							? <UserCard user={showUser} />
-							: null
+					{showUser
+						? <UserCard user={showUser} />
+						: null
 					}
 				</Route>
 				<Route path="/profile" render={() =>
@@ -86,7 +91,7 @@ const UserView = ({ user, setUser }) => {
 					<Reset />
 				</Route>
 				<Route path="/matches" render={() =>
-					user.user_id ? <Chat user={user} /> : <Redirect to="/" />
+					user.user_id ? <Matches user={user} /> : <Redirect to="/" />
 				} />
 				<Route path="/login" render={() =>
 					user.user_id ? <Redirect to="/" /> : <Login setUser={setUser} />
