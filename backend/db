@@ -50,6 +50,14 @@ CREATE TABLE blocked (
 	block_id SERIAL PRIMARY KEY,
 	from_user_id INT NOT NULL,
 	to_user_id INT NOT NULL
+};
+	
+CREATE TABLE chat (
+	id SERIAL PRIMARY KEY,
+	sender INT NOT NULL,
+	receiver INT NOT NULL,
+	msg VARCHAR(1000),
+	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO users (first_name, last_name, username, email, verified, password, gender, orientation, tags, latitude, longitude, birthdate, fame)

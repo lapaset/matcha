@@ -2,39 +2,92 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const config = require('./utils/config')
-const usersRouter = require('./routers/users')
-const tagsRouter = require('./routers/tags')
-const loginRouter = require('./routers/login')
 const middleware = require('./utils/middleware')
-const verifyRouter = require('./routers/verify')
-const resetRouter = require('./routers/reset')
-const photosRouter = require('./routers/photos')
-const mapRouter = require('./routers/map')
-const likeRouter = require('./routers/likes')
-const likeunlikeDisplayRouter = require('./routers/likeDisplay')
-const reportRouter = require('./routers/report')
-const blockRouter = require('./routers/block')
+const routes = require('./routes')
+const webSocketServer = require('websocket').server
+const db = require('./utils/db')
 
-app.use(express.json({limit: '10mb', extended: true}))
-app.use(express.urlencoded({limit: '10mb', extended: true}))
+app.use(express.json({ limit: '10mb', extended: true }))
+app.use(express.urlencoded({ limit: '10mb', extended: true }))
 app.use(cors())
 app.use(middleware.requestLogger)
 app.enable('trust proxy')
 
-app.use('/users', usersRouter)
-app.use('/tags', tagsRouter)
-app.use('/login', loginRouter)
-app.use('/verify', verifyRouter)
-app.use('/reset', resetRouter)
-app.use('/photos', photosRouter)
-app.use('/map', mapRouter)
-app.use('/likes', likeRouter)
-app.use('/likeDisplay', likeunlikeDisplayRouter)
-app.use('/report', reportRouter)
-app.use('/block', blockRouter)
+Object.keys(routes).forEach(k => {
+	app.use(`/${k}`, routes[k])
+})
 
 app.use(middleware.unknownEndpoint)
 
-app.listen(config.PORT, () => {
+const server = app.listen(config.PORT, () => {
 	console.log(`App running on port ${config.PORT}.`)
+})
+
+const wsServer = new webSocketServer({
+	httpServer: server
+})
+
+const clients = {}
+
+wsServer.on('request', request => {
+	//const userId = uuidv4()
+	console.log(`${new Date()} received a new connection from origin ${request.origin}`)
+	//console.log('request', request)
+
+	const connection = request.accept(null, request.origin)
+
+	console.log(`connected`)
+
+	connection.on('message', message => {
+
+		console.log('its a message', message)
+		/*if (message.type === 'utf8') {
+			console.log(`received message: ${message.utf8Data}`)
+
+			for (key in clients) {
+				clients[key].sendUTF(message.utf8Data)
+				console.log('sent message to: ', key)
+			}
+		}*/
+
+		if (message.type === 'utf8') {
+			const messageArray = JSON.parse(message.utf8Data)
+			console.log(`received message type: ${messageArray.type}`)
+
+			if (messageArray.type === 'connected')
+				clients[messageArray.from] = connection
+
+			if (messageArray.type === 'close') {
+				clients[messageArray.from].close()
+				console.log(`connection ${messageArray.from} closed`)
+
+			}
+
+			if (messageArray.type === 'message') {
+
+				console.log('message to:', messageArray.to, 'from: ', messageArray.from)
+				db.query(`INSERT INTO chat (sender, receiver, msg) VALUES($1, $2, $3) RETURNING *`,
+					[messageArray.from, messageArray.to, messageArray.msg], (err, res) => {
+
+						if (res && res.rows[0]) {
+							if (clients[messageArray.to] && clients[messageArray.to].connected)
+								clients[messageArray.to].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
+							clients[messageArray.from].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
+						}
+
+						else {
+							clients[messageArray.from].sendUTF(
+								JSON.stringify({ ...messageArray, type: 'rejected' })
+							)
+							console.log(err)
+						}
+					})
+			}
+		}
+	})
+
+	connection.on('close', () => {
+		console.log((new Date()) + " Peer disconnected.");
+		//	delete clients[userId];
+	})
 })
