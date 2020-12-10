@@ -37,7 +37,8 @@ CREATE TABLE photos (
 CREATE TABLE likes (
 	like_id SERIAL PRIMARY KEY,
 	from_user_id INT NOT NULL,
-	to_user_id INT NOT NULL
+	to_user_id INT NOT NULL,
+	match SMALLINT NOT NULL
 );
 
 CREATE TABLE report (
@@ -51,7 +52,7 @@ CREATE TABLE blocked (
 	from_user_id INT NOT NULL,
 	to_user_id INT NOT NULL
 };
-	
+
 CREATE TABLE chat (
 	id SERIAL PRIMARY KEY,
 	sender INT NOT NULL,

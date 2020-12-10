@@ -4,6 +4,7 @@ import Chat from './Chat'
 import socket from '../../socket'
 import chatService from '../../services/chatService'
 import { ListGroup } from 'react-bootstrap'
+import likeService from '../../services/likeService'
 
 const Matches = ({ user }) => {
 	const [matches, setMatches] = useState([])
@@ -33,94 +34,105 @@ const Matches = ({ user }) => {
 	}
 
 	useEffect(() => {
-		userService
-			.getAll()
-			.then(res => {
-				const matches = res
-					.filter(u => u.user_id !== user.user_id)
-					.map(u => ({ ...u, messages: [] }))
 
-				if (matches.length < 1) {
-					setMatches(matches)
-					return
-				}
+		likeService
+			.getLikes(user.user_id)
+			.then(likes => {
 
-				chatService
-					.getChatHistory(user.user_id)
-					.then(res => {
+				userService
+					.getAll()
+					.then(users => {
 
-						res.forEach(m => {
-							const match = matches.find(u => u.user_id === m.sender || u.user_id === m.receiver)
+						const matchesFromDb = []
+						
+						likes.filter(l => l.match).forEach(m => {
+							const match = users.find(u => u.user_id === m.to_user_id)
 							if (match)
-								match.messages.push(m)
+								matchesFromDb.push({ ...match, messages: [] })
 						})
 
-						setMatches(matches)
+						if (matchesFromDb.length < 1) {
+							setMatches(matchesFromDb)
+							return
+						}
+
+						chatService
+							.getChatHistory(user.user_id)
+							.then(res => {
+
+								res.forEach(m => {
+									const match = matchesFromDb.find(u => u.user_id === m.sender || u.user_id === m.receiver)									
+									if (match)
+										match.messages.push(m)
+								})
+
+								setMatches(matchesFromDb)
+							})
 					})
-			})
-	}, [user.user_id])
+				})
+			}, [user.user_id])
 
-	useEffect(() => {
-		client.current = socket.createWs(user.user_id)
+		useEffect(() => {
+			client.current = socket.createWs(user.user_id)
 
-		return () => {
-			client.current.send(JSON.stringify(({
-				type: 'close',
-				from: user.user_id
-			})))
-			alert('will unmount');
-		}
-	}, [user.user_id])
-
-	useEffect(() => {
-
-		client.current.onmessage = message => {
-			const { type, ...dataFromServer } = JSON.parse(message.data)
-
-
-			//todo: think if you need the rejected type for anything
-			if (type === 'message' || type === "rejected") {
-
-				const updatedMatches = [...matches]
-
-				const match = updatedMatches.find(u => u.user_id === dataFromServer.sender || u.user_id === dataFromServer.receiver)
-
-				if (match) {
-					match.messages.push(dataFromServer)
-					if (dataFromServer.sender !== user.user_id && (!chatToShow || match.user_id !== chatToShow.user_id))
-						console.log('you have new message')
-				}
-
-
-				setMatches(updatedMatches)
-
+			return () => {
+				client.current.send(JSON.stringify(({
+					type: 'close',
+					from: user.user_id
+				})))
+				alert('will unmount');
 			}
-		}
+		}, [user.user_id])
 
-	}, [matches, user.user_id, chatToShow])
+		useEffect(() => {
 
-	//console.log('users', matches)
+			client.current.onmessage = message => {
+				const { type, ...dataFromServer } = JSON.parse(message.data)
 
-	//console.log('messages', messages)
 
-	//todo: get matches instead of everyone
-	//		add profile picture thumbnails to list
-	return <>
-		{
-			matches && matches.length !== 0
-				? <>
-					<ListGroup className="text-left text-primary" variant="flush">
-						{matches.map(m => <ListGroup.Item key={m.username} onClick={() => setChatToShow(m)}>
-							{m.username}
-						</ListGroup.Item>)}
-					</ListGroup>
-					<Chat user={user} match={chatToShow} sendMessage={sendMessage}
-						handleClose={handleClose} />
-				</>
-				: <div>Get some matches to chat</div>
-		}
-	</>
+				//todo: think if you need the rejected type for anything
+				if (type === 'message' || type === "rejected") {
 
-}
+					const updatedMatches = [...matches]
+
+					const match = updatedMatches.find(u => u.user_id === dataFromServer.sender || u.user_id === dataFromServer.receiver)
+
+					if (match) {
+						match.messages.push(dataFromServer)
+						if (dataFromServer.sender !== user.user_id && (!chatToShow || match.user_id !== chatToShow.user_id))
+							console.log('you have new message')
+					}
+
+
+					setMatches(updatedMatches)
+
+				}
+			}
+
+		}, [matches, user.user_id, chatToShow])
+
+		//console.log('users', matches)
+
+		//console.log('messages', messages)
+
+		//todo: get matches instead of everyone
+		//		add profile picture thumbnails to list
+		return <>
+			{
+				matches && matches.length !== 0
+					? <>
+						<ListGroup className="text-left text-primary" variant="flush">
+							{matches.map(m => <ListGroup.Item key={m.username} onClick={() => setChatToShow(m)}>
+								{m.username}
+							</ListGroup.Item>)}
+						</ListGroup>
+						<Chat user={user} match={chatToShow} sendMessage={sendMessage}
+							handleClose={handleClose} />
+					</>
+					: <div>Get some matches to chat</div>
+			}
+		</>
+
+	}
 
 export default Matches
