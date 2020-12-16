@@ -1,75 +1,50 @@
-import React, { useState } from 'react'
-import Modal from 'react-modal';
-import { ListGroup, Button } from 'react-bootstrap'
+import React, { useState, useEffect } from 'react'
+import { ListGroup, Button, Modal } from 'react-bootstrap'
 import blockService from '../../services/blockService'
 
-const rootElement = document.getElementById("root");
-Modal.setAppElement(rootElement);
+const BlockList = ({ user }) => {
+	const [modalIsOpen, setModalIsOpen] = useState(false)
+	const [blockedUsers, setBlockedUsers] = useState([])
 
-const customStyles = {
-	content : {
-	  top                   : '50%',
-	  left                  : '50%',
-	  right                 : 'auto',
-	  bottom                : 'auto',
-	  marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)',
-    width                 : '500px'
+	useEffect(() => {
+		blockService
+			.blockedList(user.user_id)
+			.then(res => {
+				setBlockedUsers(res.filter(r => r.from_user_id === user.user_id))
+			})
+	}, [user.user_id])
+
+	const unblockUser = userObject => {
+
+		blockService
+			.unblockUser(userObject)
+			.then(res => {
+				setBlockedUsers(blockedUsers.filter(u => u.to_user_id !== userObject.to_user_id))
+			})
 	}
-  };
 
-const BlockList = ({ blockuser }) => {
-	var subtitle;
-	const [modalIsOpen,setIsOpen] = useState(false);
-    
-    function openModal() {
-        setIsOpen(true);   
-    }
-
-    function unblockUser(id) {
-        var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
-        var from_user_id = coords.user_id;
-        var to_user_id = id;
-        var userObject = {
-            from_user_id,
-            to_user_id
-        }
-        blockService.unblockUser(userObject)
-        .then(res => {
-            alert(res.message);
-            window.location.href = "http://localhost:3000/profile";
-        })
-    }
-
-	function afterOpenModal() {
-		subtitle.style.color = '#f00';
-	  }
-	 
-	  function closeModal(){
-		setIsOpen(false);
-    }
-    
 	return <>
-		<Button onClick={openModal} variant="primary">Block list</Button>
-        <Modal
-          isOpen={modalIsOpen}
-          onAfterOpen={afterOpenModal}
-          onRequestClose={closeModal}
-          style={customStyles}
-          contentLabel="Example Modal">
-		<h3 ref={_subtitle => (subtitle = _subtitle)} id="list">Block list</h3>
-        {blockuser && blockuser.length > 0
-			? <ListGroup className="text-left" variant="flush">
-				{blockuser.map(u => <div key={u.user_id}>
-						<ListGroup.Item style={{with: "400px"}}>
-							<div style={{display: "inline-block", width: "60%"}}><h3 style={{color: "blue"}}>{u.username}</h3></div>
-              <div style={{display: "inline-block", width: "40%", textAlign: "right"}}><Button onClick={() => unblockUser(u.user_id)} variant="warning">Unblock</Button></div>
-						</ListGroup.Item>
-				</div>)}
-			</ListGroup>
-			: <div className="text-info">Your block list is empty</div>
-        }
-        </Modal>
+		<Button onClick={() => setModalIsOpen(true)} variant="primary">Blocked users</Button>
+		<Modal show={modalIsOpen} onHide={() => setModalIsOpen(false)}>
+			<Modal.Header closeButton>
+				<Modal.Title>Blocked users</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				{blockedUsers && blockedUsers.length > 0
+					? <ListGroup className="text-left" variant="flush">
+						{blockedUsers.map(u =>
+							<ListGroup.Item key={u.username}>
+								<div style={{ display: "inline-block", width: "60%" }}>{u.username}</div>
+								<div style={{ display: "inline-block", width: "40%", textAlign: "right" }}>
+									<Button onClick={() => unblockUser(u)} variant="warning">Unblock</Button>
+								</div>
+							</ListGroup.Item>
+						)}
+					</ListGroup>
+					: <div className="text-info">Your block list is empty</div>
+				}
+			</Modal.Body>
+		</Modal>
 	</>
 }
 
