@@ -1,23 +1,19 @@
-import React, {useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import UserPhotos from './UserPhotos'
 import UpdateUserForm from './UpdateUserForm'
 import Map from '../Map/index'
 import BlockList from '../Block/index'
-import BlockListService from '../../services/blockService'
+import blockService from '../../services/blockService'
 
 const UserProfile = ({ user, setUser }) => {
-	var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
-    var from_user_id = coords.user_id;
-    var userObject = {
-        from_user_id
-    }
-	const [block, setBlock] = useState([])
-	
+	const [blockedUsers, setBlockedUsers] = useState([])
+
 	useEffect(() => {
-		BlockListService.blockedList(userObject)
-		.then(res => {
-			setBlock(res)
-		})
+		blockService
+			.blockedList(user.user_id)
+			.then(res => {
+				setBlockedUsers(res.filter(r => r.from_user_id === user.user_id))
+			})
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
@@ -25,8 +21,8 @@ const UserProfile = ({ user, setUser }) => {
 		<h1>{user.username}</h1>
 		<UserPhotos user={user} setUser={setUser} />
 		<UpdateUserForm user={user} setUser={setUser} />
-		<Map />	
-		<BlockList blockuser={block}/>
+		<Map />
+		<BlockList blockuser={blockedUsers} />
 	</>
 }
 

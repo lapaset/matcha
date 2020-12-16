@@ -35,7 +35,7 @@ const UserSearch = ({ user }) => {
 		? blockedUsers && blockedUsers.length > 0
 			? resultsToShow
 				.filter(r =>
-					!blockedUsers.find(u => u.user_id === r.user_id) &&
+					!blockedUsers.find(id => id === r.user_id) &&
 					matchesFilters(r))
 			: resultsToShow
 				.filter(r => matchesFilters(r))
@@ -43,11 +43,10 @@ const UserSearch = ({ user }) => {
 
 	useEffect(() => {
 		blockService
-			.blockedList({
-				from_user_id: user.user_id
-			})
+			.blockedList(user.user_id)
 			.then(res => {
-				setBlockedUsers(res)
+				console.log('res', res)
+				setBlockedUsers(res.map(r => r.to_user_id === user.user_id ? r.from_user_id : r.to_user_id))
 			})
 	}, [user.user_id])
 

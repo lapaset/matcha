@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Modal from 'react-modal';
 import { ListGroup, Button } from 'react-bootstrap'
-import unblockService from '../../services/blockService'
+import blockService from '../../services/blockService'
 
 const rootElement = document.getElementById("root");
 Modal.setAppElement(rootElement);
@@ -34,7 +34,7 @@ const BlockList = ({ blockuser }) => {
             from_user_id,
             to_user_id
         }
-        unblockService.unblockUser(userObject)
+        blockService.unblockUser(userObject)
         .then(res => {
             alert(res.message);
             window.location.href = "http://localhost:3000/profile";
