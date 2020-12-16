@@ -51,6 +51,8 @@ const UserSearch = ({ user }) => {
 			})
 	}, [user.user_id])
 
+	console.log('blocked users', blockedUsers)
+
 	return blockedUsers
 		? <>
 			<SortForm {...sortFormProps} />
