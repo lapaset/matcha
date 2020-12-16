@@ -14,12 +14,12 @@ const BlockList = ({ user }) => {
 			})
 	}, [user.user_id])
 
-	const unblockUser = userObject => {
+	const unblockUser = block_id => {
 
 		blockService
-			.unblockUser(userObject)
+			.unblockUser(block_id)
 			.then(res => {
-				setBlockedUsers(blockedUsers.filter(u => u.to_user_id !== userObject.to_user_id))
+				setBlockedUsers(blockedUsers.filter(u => u.block_id !== block_id))
 			})
 	}
 
@@ -36,7 +36,7 @@ const BlockList = ({ user }) => {
 							<ListGroup.Item key={u.username}>
 								<div style={{ display: "inline-block", width: "60%" }}>{u.username}</div>
 								<div style={{ display: "inline-block", width: "40%", textAlign: "right" }}>
-									<Button onClick={() => unblockUser(u)} variant="warning">Unblock</Button>
+									<Button onClick={() => unblockUser(u.block_id)} variant="warning">Unblock</Button>
 								</div>
 							</ListGroup.Item>
 						)}

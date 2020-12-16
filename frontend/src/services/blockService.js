@@ -1,7 +1,6 @@
 import axios from 'axios';
 const baseUrl = 'http://localhost:3001/block'
 const noAccess = 'http://localhost:3001/block/no-access'
-const unblock = 'http://localhost:3001/block/unblock'
 
 const block = async userObject => {
     const resp = await axios.post(baseUrl, userObject)
@@ -18,8 +17,8 @@ const blockedList = async id => {
     return resp.data;
 }
 
-const unblockUser = async userObject => {
-    const resp = await axios.post(unblock, userObject)
+const unblockUser = async id => {
+    const resp = await axios.delete(`${baseUrl}/${id}`)
     return resp.data;
 }
 
