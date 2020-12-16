@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import UserPhotos from './UserPhotos'
 import UpdateUserForm from './UpdateUserForm'
-import Map from '../Map/index'
-import BlockList from '../Block/index'
+import Map from './Map/index'
+import BlockList from './BlockList/index'
 
 const UserProfile = ({ user, setUser }) => {
 

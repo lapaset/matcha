@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { ListGroup, Button, Modal } from 'react-bootstrap'
-import blockService from '../../services/blockService'
+import blockService from '../../../services/blockService'
 
 const BlockList = ({ user }) => {
 	const [modalIsOpen, setModalIsOpen] = useState(false)
