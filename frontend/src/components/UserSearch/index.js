@@ -45,7 +45,6 @@ const UserSearch = ({ user }) => {
 		blockService
 			.blockedList(user.user_id)
 			.then(res => {
-				console.log('res', res)
 				setBlockedUsers(res.map(r => r.to_user_id === user.user_id ? r.from_user_id : r.to_user_id))
 			})
 	}, [user.user_id])

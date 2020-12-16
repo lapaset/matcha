@@ -5,7 +5,7 @@ import { faAward } from '@fortawesome/free-solid-svg-icons'
 import { ListGroup } from 'react-bootstrap'
 
 const ListOfUsers = ({ users }) => {
-	console.log(users);
+
 	return  (
 		users && users.length > 0
 			? <ListGroup className="text-left" variant="flush">
