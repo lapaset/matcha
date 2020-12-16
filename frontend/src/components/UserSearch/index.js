@@ -18,50 +18,50 @@ const UserSearch = ({ user }) => {
 	const sortFormProps = ({ user, resultsToShow, setResultsToShow })
 	const filterFormProps = ({ user, requiredTag, maxDistance, minFame, minAge, maxAge })
 
+	const [blockedUsers, setBlockedUsers] = useState(null);
+
 	const requiredTagFound = tags => tags && requiredTag.value
 		? tags.split('#').includes(requiredTag.value)
 		: true
 
+	const matchesFilters = r =>
+		r.distance <= maxDistance.value &&
+		r.age.years >= minAge.value &&
+		r.age.years <= maxAge.value &&
+		r.fame >= minFame.value &&
+		requiredTagFound(r.tags)
+
 	const filterResults = () => resultsToShow
-		? resultsToShow
-			.filter(r => r.distance <= maxDistance.value &&
-				r.age.years >= minAge.value && r.age.years <= maxAge.value
-				&& r.fame >= minFame.value && requiredTagFound(r.tags))
+		? blockedUsers && blockedUsers.length > 0
+			? resultsToShow
+				.filter(r =>
+					!blockedUsers.find(u => u.user_id === r.user_id) &&
+					matchesFilters(r))
+			: resultsToShow
+				.filter(r => matchesFilters(r))
 		: []
 
-	const [unblockedUser, setUnblockedUser] = useState([]);
 	useEffect(() => {
-		var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
-		var from_user_id = coords.user_id;
-
-		var res = filterResults();
-		//console.log(res);
-		setUnblockedUser([]);
-		res.map((r) => {
-			var to_user_id = r.user_id;
-			blockService.blockedUser({ from_user_id, to_user_id })
+		blockService
+			.blockedList({
+				from_user_id: user.user_id
+			})
 			.then(res => {
-                //If this row exist in the table it returns 1 otherwise 0
-                if (res.value === 0)
-                {
-                    setUnblockedUser((prevState) => [...prevState, r])
-                }
-            })
-            .catch(e => {
-                console.log(("Error: couldn't get block info"))
-            })
-		})
-	}, [])
-	//console.log(unblockedUser)
-	return <>
+				setBlockedUsers(res)
+			})
+	}, [user.user_id])
 
-		<SortForm {...sortFormProps} />
+	console.log('blocked users', blockedUsers)
 
-		<FilterForm {...filterFormProps} />
+	return blockedUsers
+		? <>
+			<SortForm {...sortFormProps} />
 
-		<ListOfUsers users={unblockedUser} />
+			<FilterForm {...filterFormProps} />
 
-	</>
+			<ListOfUsers users={filterResults()} />
+		</>
+		: null
 }
 
 export default UserSearch
