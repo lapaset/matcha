@@ -8,81 +8,74 @@ import reportService from '../../services/reportService'
 import likeDisplayService from '../../services/likeDisplayService'
 import blockService from '../../services/blockService'
 
-const UserCard = ({ user, loggedUser }) => {
-	var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
-	//console.log(loggedUser.user_id);
-	var from_user_id = coords.user_id;
-	var to_user_id = user.user_id;
-	
-	const users = {
-		from_user_id,
-		to_user_id
-	}
+const UserCard = ({ userToShow, loggedUser }) => {
 
 	const [selectedPhoto, setSelectedPhoto] = useState(null)
-	const profilePic = user.photos
-		? user.photos.find(p => p.profilePic)
+	const [access, setAccess] = useState(null)
+	const [like, setLike] = useState(0)
+
+	const users = {
+		from_user_id: loggedUser.user_id,
+		to_user_id: userToShow.user_id
+	};
+
+	const profilePic = userToShow.photos
+		? userToShow.photos.find(p => p.profilePic)
 		: null
-	//console.log(profilePic);
-	const [access, setAccess] = useState(0);
+
 	useEffect(() => {
 		blockService.blockedUser(users)
-		.then(res => {
-			setAccess(res.value);
-			if (res.value === 1)
-			{
-				window.location.href = "http://localhost:3000";
-			}
-		})
-		.catch(e => {
-			console.log(("Error: couldn't get block info"))
-		})
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+			.then(res => {
+				setAccess(res.value);
+				if (res.value === 1)
+					window.location.href = "http://localhost:3000";
+			})
+			.catch(e => {
+				console.log(("Error: couldn't get block info"))
+			})
+	}, [users])
 
 	useEffect(() => {
 		setSelectedPhoto(profilePic)
 	}, [profilePic])
 
-	const [like, setLike] = useState(0)
 	useEffect(() => {
 		likeDisplayService.unlikeDisplay(users)
-		.then(res => {
-			setLike(res.value)
-		})
-		.catch(e => {
-			console.log(("Error: couldn't get like info"))
-		})
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+			.then(res => {
+				setLike(res.value)
+			})
+			.catch(e => {
+				console.log(("Error: couldn't get like info"))
+			})
+	}, [users])
 
 	const likeHandler = event => {
 		event.preventDefault();
 		likeService.likeUnlike(users)
-		.then(res => {
-			setLike(res.value)
-		})
+			.then(res => {
+				setLike(res.value)
+			})
 	}
 
 	const reportHandler = event => {
 		event.preventDefault();
 
 		reportService.report(users)
-		.then(res => {
-			alert(res.message);
-		})
+			.then(res => {
+				alert(res.message);
+			})
 	}
 
 	const blockHandler = event => {
 		event.preventDefault();
 		blockService.block(users)
-		.then(res => {
-			alert(res.message+user.username)
-			window.location.href = "http://localhost:3000";
-		})
+			.then(res => {
+				alert(res.message + userToShow.username)
+				window.location.href = "http://localhost:3000";
+			})
 	}
-	//console.log(user.like_show);
-	const changePhoto = id => setSelectedPhoto(user.photos.find(p => p.id === id))
+
+	const changePhoto = id => setSelectedPhoto(userToShow.photos.find(p => p.id === id))
 
 	const photoSelector = id => selectedPhoto
 		? selectedPhoto.id === id
@@ -91,10 +84,11 @@ const UserCard = ({ user, loggedUser }) => {
 		: null
 
 	//console.log('profile pic', profilePic, 'photos', user.photos);
-	
-	return <Card className="w-100 m-auto">
-		{!access 
-			? <>
+
+	return access
+		? null
+		: <Card className="w-100 m-auto">
+			<>
 				<Card.Img variant="top" src={selectedPhoto ? selectedPhoto.photoStr : null} />
 				<Card.Body className="text-center">
 					{profilePic && !access
@@ -102,7 +96,7 @@ const UserCard = ({ user, loggedUser }) => {
 							<Card.Link onClick={() => changePhoto(profilePic.id)}>
 								{photoSelector(profilePic.id)}
 							</Card.Link>
-							{user.photos
+							{userToShow.photos
 								.filter(p => !p.profilePic)
 								.map(p => <Card.Link key={p.id} onClick={() => changePhoto(p.id)}>
 									{photoSelector(p.id)}
@@ -114,25 +108,25 @@ const UserCard = ({ user, loggedUser }) => {
 
 				</Card.Body>
 				<Card.Body>
-					<Card.Title>{user.username}, {user.age}</Card.Title>
-					<Card.Text>{user.firstName} {user.lastName}</Card.Text>
+					<Card.Title>{userToShow.username}, {userToShow.age}</Card.Title>
+					<Card.Text>{userToShow.firstName} {userToShow.lastName}</Card.Text>
 					<Card.Text>
-						{user.bio}
+						{userToShow.bio}
 					</Card.Text>
 				</Card.Body>
 				<ListGroup className="list-group-flush">
-					<ListGroupItem>{user.gender}</ListGroupItem>
+					<ListGroupItem>{userToShow.gender}</ListGroupItem>
 					<ListGroupItem>
-						looking for {user.orientation
-							.map((o, i) => i < user.orientation.length - 1
+						looking for {userToShow.orientation
+							.map((o, i) => i < userToShow.orientation.length - 1
 								? `${o}, `
 								: o
 							)}
 					</ListGroupItem>
 
-					{user.tags
+					{userToShow.tags
 						? <ListGroupItem>
-							{user.tags.split('#')
+							{userToShow.tags.split('#')
 								.map((t, i) => i > 1
 									? ` #${t}`
 									: i === 1 ? `#${t}` : null
@@ -154,18 +148,7 @@ const UserCard = ({ user, loggedUser }) => {
 					</ListGroupItem>
 				</ListGroup>
 			</>
-			: null
-		}
-	</Card>
+		</Card>
 }
 
 export default UserCard
-
-//todo:
-// make username unmodifyable
-// make orientation default fmo
-// get tags as a list from db
-
-// list interesting users, name, age, profile pic?
-// must be sortable by age, location, fame rating, common tags
-// ( matching tags: SELECT tags FROM users WHERE tags LIKE '%#wow%' )

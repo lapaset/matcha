@@ -68,7 +68,7 @@ const UserView = ({ user, setUser }) => {
 				<Route path="/users/:id">
 					{
 						showUser
-							? <UserCard user={showUser} loggedUser={user}/>
+							? <UserCard userToShow={showUser} loggedUser={user}/>
 							: null
 					}
 				</Route>
