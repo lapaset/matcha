@@ -5,9 +5,8 @@ import { faAward } from '@fortawesome/free-solid-svg-icons'
 import { ListGroup } from 'react-bootstrap'
 
 const ListOfUsers = ({ users }) => {
-	//console.log('users list rendered', users)
-
-	return (
+	console.log(users);
+	return  (
 		users && users.length > 0
 			? <ListGroup className="text-left" variant="flush">
 				{users.map(u => <Link to={`/users/${u.user_id}`} key={u.user_id}>

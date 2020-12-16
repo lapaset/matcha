@@ -44,7 +44,7 @@ const UserView = ({ user, setUser }) => {
 	//console.log('showUser', showUser)
 
 	//console.log('id', matchRoute.params.id)
-	console.log('user', user)
+	//console.log('user', user)
 	//console.log('userToShow', matchRoute ? userToShow(matchRoute.params.id) : null)
 
 	return <>
