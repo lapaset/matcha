@@ -9,27 +9,6 @@ const Matches = ({ user, wsClient }) => {
 	const [matches, setMatches] = useState([])
 	const [chatToShow, setChatToShow] = useState(null)
 
-	const handleClose = () => setChatToShow(null)
-
-	const sendMessage = (from, fromUn, to, msg) => {
-
-		//show some kind of error if connection is not working
-		if (wsClient.current.readyState > 1) {
-			console.log('could not send, websocket state', wsClient.current.readyState)
-			return
-		}
-
-		wsClient.current.send(JSON.stringify({
-			type: 'message',
-			from,
-			user: fromUn,
-			to,
-			msg
-		}))
-
-		console.log('message sent', msg)
-	}
-
 	useEffect(() => {
 
 		likeService
@@ -41,7 +20,7 @@ const Matches = ({ user, wsClient }) => {
 					.then(users => {
 
 						const matchesFromDb = []
-						
+
 						likes.filter(l => l.match).forEach(m => {
 							const match = users.find(u => u.user_id === m.to_user_id)
 							if (match)
@@ -58,7 +37,7 @@ const Matches = ({ user, wsClient }) => {
 							.then(res => {
 
 								res.forEach(m => {
-									const match = matchesFromDb.find(u => u.user_id === m.sender || u.user_id === m.receiver)									
+									const match = matchesFromDb.find(u => u.user_id === m.sender || u.user_id === m.receiver)
 									if (match)
 										match.messages.push(m)
 								})
@@ -66,58 +45,50 @@ const Matches = ({ user, wsClient }) => {
 								setMatches(matchesFromDb)
 							})
 					})
-				})
-			}, [user.user_id])
+			})
+	}, [user.user_id])
 
-		useEffect(() => {
+	useEffect(() => {
 
-			wsClient.current.onmessage = message => {
-				const { type, ...dataFromServer } = JSON.parse(message.data)
+		wsClient.current.onmessage = message => {
+			const { type, ...dataFromServer } = JSON.parse(message.data)
 
+			//todo: think if you need the rejected type for anything
+			if (type === 'message' || type === "rejected") {
 
-				//todo: think if you need the rejected type for anything
-				if (type === 'message' || type === "rejected") {
+				const updatedMatches = [...matches]
 
-					const updatedMatches = [...matches]
+				const match = updatedMatches
+					.find(u => u.user_id === dataFromServer.sender || u.user_id === dataFromServer.receiver)
 
-					const match = updatedMatches.find(u => u.user_id === dataFromServer.sender || u.user_id === dataFromServer.receiver)
-
-					if (match) {
-						match.messages.push(dataFromServer)
-						if (dataFromServer.sender !== user.user_id && (!chatToShow || match.user_id !== chatToShow.user_id))
-							console.log('you have new message')
-					}
-
-
-					setMatches(updatedMatches)
-
+				if (match) {
+					match.messages.push(dataFromServer)
+					if (dataFromServer.sender !== user.user_id && (!chatToShow || match.user_id !== chatToShow.user_id))
+						console.log('you have new message from ', match.user_id)
 				}
+
+				setMatches(updatedMatches)
+
 			}
+		}
 
-		}, [matches, user.user_id, chatToShow, wsClient])
+	}, [matches, user.user_id, chatToShow, wsClient])
 
-		//console.log('users', matches)
-
-		//console.log('messages', messages)
-
-		//todo: get matches instead of everyone
-		//		add profile picture thumbnails to list
-		return <>
-			{
-				matches && matches.length !== 0
-					? <>
-						<ListGroup className="text-left text-primary" variant="flush">
-							{matches.map(m => <ListGroup.Item key={m.username} onClick={() => setChatToShow(m)}>
+	return matches && matches.length !== 0
+				? <>
+					<ListGroup className="text-left text-primary" variant="flush">
+						{matches.map(m =>
+							<ListGroup.Item key={m.username} onClick={() => setChatToShow(m)}>
 								{m.username}
-							</ListGroup.Item>)}
-						</ListGroup>
-						<Chat user={user} match={chatToShow} sendMessage={sendMessage}
-							handleClose={handleClose} />
-					</>
-					: <div>Get some matches to chat</div>
-			}
-		</>
+							</ListGroup.Item>)
+						}
+					</ListGroup>
 
-	}
+					<Chat user={user} match={chatToShow} wsClient={wsClient}
+						handleClose={() => setChatToShow(null)} />
+				</>
+				: <div>Get some matches to chat</div>
+
+}
 
 export default Matches

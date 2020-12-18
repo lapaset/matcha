@@ -2,12 +2,30 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Form, InputGroup } from 'react-bootstrap'
 import { Card, Modal } from 'react-bootstrap'
 
-const Chat = ({ user, match, sendMessage, handleClose }) => {
-
-	//console.log('chat open, user: ', user, 'match', match)
+const Chat = ({ user, match, handleClose, wsClient }) => {
 
 	const [input, setInput] = useState('')
 	const messagesEndRef = useRef(null)
+
+
+	const sendMessage = (from, fromUn, to, msg) => {
+
+		//show some kind of error if connection is not working
+		if (wsClient.current.readyState > 1) {
+			console.log('could not send, websocket state', wsClient.current.readyState)
+			return
+		}
+
+		wsClient.current.send(JSON.stringify({
+			type: 'message',
+			from,
+			user: fromUn,
+			to,
+			msg
+		}))
+
+		console.log('message sent', msg)
+	}
 
 	const handleSubmit = e => {
 		e.preventDefault()
@@ -23,8 +41,6 @@ const Chat = ({ user, match, sendMessage, handleClose }) => {
 		if (messagesEndRef.current)
 			messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
 	}, [match])
-	//todo: max length for msg
-	//		add profile pic to chat header
 
 	return match
 		? <>
@@ -33,14 +49,18 @@ const Chat = ({ user, match, sendMessage, handleClose }) => {
 					<Modal.Title>{match.username}</Modal.Title>
 				</Modal.Header>
 
-				<Modal.Body className="messageContainer" style={{ height: '60vh', overflowY: 'auto', paddingBottom: '5vh' }}>
+				<Modal.Body className="messageContainer"
+					style={{ height: '60vh', overflowY: 'auto', paddingBottom: '5vh' }}>
+
 					{match.messages.map(m =>
 						<Card key={m.id} className="w-75 mt-2 text-left"
 							style={{ marginLeft: user.user_id === m.sender ? '25%' : '0' }}>
 							<Card.Body>{m.msg}</Card.Body>
 						</Card>
 					)}
+
 					<div ref={messagesEndRef}></div>
+					
 				</Modal.Body>
 
 				<Modal.Footer>
