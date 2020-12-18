@@ -14,7 +14,7 @@ import Matches from '../Matches'
 import logoutService from '../../services/logoutService'
 import userService from '../../services/userService'
 
-const UserView = ({ user, setUser }) => {
+const UserView = ({ user, setUser, wsClient }) => {
 
 	const [showUser, setShowUser] = useState(null)
 	const matchUserRoute = useRouteMatch('/users/:id')
@@ -91,10 +91,10 @@ const UserView = ({ user, setUser }) => {
 					<Reset />
 				</Route>
 				<Route path="/matches" render={() =>
-					user.user_id ? <Matches user={user} /> : <Redirect to="/" />
+					user.user_id ? <Matches user={user} wsClient={wsClient} /> : <Redirect to="/" />
 				} />
 				<Route path="/login" render={() =>
-					user.user_id ? <Redirect to="/" /> : <Login setUser={setUser} />
+					user.user_id ? <Redirect to="/" /> : <Login setUser={setUser} wsClient={wsClient} />
 				} />
 				<Route path="/verify" render={() =>
 					user.user_id ? <Redirect to="/" /> : <Verify setUser={setUser} />

@@ -4,8 +4,10 @@ import loginService from '../../services/loginService';
 import { userGeoLocation } from '../../modules/geolocate'
 //import FlashMessage from 'react-flash-message';
 //import Alert from 'react-bootstrap/Alert';
+import socket from '../../socket'
 
-const Login = ({ setUser, loadingUser }) => {
+
+const Login = ({ setUser, wsClient }) => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [errorMessage, setErrorMessage] = useState(null)
@@ -27,9 +29,9 @@ const Login = ({ setUser, loadingUser }) => {
 			.then(data => {
 				//console.log('Login data:', data)
 				//console.log('coordinates from local storage:', window.localStorage.getItem("coordinates"));
-				window.localStorage.setItem(
-					'loggedMatchaUser', JSON.stringify(data)
-				)
+
+				window.localStorage.setItem('loggedMatchaUser', JSON.stringify(data))
+				wsClient.current = socket.createWs(data.user_id)
 				setUsername('')
 				setPassword('')
 				setErrorMessage(null)

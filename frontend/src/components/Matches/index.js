@@ -1,28 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import userService from '../../services/userService'
 import Chat from './Chat'
-import socket from '../../socket'
 import chatService from '../../services/chatService'
 import { ListGroup } from 'react-bootstrap'
 import likeService from '../../services/likeService'
 
-const Matches = ({ user }) => {
+const Matches = ({ user, wsClient }) => {
 	const [matches, setMatches] = useState([])
 	const [chatToShow, setChatToShow] = useState(null)
 
 	const handleClose = () => setChatToShow(null)
 
-	var client = useRef({})
-
 	const sendMessage = (from, fromUn, to, msg) => {
 
 		//show some kind of error if connection is not working
-		if (client.current.readyState > 1) {
-			console.log('could not send, websocket state', client.current.readyState)
+		if (wsClient.current.readyState > 1) {
+			console.log('could not send, websocket state', wsClient.current.readyState)
 			return
 		}
 
-		client.current.send(JSON.stringify({
+		wsClient.current.send(JSON.stringify({
 			type: 'message',
 			from,
 			user: fromUn,
@@ -73,20 +70,8 @@ const Matches = ({ user }) => {
 			}, [user.user_id])
 
 		useEffect(() => {
-			client.current = socket.createWs(user.user_id)
 
-			return () => {
-				client.current.send(JSON.stringify(({
-					type: 'close',
-					from: user.user_id
-				})))
-				alert('will unmount');
-			}
-		}, [user.user_id])
-
-		useEffect(() => {
-
-			client.current.onmessage = message => {
+			wsClient.current.onmessage = message => {
 				const { type, ...dataFromServer } = JSON.parse(message.data)
 
 
@@ -109,7 +94,7 @@ const Matches = ({ user }) => {
 				}
 			}
 
-		}, [matches, user.user_id, chatToShow])
+		}, [matches, user.user_id, chatToShow, wsClient])
 
 		//console.log('users', matches)
 
