@@ -3,6 +3,6 @@ POST http://localhost:3001/block
 Content-Type: application/json
 
 {
-	"from_user_id": 1,
-	"to_user_id": 3
+	"from_user_id": 3,
+	"to_user_id": 6
 }
