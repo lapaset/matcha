@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import userService from '../../services/userService'
-import Chat from './Chat'
-import chatService from '../../services/chatService'
 import { ListGroup } from 'react-bootstrap'
+
+import Chat from './Chat'
+import userService from '../../services/userService'
+import chatService from '../../services/chatService'
 import likeService from '../../services/likeService'
+import notificationService from '../../services/notificationService'
 
 const Matches = ({ user, wsClient }) => {
 	const [matches, setMatches] = useState([])
@@ -63,8 +65,13 @@ const Matches = ({ user, wsClient }) => {
 
 				if (match) {
 					match.messages.push(dataFromServer)
-					if (dataFromServer.sender !== user.user_id && (!chatToShow || match.user_id !== chatToShow.user_id))
-						console.log('you have new message from ', match.user_id)
+					if (dataFromServer.sender !== user.user_id && (!chatToShow || match.user_id !== chatToShow.user_id)) {
+						notificationService
+							.notify({
+								user_id: user.user_id,
+								notification: `New message from ${match.username}`
+							})
+					}
 				}
 
 				setMatches(updatedMatches)
