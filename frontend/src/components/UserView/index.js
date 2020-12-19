@@ -56,7 +56,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 				{user.username
 					? <><Link to="/matches">matches</Link>
 						<Link to="/profile">{user.username}</Link>
-						<Link to="/login" onClick={logoutService.handleLogout}>logout</Link></>
+						<Link to="/login" onClick={() => logoutService.handleLogout(wsClient, user.user_id)}>logout</Link></>
 
 					: <><Link to="/signup">signup</Link>
 						<Link to="/login">login</Link></>
