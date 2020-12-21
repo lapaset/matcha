@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useRouteMatch, Switch, Route, Link, Redirect } from 'react-router-dom'
-import { Container, Nav } from 'react-bootstrap'
+import { Container, Nav, Card, Dropdown, DropdownButton } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBell } from '@fortawesome/free-solid-svg-icons'
 import '../../style/userView.css'
 import UserProfile from '../UserProfile'
 import Signup from '../Signup'
@@ -13,10 +15,39 @@ import UserCard from '../UserCard'
 import Matches from '../Matches'
 import logoutService from '../../services/logoutService'
 import userService from '../../services/userService'
+import notificationService from '../../services/notificationService'
+
+
+const Notification = ({ data }) => {
+
+	return <>
+		<Dropdown.Item href="#" className='p-2'>
+			{data.notification}
+		</Dropdown.Item>
+	</>
+}
+
+
+const Notifications = ({ data, notificationCard }) => {
+
+	return <DropdownButton className='notifications' title={<FontAwesomeIcon icon={faBell} />}>
+		<Dropdown.Header>Notifications</Dropdown.Header>
+		{
+			data.map(n => <Notification key={n.id} data={n} />)
+		}
+		<Dropdown.Divider className='p-0' />
+		<Dropdown.Item href="#" className='p-2'>
+			View all
+		</Dropdown.Item>
+	</DropdownButton>
+
+}
 
 const UserView = ({ user, setUser, wsClient }) => {
 
 	const [showUser, setShowUser] = useState(null)
+	const [notifications, setNotifications] = useState(null)
+
 	const matchUserRoute = useRouteMatch('/users/:id')
 	const matchChatRoute = useRouteMatch('/chat/:id')
 	const id = matchUserRoute
@@ -37,15 +68,32 @@ const UserView = ({ user, setUser, wsClient }) => {
 				setShowUser(data)
 			})
 			.catch(e => {
-				console.log(`Error: could not get user id ${id}`)
+				console.log(`Error: could not get user id ${id}`, e)
 			})
 	}, [id])
 
+	useEffect(() => {
+		if (user.user_id) {
+			notificationService
+				.getNotifications(user.user_id)
+				.then(res => {
+					setNotifications(res)
+				})
+				.catch(e => {
+					console.log('Error: could not get notifications', e)
+				})
+		}
+
+	}, [user.user_id])
 	//console.log('showUser', showUser)
 
 	//console.log('id', matchRoute.params.id)
 	//console.log('user', user)
 	//console.log('userToShow', matchRoute ? userToShow(matchRoute.params.id) : null)
+
+	const notificationsToRender = () => notifications
+		? notifications.slice(0, 10)
+		: []
 
 	return <>
 		<Nav className="nav">
@@ -56,6 +104,11 @@ const UserView = ({ user, setUser, wsClient }) => {
 				{user.username
 					? <><Link to="/matches">matches</Link>
 						<Link to="/profile">{user.username}</Link>
+						{
+							notifications
+								? <Notifications data={notificationsToRender()} />
+								: null
+						}
 						<Link to="/login" onClick={() => logoutService.handleLogout(wsClient, user.user_id)}>logout</Link></>
 
 					: <><Link to="/signup">signup</Link>
@@ -64,11 +117,12 @@ const UserView = ({ user, setUser, wsClient }) => {
 			</div>
 		</Nav>
 		<Container id="main-container" fluid="lg" className="m-auto text-center">
+
 			<Switch>
 				<Route path="/users/:id">
 					{
 						showUser
-							? <UserCard userToShow={showUser} loggedUser={user}/>
+							? <UserCard userToShow={showUser} loggedUser={user} />
 							: null
 					}
 				</Route>
@@ -106,7 +160,6 @@ const UserView = ({ user, setUser, wsClient }) => {
 				} />
 			</Switch>
 		</Container>
-
 
 		<footer>
 			this is footer
