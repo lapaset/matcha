@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { useRouteMatch, Switch, Route, Link, Redirect, useHistory } from 'react-router-dom'
-import { Container, Nav, Card, Dropdown, DropdownButton } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBell, faCircle, faExclamation } from '@fortawesome/free-solid-svg-icons'
-import '../../style/userView.css'
+import { useRouteMatch, Switch, Route, Link, Redirect } from 'react-router-dom'
+import { Container, Nav } from 'react-bootstrap'
 import UserProfile from '../UserProfile'
 import Signup from '../Signup'
 import Login from '../Login'
@@ -13,58 +10,15 @@ import Reset from '../ForgotPassword/resetNewPasswd'
 import UserSearch from '../UserSearch'
 import UserCard from '../UserCard'
 import Matches from '../Matches'
+import Notifications from '../Notifications'
 import logoutService from '../../services/logoutService'
 import userService from '../../services/userService'
-import notificationService from '../../services/notificationService'
+import '../../style/userView.css'
 
-
-const Notification = ({ data, handleClick }) => {
-
-
-	return <Dropdown.Item onClick={() => handleClick(data)} title='show notification' className='p-2'>
-		{data.read ? null : <FontAwesomeIcon icon={faCircle} color="gold" size="xs" className="mr-1" />}
-		{data.notification}
-	</Dropdown.Item>
-}
-
-
-const Notifications = ({ data: notifications, unread, setNotifications }) => {
-
-	const history = useHistory()
-
-	const handleClick = data => {
-		notificationService
-			.markAsRead(data.id)
-			.then(() => {
-				if (data.notification.startsWith('New message from'))
-					history.push('/matches')
-				setNotifications(notifications.map(n => n.id === data.id ? ({ ...n, read: 1 }) : n))
-				
-			})
-	}
-
-	const dropDownButton = () => <>
-		<FontAwesomeIcon icon={faBell} />
-		{ unread ? <FontAwesomeIcon icon={faCircle} color='gold' size='xs' className='unreadNotifications' /> : null}
-	</>
-
-	return <DropdownButton className='notifications' variant='link' title={dropDownButton()}>
-		<Dropdown.Header>Notifications</Dropdown.Header>
-		{
-			notifications.map(n => <Notification key={n.id} data={n} handleClick={handleClick} />)
-		}
-		<Dropdown.Divider className='p-0' />
-		<Dropdown.Item href="/notifications" className='p-2'>
-			View all
-		</Dropdown.Item>
-	</DropdownButton>
-
-}
 
 const UserView = ({ user, setUser, wsClient }) => {
 
 	const [showUser, setShowUser] = useState(null)
-	const [notifications, setNotifications] = useState(null)
 
 	const matchUserRoute = useRouteMatch('/users/:id')
 	const matchChatRoute = useRouteMatch('/chat/:id')
@@ -90,33 +44,6 @@ const UserView = ({ user, setUser, wsClient }) => {
 			})
 	}, [id])
 
-	useEffect(() => {
-		if (user.user_id) {
-			notificationService
-				.getNotifications(user.user_id)
-				.then(res => {
-					setNotifications(res)
-				})
-				.catch(e => {
-					console.log('Error: could not get notifications', e)
-				})
-		}
-
-	}, [user.user_id])
-	//console.log('showUser', showUser)
-
-	//console.log('id', matchRoute.params.id)
-	//console.log('user', user)
-	//console.log('userToShow', matchRoute ? userToShow(matchRoute.params.id) : null)
-
-	const notificationsToRender = () => notifications
-		? notifications.slice(0, 10)
-		: []
-
-	const unreadNotifications = () => notifications
-		? notifications.find(n => !n.read) !== undefined
-		: false
-
 	return <>
 		<Nav className="nav">
 			<div className="navLeft">
@@ -126,11 +53,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 				{user.username
 					? <><Link to="/matches">matches</Link>
 						<Link to="/profile">{user.username}</Link>
-						{
-							notifications
-								? <Notifications data={notificationsToRender()} unread={unreadNotifications()} setNotifications={setNotifications} />
-								: null
-						}
+						<Notifications user_id={user.user_id} />
 						<Link to="/login" onClick={() => logoutService.handleLogout(wsClient, user.user_id)}>logout</Link></>
 
 					: <><Link to="/signup">signup</Link>
