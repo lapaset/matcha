@@ -72,6 +72,7 @@ wsServer.on('request', request => {
 						if (res && res.rows[0]) {
 
 							if (clients[messageArray.to] && clients[messageArray.to].connected) {
+
 								clients[messageArray.to].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
 								clients[messageArray.from].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
 							}

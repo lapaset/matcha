@@ -33,13 +33,23 @@ router.post('/', (req, resp) => {
 })
 
 router.patch('/:id', (req, resp) => {
-	db.query('UPDATE notifications SET read = 1 WHERE id = $1',
-		[req.params.id], (err, res) => {
+	db.query('UPDATE notifications SET read = $1 WHERE id = $2',
+		[req.body.read, req.params.id], (err, res) => {
 			if (res)
 				resp.status(204).end()
 			else
 				resp.status(500).send({ error: err.detail })
 		})
+})
+
+router.patch('/', (req, resp) => {
+	db.query('UPDATE notifications SET read = $1 WHERE user_id = $2',
+	[req.body.read, req.query.user_id], (err, res) => {
+		if (res)
+			resp.status(204).end()
+		else
+			resp.status(500).send({ error: err.detail })
+	})
 })
 
 module.exports = router

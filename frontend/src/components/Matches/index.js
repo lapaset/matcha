@@ -69,7 +69,7 @@ const Matches = ({ user, wsClient, setNotifications, notifications }) => {
 		wsClient.current.onmessage = message => {
 			const { type, ...dataFromServer } = JSON.parse(message.data)
 
-			console.log('message on client', type, dataFromServer)
+			//console.log('message on client', type, dataFromServer)
 
 			if (type === 'message' || type === "rejected") {
 
@@ -83,13 +83,15 @@ const Matches = ({ user, wsClient, setNotifications, notifications }) => {
 
 				match.messages.push(dataFromServer)
 
-				if (type === 'message' && dataFromServer.receiver === user.user_id &&
-					(!chatToShow || match.user_id !== chatToShow.user_id)) {
-					sendNotification({ user_id: user.user_id, notification: `New message from ${match.username}` })
+				if (type === 'message') {
+					if (dataFromServer.receiver === user.user_id && (!chatToShow || chatToShow.user_id !== match.user_id )) {
+						console.log('we should get here')
+						sendNotification({ user_id: user.user_id, notification: `New message from ${match.username}` })
+					}
 					setMatches(updatedMatches)
 				}
 
-				if (type === 'rejected' &&  dataFromServer.sender === user.user_id) {
+				if (type === 'rejected' && dataFromServer.sender === user.user_id) {
 					notificationService
 						.notify({
 							user_id: dataFromServer.receiver,
