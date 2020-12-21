@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouteMatch, Switch, Route, Link, Redirect } from 'react-router-dom'
 import { Container, Nav, Card, Dropdown, DropdownButton } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBell } from '@fortawesome/free-solid-svg-icons'
+import { faBell, faCircle } from '@fortawesome/free-solid-svg-icons'
 import '../../style/userView.css'
 import UserProfile from '../UserProfile'
 import Signup from '../Signup'
@@ -20,17 +20,21 @@ import notificationService from '../../services/notificationService'
 
 const Notification = ({ data }) => {
 
-	return <>
-		<Dropdown.Item href="#" className='p-2'>
+
+	return data.read
+		? <Dropdown.Item href="#" className='p-2'>
 			{data.notification}
 		</Dropdown.Item>
-	</>
+
+		: <Dropdown.Item href="#" className='p-2 text-success'>
+			<FontAwesomeIcon icon={faCircle} color="green"></FontAwesomeIcon> {data.notification}
+		</Dropdown.Item>
 }
 
 
 const Notifications = ({ data, notificationCard }) => {
 
-	return <DropdownButton className='notifications' title={<FontAwesomeIcon icon={faBell} />}>
+	return <DropdownButton className='notifications' variant="link" title={<FontAwesomeIcon icon={faBell} />}>
 		<Dropdown.Header>Notifications</Dropdown.Header>
 		{
 			data.map(n => <Notification key={n.id} data={n} />)
