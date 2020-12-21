@@ -4,7 +4,7 @@ const db = require('../utils/db')
 router.get('/', (req, resp) => {
 
 	if (req.query.user_id)
-		db.query('SELECT * FROM notifications WHERE user_id=$1 ORDER BY date ASC',
+		db.query('SELECT * FROM notifications WHERE user_id=$1 ORDER BY date DESC',
 			[req.query.user_id], (err, res) => {
 				if (res)
 					resp.status(200).send(res.rows)
@@ -13,7 +13,7 @@ router.get('/', (req, resp) => {
 			})
 
 	else
-		db.query('SELECT * FROM notifications ORDER BY date ASC', [], (err, res) => {
+		db.query('SELECT * FROM notifications ORDER BY date DESC', [], (err, res) => {
 			if (res)
 				resp.status(200).send(res.rows)
 			else
