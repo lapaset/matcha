@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { ListGroup } from 'react-bootstrap'
-
 import Chat from './Chat'
 import userService from '../../services/userService'
 import chatService from '../../services/chatService'
 import likeService from '../../services/likeService'
 import notificationService from '../../services/notificationService'
 
-const Matches = ({ user, wsClient }) => {
+const Matches = ({ user, wsClient, setNotifications, notifications }) => {
 	const [matches, setMatches] = useState([])
 	const [chatToShow, setChatToShow] = useState(null)
 
@@ -52,8 +51,26 @@ const Matches = ({ user, wsClient }) => {
 
 	useEffect(() => {
 
+		const sendNotification = (notification) => {
+
+			//show some kind of error if connection is not working
+			if (wsClient.current.readyState > 1) {
+				console.log('could not send, websocket state', wsClient.current.readyState)
+				return
+			}
+	
+			wsClient.current.send(JSON.stringify({
+				...notification,
+				type: 'notification'
+			}))
+	
+			console.log('notification sent', notification)
+		}
+
 		wsClient.current.onmessage = message => {
 			const { type, ...dataFromServer } = JSON.parse(message.data)
+
+			console.log('client received message', type, dataFromServer)
 
 			//todo: think if you need the rejected type for anything
 			if (type === 'message' || type === "rejected") {
@@ -66,20 +83,29 @@ const Matches = ({ user, wsClient }) => {
 				if (match) {
 					match.messages.push(dataFromServer)
 					if (dataFromServer.sender !== user.user_id && (!chatToShow || match.user_id !== chatToShow.user_id)) {
-						notificationService
+						sendNotification({ user_id: user.user_id, notification: `New message from ${match.username}` })
+						/*notificationService
 							.notify({
 								user_id: user.user_id,
 								notification: `New message from ${match.username}`
 							})
+							.then(res => {
+								console.log('notified', res)
+							})*/
 					}
 				}
 
 				setMatches(updatedMatches)
 
 			}
+			if (type === 'notification') {
+				const updatedNotifications = [ ...notifications]
+				updatedNotifications.unshift({ ...dataFromServer })
+				setNotifications(updatedNotifications)
+			}
 		}
 
-	}, [matches, user.user_id, chatToShow, wsClient])
+	}, [matches, user.user_id, chatToShow, wsClient, notifications, setNotifications])
 
 	return matches && matches.length !== 0
 				? <>

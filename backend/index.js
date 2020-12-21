@@ -83,6 +83,21 @@ wsServer.on('request', request => {
 						}
 					})
 			}
+
+			if (messageArray.type === 'notification') {
+
+				db.query('INSERT INTO notifications (user_id, notification) VALUES ($1, $2) RETURNING *',
+					[messageArray.user_id, messageArray.notification],
+					(err, res) => {
+						if (res && res.rows[0]) {
+							if (clients[messageArray.user_id] && clients[messageArray.user_id].connected)
+								clients[messageArray.user_id].sendUTF(JSON.stringify({ ...res.rows[0], type: 'notification' }))
+						}
+						else
+							console.log(err)
+					})
+
+			}
 		}
 	})
 

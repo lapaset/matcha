@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Dropdown, DropdownButton } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -7,9 +7,8 @@ import Notification from './Notification'
 import notificationService from '../../services/notificationService'
 
 
-const Notifications = ({ user_id }) => {
+const Notifications = ({ user_id, wsClient, notifications, setNotifications }) => {
 
-	const [notifications, setNotifications] = useState(null)
 	const history = useHistory()
 
 	useEffect(() => {
@@ -24,7 +23,40 @@ const Notifications = ({ user_id }) => {
 				})
 		}
 
-	}, [user_id])
+	}, [user_id, setNotifications])
+
+	useEffect(() => {
+
+		wsClient.current.onmessage = message => {
+			const { type, ...dataFromServer } = JSON.parse(message.data)
+
+			console.log('wsClient message at notifications', type)
+
+			//todo: think if you need the rejected type for anything
+			/*if (type === 'message' || type === "rejected") {
+
+				const updatedMatches = [...matches]
+
+				const match = updatedMatches
+					.find(u => u.user_id === dataFromServer.sender || u.user_id === dataFromServer.receiver)
+
+				if (match) {
+					match.messages.push(dataFromServer)
+					if (dataFromServer.sender !== user.user_id && (!chatToShow || match.user_id !== chatToShow.user_id)) {
+						notificationService
+							.notify({
+								user_id: user.user_id,
+								notification: `New message from ${match.username}`
+							})
+					}
+				}
+
+				setMatches(updatedMatches)
+
+			}*/
+		}
+
+	}, [wsClient])
 
 	const handleClick = data => {
 		notificationService
@@ -53,6 +85,7 @@ const Notifications = ({ user_id }) => {
 		}
 	</>
 
+	console.log('notifications at Notifications', notifications)
 	return notifications
 		? <DropdownButton className='notifications' variant='link' title={dropDownButton()}>
 			<Dropdown.Header>Notifications</Dropdown.Header>

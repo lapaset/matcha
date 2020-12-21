@@ -19,6 +19,7 @@ import '../../style/userView.css'
 const UserView = ({ user, setUser, wsClient }) => {
 
 	const [showUser, setShowUser] = useState(null)
+	const [notifications, setNotifications] = useState(null)
 
 	const matchUserRoute = useRouteMatch('/users/:id')
 	const matchChatRoute = useRouteMatch('/chat/:id')
@@ -53,7 +54,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 				{user.username
 					? <><Link to="/matches">matches</Link>
 						<Link to="/profile">{user.username}</Link>
-						<Notifications user_id={user.user_id} />
+						<Notifications user_id={user.user_id} wsClient={wsClient} notifications={notifications} setNotifications={setNotifications} />
 						<Link to="/login" onClick={() => logoutService.handleLogout(wsClient, user.user_id)}>logout</Link></>
 
 					: <><Link to="/signup">signup</Link>
@@ -90,7 +91,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 					<Reset />
 				</Route>
 				<Route path="/matches" render={() =>
-					user.user_id ? <Matches user={user} wsClient={wsClient} /> : <Redirect to="/" />
+					user.user_id ? <Matches user={user} wsClient={wsClient} setNotifications={setNotifications} notifications={notifications} /> : <Redirect to="/" />
 				} />
 				<Route path="/login" render={() =>
 					user.user_id ? <Redirect to="/" /> : <Login setUser={setUser} wsClient={wsClient} />
