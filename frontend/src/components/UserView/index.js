@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useRouteMatch, Switch, Route, Link, Redirect } from 'react-router-dom'
+import { useRouteMatch, Switch, Route, Link, Redirect, useHistory } from 'react-router-dom'
 import { Container, Nav, Card, Dropdown, DropdownButton } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell, faCircle, faExclamation } from '@fortawesome/free-solid-svg-icons'
@@ -18,19 +18,30 @@ import userService from '../../services/userService'
 import notificationService from '../../services/notificationService'
 
 
-const Notification = ({ data }) => {
-	const linkTo = () => data.notification.startsWith('New message from')
-		? '/matches'
-		: '#'
+const Notification = ({ data, handleClick }) => {
 
-	return <Dropdown.Item href={linkTo()} className='p-2'>
+
+	return <Dropdown.Item onClick={() => handleClick(data)} title='show notification' className='p-2'>
 		{data.read ? null : <FontAwesomeIcon icon={faCircle} color="gold" size="xs" className="mr-1" />}
 		{data.notification}
 	</Dropdown.Item>
 }
 
 
-const Notifications = ({ data, unread }) => {
+const Notifications = ({ data: notifications, unread, setNotifications }) => {
+
+	const history = useHistory()
+
+	const handleClick = data => {
+		notificationService
+			.markAsRead(data.id)
+			.then(() => {
+				if (data.notification.startsWith('New message from'))
+					history.push('/matches')
+				setNotifications(notifications.map(n => n.id === data.id ? ({ ...n, read: 1 }) : n))
+				
+			})
+	}
 
 	const dropDownButton = () => <>
 		<FontAwesomeIcon icon={faBell} />
@@ -40,7 +51,7 @@ const Notifications = ({ data, unread }) => {
 	return <DropdownButton className='notifications' variant='link' title={dropDownButton()}>
 		<Dropdown.Header>Notifications</Dropdown.Header>
 		{
-			data.map(n => <Notification key={n.id} data={n} />)
+			notifications.map(n => <Notification key={n.id} data={n} handleClick={handleClick} />)
 		}
 		<Dropdown.Divider className='p-0' />
 		<Dropdown.Item href="/notifications" className='p-2'>
@@ -117,7 +128,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 						<Link to="/profile">{user.username}</Link>
 						{
 							notifications
-								? <Notifications data={notificationsToRender()} unread={unreadNotifications()} />
+								? <Notifications data={notificationsToRender()} unread={unreadNotifications()} setNotifications={setNotifications} />
 								: null
 						}
 						<Link to="/login" onClick={() => logoutService.handleLogout(wsClient, user.user_id)}>logout</Link></>
