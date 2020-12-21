@@ -45,3 +45,8 @@ footer {
 .notifications {
 	display: inline-block;
 }
+
+.unreadNotifications {
+	margin-left: -0.5em;
+	vertical-align: top;
+}

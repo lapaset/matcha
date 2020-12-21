@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouteMatch, Switch, Route, Link, Redirect } from 'react-router-dom'
 import { Container, Nav, Card, Dropdown, DropdownButton } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBell, faCircle } from '@fortawesome/free-solid-svg-icons'
+import { faBell, faCircle, faExclamation } from '@fortawesome/free-solid-svg-icons'
 import '../../style/userView.css'
 import UserProfile from '../UserProfile'
 import Signup from '../Signup'
@@ -19,28 +19,31 @@ import notificationService from '../../services/notificationService'
 
 
 const Notification = ({ data }) => {
+	const linkTo = () => data.notification.startsWith('New message from')
+		? '/matches'
+		: '#'
 
-
-	return data.read
-		? <Dropdown.Item href="#" className='p-2'>
-			{data.notification}
-		</Dropdown.Item>
-
-		: <Dropdown.Item href="#" className='p-2 text-success'>
-			<FontAwesomeIcon icon={faCircle} color="green"></FontAwesomeIcon> {data.notification}
-		</Dropdown.Item>
+	return <Dropdown.Item href={linkTo()} className='p-2'>
+		{data.read ? null : <FontAwesomeIcon icon={faCircle} color="gold" size="xs" className="mr-1" />}
+		{data.notification}
+	</Dropdown.Item>
 }
 
 
-const Notifications = ({ data, notificationCard }) => {
+const Notifications = ({ data, unread }) => {
 
-	return <DropdownButton className='notifications' variant="link" title={<FontAwesomeIcon icon={faBell} />}>
+	const dropDownButton = () => <>
+		<FontAwesomeIcon icon={faBell} />
+		{ unread ? <FontAwesomeIcon icon={faCircle} color='gold' size='xs' className='unreadNotifications' /> : null}
+	</>
+
+	return <DropdownButton className='notifications' variant='link' title={dropDownButton()}>
 		<Dropdown.Header>Notifications</Dropdown.Header>
 		{
 			data.map(n => <Notification key={n.id} data={n} />)
 		}
 		<Dropdown.Divider className='p-0' />
-		<Dropdown.Item href="#" className='p-2'>
+		<Dropdown.Item href="/notifications" className='p-2'>
 			View all
 		</Dropdown.Item>
 	</DropdownButton>
@@ -99,6 +102,10 @@ const UserView = ({ user, setUser, wsClient }) => {
 		? notifications.slice(0, 10)
 		: []
 
+	const unreadNotifications = () => notifications
+		? notifications.find(n => !n.read) !== undefined
+		: false
+
 	return <>
 		<Nav className="nav">
 			<div className="navLeft">
@@ -110,7 +117,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 						<Link to="/profile">{user.username}</Link>
 						{
 							notifications
-								? <Notifications data={notificationsToRender()} />
+								? <Notifications data={notificationsToRender()} unread={unreadNotifications()} />
 								: null
 						}
 						<Link to="/login" onClick={() => logoutService.handleLogout(wsClient, user.user_id)}>logout</Link></>
