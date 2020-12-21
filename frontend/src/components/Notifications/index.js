@@ -25,39 +25,6 @@ const Notifications = ({ user_id, wsClient, notifications, setNotifications }) =
 
 	}, [user_id, setNotifications])
 
-	useEffect(() => {
-
-		wsClient.current.onmessage = message => {
-			const { type, ...dataFromServer } = JSON.parse(message.data)
-
-			console.log('wsClient message at notifications', type)
-
-			//todo: think if you need the rejected type for anything
-			/*if (type === 'message' || type === "rejected") {
-
-				const updatedMatches = [...matches]
-
-				const match = updatedMatches
-					.find(u => u.user_id === dataFromServer.sender || u.user_id === dataFromServer.receiver)
-
-				if (match) {
-					match.messages.push(dataFromServer)
-					if (dataFromServer.sender !== user.user_id && (!chatToShow || match.user_id !== chatToShow.user_id)) {
-						notificationService
-							.notify({
-								user_id: user.user_id,
-								notification: `New message from ${match.username}`
-							})
-					}
-				}
-
-				setMatches(updatedMatches)
-
-			}*/
-		}
-
-	}, [wsClient])
-
 	const handleClick = data => {
 		notificationService
 			.markAsRead(data.id)

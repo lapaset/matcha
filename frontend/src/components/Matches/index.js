@@ -55,24 +55,22 @@ const Matches = ({ user, wsClient, setNotifications, notifications }) => {
 
 			//show some kind of error if connection is not working
 			if (wsClient.current.readyState > 1) {
-				console.log('could not send, websocket state', wsClient.current.readyState)
+				console.log('Error: could not send notification, websocket state', wsClient.current.readyState)
 				return
 			}
-	
+
 			wsClient.current.send(JSON.stringify({
 				...notification,
 				type: 'notification'
 			}))
-	
-			console.log('notification sent', notification)
+
 		}
 
 		wsClient.current.onmessage = message => {
 			const { type, ...dataFromServer } = JSON.parse(message.data)
 
-			console.log('client received message', type, dataFromServer)
+			console.log('message on client', type, dataFromServer)
 
-			//todo: think if you need the rejected type for anything
 			if (type === 'message' || type === "rejected") {
 
 				const updatedMatches = [...matches]
@@ -80,47 +78,57 @@ const Matches = ({ user, wsClient, setNotifications, notifications }) => {
 				const match = updatedMatches
 					.find(u => u.user_id === dataFromServer.sender || u.user_id === dataFromServer.receiver)
 
-				if (match) {
-					match.messages.push(dataFromServer)
-					if (dataFromServer.sender !== user.user_id && (!chatToShow || match.user_id !== chatToShow.user_id)) {
-						sendNotification({ user_id: user.user_id, notification: `New message from ${match.username}` })
-						/*notificationService
-							.notify({
-								user_id: user.user_id,
-								notification: `New message from ${match.username}`
-							})
-							.then(res => {
-								console.log('notified', res)
-							})*/
-					}
+				if (!match)
+					return
+
+				match.messages.push(dataFromServer)
+
+				if (type === 'message' && dataFromServer.receiver === user.user_id &&
+					(!chatToShow || match.user_id !== chatToShow.user_id)) {
+					sendNotification({ user_id: user.user_id, notification: `New message from ${match.username}` })
+					setMatches(updatedMatches)
 				}
 
-				setMatches(updatedMatches)
+				if (type === 'rejected' &&  dataFromServer.sender === user.user_id) {
+					notificationService
+						.notify({
+							user_id: dataFromServer.receiver,
+							notification: `New message from ${user.username}`
+						})
+						.then(() => {
+							setMatches(updatedMatches)
+						})
+						.catch(e => {
+							console.log('Error sending notification', e)
+						})
+				}
+
+
 
 			}
 			if (type === 'notification') {
-				const updatedNotifications = [ ...notifications]
+				const updatedNotifications = [...notifications]
 				updatedNotifications.unshift({ ...dataFromServer })
 				setNotifications(updatedNotifications)
 			}
 		}
 
-	}, [matches, user.user_id, chatToShow, wsClient, notifications, setNotifications])
+	}, [matches, user.user_id, chatToShow, wsClient, notifications, setNotifications, user.username])
 
 	return matches && matches.length !== 0
-				? <>
-					<ListGroup className="text-left text-primary" variant="flush">
-						{matches.map(m =>
-							<ListGroup.Item key={m.username} onClick={() => setChatToShow(m)}>
-								{m.username}
-							</ListGroup.Item>)
-						}
-					</ListGroup>
+		? <>
+			<ListGroup className="text-left text-primary" variant="flush">
+				{matches.map(m =>
+					<ListGroup.Item key={m.username} onClick={() => setChatToShow(m)}>
+						{m.username}
+					</ListGroup.Item>)
+				}
+			</ListGroup>
 
-					<Chat user={user} match={chatToShow} wsClient={wsClient}
-						handleClose={() => setChatToShow(null)} />
-				</>
-				: <div>Get some matches to chat</div>
+			<Chat user={user} match={chatToShow} wsClient={wsClient}
+				handleClose={() => setChatToShow(null)} />
+		</>
+		: <div>Get some matches to chat</div>
 
 }
 

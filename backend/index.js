@@ -70,15 +70,18 @@ wsServer.on('request', request => {
 					[messageArray.from, messageArray.to, messageArray.msg], (err, res) => {
 
 						if (res && res.rows[0]) {
-							if (clients[messageArray.to] && clients[messageArray.to].connected)
+
+							if (clients[messageArray.to] && clients[messageArray.to].connected) {
 								clients[messageArray.to].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
-							clients[messageArray.from].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
+								clients[messageArray.from].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
+							}
+
+							else
+								clients[messageArray.from].sendUTF(JSON.stringify({ ...res.rows[0], type: 'rejected' }))
 						}
 
 						else {
-							clients[messageArray.from].sendUTF(
-								JSON.stringify({ ...messageArray, type: 'rejected' })
-							)
+
 							console.log(err)
 						}
 					})
