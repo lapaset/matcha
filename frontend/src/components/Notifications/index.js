@@ -34,7 +34,7 @@ const Notifications = ({ notifications, handleClick }) => {
 			}
 			<Dropdown.Divider className='p-0' />
 
-			<Link to='/notifications'>View all</Link>
+			<Dropdown.Item as={Link} to='/notifications'>View all</Dropdown.Item>
 
 		</DropdownButton>
 		: null

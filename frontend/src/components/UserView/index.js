@@ -91,6 +91,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 				}
 			</div>
 		</Nav>
+		
 		<Container id="main-container" fluid="lg" className="m-auto text-center">
 
 			<Switch>
@@ -111,30 +112,29 @@ const UserView = ({ user, setUser, wsClient }) => {
 					? <Redirect to="/" />
 					: <Verify setUser={setUser} />
 				} />
-
-				{user.user_id && (
-					<>
-						<Route path="/users/:id" render={() => showUser
-							? <UserCard userToShow={showUser} loggedUser={user} />
-							: null
-						} />
-						<Route path="/profile" render={() => userInfoComplete()
-							? <UserProfile user={user} setUser={setUser} />
-							: <><p className="text-center text-info">fill your info to start matching</p>
-								<UserProfile user={user} setUser={setUser} /></>
-						} />
-						<Route path="/matches" render={() =>
-							<Matches user={user} wsClient={wsClient} setNotifications={setNotifications} notifications={notifications} />
-						} />
-						<Route path="/notifications" render={() =>
-							<NotificationsList notifications={notifications} handleClick={handleNotificationClick} />
-						} />
-					</>
-				)}
-
-
-
+				<Route path="/users/:id" render={() => user.user_id
+					? showUser
+						? <UserCard userToShow={showUser} loggedUser={user} />
+						: null
+					: <Redirect to="/" />
+				} />
+				<Route path="/profile" render={() => user.user_id
+					? userInfoComplete()
+						? <UserProfile user={user} setUser={setUser} />
+						: <><p className="text-center text-info">fill your info to start matching</p>
+							<UserProfile user={user} setUser={setUser} /></>
+					: <Redirect to="/" />
+				} />
+				<Route path="/matches" render={() => user.user_id
+					? <Matches user={user} wsClient={wsClient} setNotifications={setNotifications} notifications={notifications} />
+					: <Redirect to="/" />
+				} />
+				<Route path="/notifications" render={() => user.user_id
+					? <NotificationsList notifications={notifications} handleClick={handleNotificationClick} />
+					: <Redirect to="/" />
+				} />
 			</Switch>
+
 		</Container>
 
 		<footer>
