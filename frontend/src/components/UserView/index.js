@@ -94,48 +94,46 @@ const UserView = ({ user, setUser, wsClient }) => {
 		<Container id="main-container" fluid="lg" className="m-auto text-center">
 
 			<Switch>
-				<Route path="/users/:id">
-					{
-						showUser
+				<Route path="/" exact={true} render={() => user.user_id
+					? userInfoComplete()
+						? <UserSearch user={user} />
+						: <Redirect to="/profile" />
+					: <Redirect to="/login" />
+				} />
+				<Route path="/signup" component={Signup} />
+				<Route path="/forgot" component={Forgot} />
+				<Route path="/reset-password/:token" component={Reset} />
+				<Route path="/login" render={() => user.user_id
+					? <Redirect to="/" />
+					: <Login setUser={setUser} wsClient={wsClient} />
+				} />
+				<Route path="/verify" render={() => user.user_id
+					? <Redirect to="/" />
+					: <Verify setUser={setUser} />
+				} />
+
+				{user.user_id && (
+					<>
+						<Route path="/users/:id" render={() => showUser
 							? <UserCard userToShow={showUser} loggedUser={user} />
 							: null
-					}
-				</Route>
-				<Route path="/profile" render={() =>
-					user.user_id
-						? userInfoComplete()
+						} />
+						<Route path="/profile" render={() => userInfoComplete()
 							? <UserProfile user={user} setUser={setUser} />
 							: <><p className="text-center text-info">fill your info to start matching</p>
 								<UserProfile user={user} setUser={setUser} /></>
+						} />
+						<Route path="/matches" render={() =>
+							<Matches user={user} wsClient={wsClient} setNotifications={setNotifications} notifications={notifications} />
+						} />
+						<Route path="/notifications" render={() =>
+							<NotificationsList notifications={notifications} handleClick={handleNotificationClick} />
+						} />
+					</>
+				)}
 
-						: <Redirect to="/login" />
-				} />
-				<Route path="/signup">
-					<Signup />
-				</Route>
-				<Route path="/forgot">
-					<Forgot />
-				</Route>
-				<Route path="/reset-password/:token">
-					<Reset />
-				</Route>
-				<Route path="/matches" render={() =>
-					user.user_id ? <Matches user={user} wsClient={wsClient} setNotifications={setNotifications} notifications={notifications} /> : <Redirect to="/" />
-				} />
-				<Route path="/login" render={() =>
-					user.user_id ? <Redirect to="/" /> : <Login setUser={setUser} wsClient={wsClient} />
-				} />
-				<Route path="/verify" render={() =>
-					user.user_id ? <Redirect to="/" /> : <Verify setUser={setUser} />
-				} />
-				<Route path="/notifications" render={() =>
-					user.user_id ? <NotificationsList notifications={notifications} handleClick={handleNotificationClick} /> : <Redirect to="/" />
-				} />
-				<Route path="/" render={() =>
-					user.user_id
-						? userInfoComplete() ? <UserSearch user={user} /> : <Redirect to="/profile" />
-						: <Redirect to="/login" />
-				} />
+
+
 			</Switch>
 		</Container>
 
