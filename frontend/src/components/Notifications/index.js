@@ -1,43 +1,14 @@
-import React, { useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import React from 'react'
 import { Dropdown, DropdownButton } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell, faCircle } from '@fortawesome/free-solid-svg-icons'
 import Notification from './Notification'
-import notificationService from '../../services/notificationService'
 
-
-const Notifications = ({ user_id, wsClient, notifications, setNotifications }) => {
-
-	const history = useHistory()
-
-	useEffect(() => {
-		if (user_id) {
-			notificationService
-				.getNotifications(user_id)
-				.then(res => {
-					setNotifications(res)
-				})
-				.catch(e => {
-					console.log('Error: could not get notifications', e)
-				})
-		}
-
-	}, [user_id, setNotifications])
-
-	const handleClick = data => {
-		notificationService
-			.markAsRead(data.id)
-			.then(() => {
-				if (data.notification.startsWith('New message from'))
-					history.push('/matches')
-				setNotifications(notifications.map(n => n.id === data.id ? ({ ...n, read: 1 }) : n))
-
-			})
-	}
+const Notifications = ({ notifications, handleClick }) => {
 
 	const notificationsToRender = () => notifications
-		? notifications.slice(0, 10)
+		? notifications.slice(0, 8)
 		: []
 
 	const unreadNotifications = () => notifications
@@ -52,18 +23,19 @@ const Notifications = ({ user_id, wsClient, notifications, setNotifications }) =
 		}
 	</>
 
-	console.log('notifications at Notifications', notifications)
 	return notifications
 		? <DropdownButton className='notifications' variant='link' title={dropDownButton()}>
 			<Dropdown.Header>Notifications</Dropdown.Header>
 			{
 				notificationsToRender()
-					.map(n => <Notification key={n.id} data={n} handleClick={handleClick} />)
+					.map(n => <Dropdown.Item key={n.id} onClick={() => handleClick(n)} className='p-2'>
+						<Notification data={n} handleClick={handleClick} />
+					</Dropdown.Item>)
 			}
 			<Dropdown.Divider className='p-0' />
-			<Dropdown.Item href="/notifications" className='p-2'>
-				View all
-		</Dropdown.Item>
+
+			<Link to='/notifications'>View all</Link>
+
 		</DropdownButton>
 		: null
 

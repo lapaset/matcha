@@ -88,7 +88,8 @@ const Matches = ({ user, wsClient, setNotifications, notifications }) => {
 						console.log('we should get here')
 						sendNotification({ user_id: user.user_id, notification: `New message from ${match.username}` })
 					}
-					setMatches(updatedMatches)
+					else
+						setMatches(updatedMatches)
 				}
 
 				if (type === 'rejected' && dataFromServer.sender === user.user_id) {

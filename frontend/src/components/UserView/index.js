@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useRouteMatch, Switch, Route, Link, Redirect } from 'react-router-dom'
+import { useRouteMatch, Switch, Route, Link, Redirect, useHistory } from 'react-router-dom'
 import { Container, Nav } from 'react-bootstrap'
 import UserProfile from '../UserProfile'
 import Signup from '../Signup'
@@ -11,8 +11,11 @@ import UserSearch from '../UserSearch'
 import UserCard from '../UserCard'
 import Matches from '../Matches'
 import Notifications from '../Notifications'
+import NotificationsList from '../Notifications/NotificationsList'
 import logoutService from '../../services/logoutService'
 import userService from '../../services/userService'
+import notificationService from '../../services/notificationService'
+
 import '../../style/userView.css'
 
 
@@ -20,7 +23,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 
 	const [showUser, setShowUser] = useState(null)
 	const [notifications, setNotifications] = useState(null)
-
+	const history = useHistory()
 	const matchUserRoute = useRouteMatch('/users/:id')
 	const matchChatRoute = useRouteMatch('/chat/:id')
 	const id = matchUserRoute
@@ -45,6 +48,32 @@ const UserView = ({ user, setUser, wsClient }) => {
 			})
 	}, [id])
 
+
+	useEffect(() => {
+		if (user.user_id) {
+			notificationService
+				.getNotifications(user.user_id)
+				.then(res => {
+					setNotifications(res)
+				})
+				.catch(e => {
+					console.log('Error: could not get notifications', e)
+				})
+		}
+
+	}, [user.user_id])
+
+	const handleNotificationClick = data => {
+		notificationService
+			.markAsRead(data.id)
+			.then(() => {
+				if (data.notification.startsWith('New message from'))
+					history.push('/matches')
+				setNotifications(notifications.map(n => n.id === data.id ? ({ ...n, read: 1 }) : n))
+
+			})
+	}
+
 	return <>
 		<Nav className="nav">
 			<div className="navLeft">
@@ -54,7 +83,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 				{user.username
 					? <><Link to="/matches">matches</Link>
 						<Link to="/profile">{user.username}</Link>
-						<Notifications user_id={user.user_id} wsClient={wsClient} notifications={notifications} setNotifications={setNotifications} />
+						<Notifications user_id={user.user_id} notifications={notifications} handleClick={handleNotificationClick} />
 						<Link to="/login" onClick={() => logoutService.handleLogout(wsClient, user.user_id)}>logout</Link></>
 
 					: <><Link to="/signup">signup</Link>
@@ -98,6 +127,9 @@ const UserView = ({ user, setUser, wsClient }) => {
 				} />
 				<Route path="/verify" render={() =>
 					user.user_id ? <Redirect to="/" /> : <Verify setUser={setUser} />
+				} />
+				<Route path="/notifications" render={() =>
+					user.user_id ? <NotificationsList notifications={notifications} handleClick={handleNotificationClick} /> : <Redirect to="/" />
 				} />
 				<Route path="/" render={() =>
 					user.user_id
