@@ -1,16 +1,26 @@
 import React from 'react'
-import { ListGroup } from 'react-bootstrap'
+import { ListGroup, Button } from 'react-bootstrap'
 import Notification from './Notification'
 
-const NotificationsList = ({ notifications, handleClick }) => notifications
+const NotificationsList = ({ notifications, handleClick, markAllAsRead }) => {
 
-	? <ListGroup className="text-left text-primary" variant="flush">
-		{notifications.map(n =>
-			<ListGroup.Item key={n.id} onClick={() => handleClick(n)}>
-				<Notification data={n} />
-			</ListGroup.Item>)
-		}
-	</ListGroup>
-	: null
+	return notifications
+
+		? <>
+			<div className="text-right mb-3" >
+				<Button variant="link" className="text-info" onClick={markAllAsRead}>
+					Mark all as read
+				</Button>
+			</div>
+			<ListGroup className="text-left text-primary" variant="flush">
+				{notifications.map(n =>
+					<ListGroup.Item key={n.id} onClick={() => handleClick(n)}>
+						<Notification data={n} />
+					</ListGroup.Item>)
+				}
+			</ListGroup>
+		</>
+		: null
+}
 
 export default NotificationsList

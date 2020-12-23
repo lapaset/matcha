@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell, faCircle } from '@fortawesome/free-solid-svg-icons'
 import Notification from './Notification'
 
-const Notifications = ({ notifications, handleClick }) => {
+const Notifications = ({ notifications, handleClick, markAllAsRead }) => {
 
 	const notificationsToRender = () => notifications
 		? notifications.slice(0, 8)
@@ -35,6 +35,7 @@ const Notifications = ({ notifications, handleClick }) => {
 			<Dropdown.Divider className='p-0' />
 
 			<Dropdown.Item as={Link} to='/notifications'>View all</Dropdown.Item>
+			<Dropdown.Item onClick={markAllAsRead}>Mark all as read</Dropdown.Item> 
 
 		</DropdownButton>
 		: null

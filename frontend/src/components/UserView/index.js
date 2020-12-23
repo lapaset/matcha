@@ -81,6 +81,14 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 
 			})
 	}
+	
+	const markAllNotificationsRead = () => {
+		notificationService
+			.markAllAsRead(user.user_id)
+			.then(() => {
+				setNotifications(notifications.map(n => ({ ...n, read: 1 })))
+			})
+	}
 
 	return <>
 		<Nav className="nav">
@@ -91,7 +99,7 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 				{user.username
 					? <><Link to="/matches">matches</Link>
 						<Link to="/profile">{user.username}</Link>
-						<Notifications user_id={user.user_id} notifications={notifications} handleClick={handleNotificationClick} />
+						<Notifications user_id={user.user_id} notifications={notifications} handleClick={handleNotificationClick} markAllAsRead={markAllNotificationsRead} />
 						<Link to="/login" onClick={() => logoutService.handleLogout(wsClient, user.user_id)}>logout</Link></>
 
 					: <><Link to="/signup">signup</Link>
@@ -138,7 +146,7 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 					: <Redirect to="/" />
 				} />
 				<Route path="/notifications" render={() => user.user_id
-					? <NotificationsList notifications={notifications} handleClick={handleNotificationClick} />
+					? <NotificationsList notifications={notifications} handleClick={handleNotificationClick} markAllAsRead={markAllNotificationsRead} />
 					: <Redirect to="/" />
 				} />
 			</Switch>
