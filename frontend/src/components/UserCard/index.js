@@ -25,6 +25,13 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 		: null
 
 	useEffect(() => {
+		socket.sendNotification(wsClient, {
+			user_id: userToShow.user_id,
+			notification: `${loggedUser.username} viewed your profile`
+		})
+	}, [wsClient, loggedUser.username, userToShow.user_id])
+
+	useEffect(() => {
 		blockService.blockedUser(users)
 			.then(res => {
 				setAccess(res.value);
