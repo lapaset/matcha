@@ -25,11 +25,14 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 		: null
 
 	useEffect(() => {
+
 		socket.sendNotification(wsClient, {
 			user_id: userToShow.user_id,
+			from_id: loggedUser.user_id,
 			notification: `${loggedUser.username} viewed your profile`
 		})
-	}, [wsClient, loggedUser.username, userToShow.user_id])
+
+	}, [loggedUser.user_id, loggedUser.username, userToShow.user_id, wsClient])
 
 	useEffect(() => {
 		blockService.blockedUser(users)
@@ -58,26 +61,27 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 	}, [users])
 
 	const likeHandler = event => {
+		const sendNotification = notification => {
+			socket.sendNotification(wsClient, {
+				user_id: userToShow.user_id,
+				from_id: loggedUser.user_id,
+				notification
+			})
+		}
+
 		event.preventDefault();
 
 		likeService.likeUnlike(users)
 			.then(res => {
 
 				if (res.value === 1 && res.status === 'match')
-					socket.sendNotification(wsClient, {
-						user_id: userToShow.user_id,
-						notification: `New match with ${loggedUser.username}`
-					})
+					sendNotification(`New match with ${loggedUser.username}`)
+
 				else if (res.value === 1 && res.status === 'like')
-					socket.sendNotification(wsClient, {
-						user_id: userToShow.user_id,
-						notification: `${loggedUser.username} likes you`
-					})
+					sendNotification(`${loggedUser.username} likes you`)
+
 				else if (res.value === 0 && res.status === 'unmatch')
-					socket.sendNotification(wsClient, {
-						user_id: userToShow.user_id,
-						notification: `No longer match with ${loggedUser.username}`
-					})
+					sendNotification(`No longer match with ${loggedUser.username}`)
 
 				setLiked(res.value)
 			})

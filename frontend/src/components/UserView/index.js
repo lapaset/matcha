@@ -75,17 +75,14 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 		notificationService
 			.markAsRead(data.id)
 			.then((res) => {
-				/*if (data.notification.endsWith('viewed your profile'))
-					history.push('/')*/
-				if (data.notification.startsWith('New message from') || 
+				if (data.notification.endsWith('viewed your profile') ||
+					data.notification.endsWith('likes you'))
+					history.push(`/users/${res.from_id}`)
+				else if (data.notification.startsWith('New message from') || 
 					data.notification.startsWith('New match with') ||
 					data.notification.startsWith('No longer match with'))
 					history.push('/matches')
-				/*if (data.notification.startsWith(''))
-					history.push('/matches')*/
-
-				console.log('data', data, 'res', res)
-				//setNotifications(notifications.map(n => n.id === data.id ? ({ ...n, read: 1 }) : n))
+				setNotifications(notifications.map(n => n.id === data.id ? ({ ...n, read: 1 }) : n))
 
 			})
 	}

@@ -98,7 +98,7 @@ const App = () => {
 
 			const { type, ...dataFromServer } = JSON.parse(message.data)
 
-			console.log('message in client', type, dataFromServer)
+			//console.log('message in client', type, dataFromServer)
 			if (type === 'message' || type === "rejected") {
 
 				const updatedMatches = [...matches]
@@ -146,7 +146,7 @@ const App = () => {
 				}
 
 			}
-			if (type === 'notification') {
+			if (type === 'notification' && notifications) {
 				const updatedNotifications = [...notifications]
 				updatedNotifications.unshift({ ...dataFromServer })
 				setNotifications(updatedNotifications)
