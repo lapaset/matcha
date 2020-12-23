@@ -7,6 +7,7 @@ const getNotifications = async user_id => {
 }
 
 const notify = async notification => {
+	console.log('notify', notification)
 	const resp = await axios.post(baseUrl, notification)
 	return resp.data
 }

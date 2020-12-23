@@ -33,11 +33,14 @@ wsServer.on('request', request => {
 	console.log(`${new Date()} received a new connection from origin ${request.origin}`)
 
 	const connection = request.accept(null, request.origin)
-	
+
 	connection.on('message', message => {
+		console.log('\nNew message\n')
 
 		if (message.type === 'utf8') {
 			const messageArray = JSON.parse(message.utf8Data)
+
+			console.log('message:', messageArray)
 
 			if (messageArray.type === 'connected')
 				clients[messageArray.from] = connection
@@ -72,9 +75,8 @@ wsServer.on('request', request => {
 
 			if (messageArray.type === 'notification') {
 
-
-				db.query('INSERT INTO notifications (user_id, notification) VALUES ($1, $2) RETURNING *',
-					[messageArray.user_id, messageArray.notification],
+				db.query('INSERT INTO notifications (user_id, from_id, notification) VALUES ($1, $2, $3) RETURNING *',
+					[messageArray.user_id, messageArray.from_id, messageArray.notification],
 					(err, res) => {
 						if (res && res.rows[0]) {
 							if (clients[messageArray.user_id] && clients[messageArray.user_id].connected)

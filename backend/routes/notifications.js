@@ -22,8 +22,8 @@ router.get('/', (req, resp) => {
 })
 
 router.post('/', (req, resp) => {
-	db.query('INSERT INTO notifications (user_id, notification) \
-	VALUES ($1, $2) RETURNING *', [req.body.user_id, req.body.notification],
+	db.query('INSERT INTO notifications (user_id, from_id, notification) \
+	VALUES ($1, $2, $3) RETURNING *', [req.body.user_id, req.body.from_id, req.body.notification],
 		(err, res) => {
 			if (res)
 				resp.status(201).send(res.rows[0])
@@ -33,10 +33,10 @@ router.post('/', (req, resp) => {
 })
 
 router.patch('/:id', (req, resp) => {
-	db.query('UPDATE notifications SET read = $1 WHERE id = $2',
+	db.query('UPDATE notifications SET read = $1 WHERE id = $2 RETURNING *',
 		[req.body.read, req.params.id], (err, res) => {
 			if (res)
-				resp.status(204).end()
+				resp.status(200).send(res.rows[0])
 			else
 				resp.status(500).send({ error: err.detail })
 		})

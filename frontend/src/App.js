@@ -3,6 +3,8 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import './style/app.css'
 import userService from './services/userService'
 import notificationService from './services/notificationService'
+import likeService from './services/likeService'
+import chatService from './services/chatService'
 import socket from './socket'
 import UserView from './components/UserView'
 
@@ -12,7 +14,7 @@ const App = () => {
 	const [matches, setMatches] = useState([])
 	const [notifications, setNotifications] = useState(null)
 	const [chatToShow, setChatToShow] = useState(null)
-	
+
 	var wsClient = useRef({})
 	const loadingUser = useRef(true);
 
@@ -60,11 +62,43 @@ const App = () => {
 	}, [])
 
 	useEffect(() => {
+		if (user.user_id) {
+			likeService
+				.getMatches(user.user_id)
+				.then(res => {
+					if (res.length < 1)
+						return
+
+					const matchesFromDb = res.map(m => ({
+						...m,
+						messages: []
+					}))
+
+					chatService
+						.getChatHistory(user.user_id)
+						.then(res => {
+
+							res.forEach(m => {
+								const match = matchesFromDb.find(u => u.user_id === m.sender || u.user_id === m.receiver)
+								if (match)
+									match.messages.push(m)
+							})
+
+							setMatches(matchesFromDb)
+						})
+
+					setMatches()
+				})
+		}
+	}, [user.user_id])
+
+	useEffect(() => {
 
 		wsClient.current.onmessage = message => {
 
 			const { type, ...dataFromServer } = JSON.parse(message.data)
 
+			console.log('message in client', type, dataFromServer)
 			if (type === 'message' || type === "rejected") {
 
 				const updatedMatches = [...matches]
@@ -72,18 +106,26 @@ const App = () => {
 				const match = updatedMatches
 					.find(u => u.user_id === dataFromServer.sender || u.user_id === dataFromServer.receiver)
 
+				console.log('match', match)
 				if (!match)
 					return
 
 				match.messages.push(dataFromServer)
 
 				if (type === 'message') {
-					if (dataFromServer.receiver === user.user_id && (!chatToShow || chatToShow.user_id !== match.user_id ))
-						socket.sendNotification(wsClient, {
+					if (dataFromServer.receiver === user.user_id && (!chatToShow || chatToShow.user_id !== match.user_id)) {
+						console.log('should come here', {
 							user_id: user.user_id,
+							from_id: match.user_id,
 							notification: `New message from ${match.username}`
 						})
-		
+
+						socket.sendNotification(wsClient, {
+							user_id: user.user_id,
+							from_id: match.user_id,
+							notification: `New message from ${match.username}`
+						})
+					}
 					else
 						setMatches(updatedMatches)
 				}
@@ -92,6 +134,7 @@ const App = () => {
 					notificationService
 						.notify({
 							user_id: dataFromServer.receiver,
+							from_id: dataFromServer.sender,
 							notification: `New message from ${user.username}`
 						})
 						.then(() => {

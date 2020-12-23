@@ -1,14 +1,31 @@
 const likesRouter = require('express').Router()
 const db = require('../utils/db')
 
-likesRouter.get('/:id', (req, resp) => {
-	db.query('SELECT * FROM likes WHERE from_user_id = $1',
-		[req.params.id], (err, res) => {
-			if (res)
-				resp.status(200).send(res.rows)
-			else
-				resp.status(500).send({ error: err.detail })
-		})
+likesRouter.get('/', (req, resp) => {
+	console.log(req.query)
+	let query = 'SELECT user_id, username, like_id FROM likes\
+	INNER JOIN users ON to_user_id = user_id'
+	const parameters = []
+
+	if (req.query.from_user_id) {
+		console.log('here')
+		query = query.concat(' WHERE from_user_id = $1')
+		parameters.push(req.query.from_user_id)
+
+		if (req.query.match) {
+			query = query.concat(' AND match = $2')
+			parameters.push(req.query.match)
+		}
+	}
+	console.log('query', query, 'parameters', parameters)
+
+	db.query(query, parameters, (err, res) => {
+		if (res)
+			resp.status(200).send(res.rows)
+		else
+			resp.status(500).send({ error: err.detail })
+	})
+
 })
 
 likesRouter.post('/', (req, resp) => {
@@ -34,7 +51,7 @@ likesRouter.post('/', (req, resp) => {
 												resp.status(500).send(error)
 										})
 								} else
-									resp.status(200).send({ value: 0, status: 'unlike'})
+									resp.status(200).send({ value: 0, status: 'unlike' })
 							}
 							else
 								resp.status(500).send(error)
