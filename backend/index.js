@@ -30,21 +30,14 @@ const wsServer = new webSocketServer({
 const clients = {}
 
 wsServer.on('request', request => {
-	//const userId = uuidv4()
 	console.log(`${new Date()} received a new connection from origin ${request.origin}`)
-	//console.log('request', request)
 
 	const connection = request.accept(null, request.origin)
-
-	console.log(`connected`)
-
+	
 	connection.on('message', message => {
-
-		console.log('\n--------------------------\nits a message', message)
 
 		if (message.type === 'utf8') {
 			const messageArray = JSON.parse(message.utf8Data)
-			console.log(`received message type: ${messageArray.type}`)
 
 			if (messageArray.type === 'connected')
 				clients[messageArray.from] = connection
@@ -57,7 +50,6 @@ wsServer.on('request', request => {
 
 			if (messageArray.type === 'message') {
 
-				console.log('message to:', messageArray.to, 'from: ', messageArray.from)
 				db.query(`INSERT INTO chat (sender, receiver, msg) VALUES($1, $2, $3) RETURNING *`,
 					[messageArray.from, messageArray.to, messageArray.msg], (err, res) => {
 
@@ -73,10 +65,8 @@ wsServer.on('request', request => {
 								clients[messageArray.from].sendUTF(JSON.stringify({ ...res.rows[0], type: 'rejected' }))
 						}
 
-						else {
-
+						else 
 							console.log(err)
-						}
 					})
 			}
 
@@ -87,12 +77,8 @@ wsServer.on('request', request => {
 					[messageArray.user_id, messageArray.notification],
 					(err, res) => {
 						if (res && res.rows[0]) {
-							if (clients[messageArray.user_id] && clients[messageArray.user_id].connected) {
+							if (clients[messageArray.user_id] && clients[messageArray.user_id].connected)
 								clients[messageArray.user_id].sendUTF(JSON.stringify({ ...res.rows[0], type: 'notification' }))
-								console.log('notification send to', messageArray.user_id)
-							}
-							else
-								console.log('notification not send')
 						}
 						else
 							console.log(err)

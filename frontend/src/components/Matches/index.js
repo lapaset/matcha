@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { ListGroup } from 'react-bootstrap'
 import Chat from './Chat'
 import userService from '../../services/userService'
 import chatService from '../../services/chatService'
 import likeService from '../../services/likeService'
-import notificationService from '../../services/notificationService'
-import socket from '../../socket'
 
-
-const Matches = ({ user, wsClient, setNotifications, notifications }) => {
-	const [matches, setMatches] = useState([])
-	const [chatToShow, setChatToShow] = useState(null)
+const Matches = ({ user, matches, setMatches, chatToShow, setChatToShow, wsClient }) => {
 
 	useEffect(() => {
 
@@ -49,60 +44,7 @@ const Matches = ({ user, wsClient, setNotifications, notifications }) => {
 							})
 					})
 			})
-	}, [user.user_id])
-
-	useEffect(() => {
-
-		wsClient.current.onmessage = message => {
-			console.log('message on client')
-
-			const { type, ...dataFromServer } = JSON.parse(message.data)
-
-			console.log('message on client data:', type, dataFromServer)
-
-			if (type === 'message' || type === "rejected") {
-
-				const updatedMatches = [...matches]
-
-				const match = updatedMatches
-					.find(u => u.user_id === dataFromServer.sender || u.user_id === dataFromServer.receiver)
-
-				if (!match)
-					return
-
-				match.messages.push(dataFromServer)
-
-				if (type === 'message') {
-					if (dataFromServer.receiver === user.user_id && (!chatToShow || chatToShow.user_id !== match.user_id )) {
-						socket.sendNotification(wsClient, { user_id: user.user_id, notification: `New message from ${match.username}` })
-					}
-					else
-						setMatches(updatedMatches)
-				}
-
-				if (type === 'rejected' && dataFromServer.sender === user.user_id) {
-					notificationService
-						.notify({
-							user_id: dataFromServer.receiver,
-							notification: `New message from ${user.username}`
-						})
-						.then(() => {
-							setMatches(updatedMatches)
-						})
-						.catch(e => {
-							console.log('Error sending notification', e)
-						})
-				}
-
-			}
-			if (type === 'notification') {
-				const updatedNotifications = [...notifications]
-				updatedNotifications.unshift({ ...dataFromServer })
-				setNotifications(updatedNotifications)
-			}
-		}
-
-	}, [matches, user.user_id, chatToShow, wsClient, notifications, setNotifications, user.username])
+	}, [user.user_id, setMatches])
 
 	return matches && matches.length !== 0
 		? <>

@@ -18,10 +18,10 @@ import notificationService from '../../services/notificationService'
 
 import '../../style/userView.css'
 
-const UserView = ({ user, setUser, wsClient }) => {
+const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifications,
+	chatToShow, setChatToShow, wsClient }) => {
 
 	const [showUser, setShowUser] = useState(null)
-	const [notifications, setNotifications] = useState(null)
 	const history = useHistory()
 	const matchUserRoute = useRouteMatch('/users/:id')
 	const matchChatRoute = useRouteMatch('/chat/:id')
@@ -34,6 +34,15 @@ const UserView = ({ user, setUser, wsClient }) => {
 	const userInfoComplete = () => {
 		return user.firstName && user.lastName && user.username && user.email && user.gender && user.orientation
 	}
+
+	const matchProps = {
+		user,
+		matches,
+		setMatches,
+		chatToShow,
+		setChatToShow,
+		wsClient
+	};
 
 	useEffect(() => {
 		userService
@@ -60,7 +69,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 				})
 		}
 
-	}, [user.user_id])
+	}, [user.user_id, setNotifications])
 
 	const handleNotificationClick = data => {
 		notificationService
@@ -125,7 +134,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 					: <Redirect to="/" />
 				} />
 				<Route path="/matches" render={() => user.user_id
-					? <Matches user={user} wsClient={wsClient} setNotifications={setNotifications} notifications={notifications} />
+					? <Matches {...matchProps} />
 					: <Redirect to="/" />
 				} />
 				<Route path="/notifications" render={() => user.user_id
