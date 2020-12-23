@@ -61,6 +61,18 @@ CREATE TABLE chat (
 	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE notifications (
+	id SERIAL PRIMARY KEY,
+	user_id INT NOT NULL,
+	from_id INT NOT NULL,
+	read SMALLINT NOT NULL DEFAULT '0',
+	notification TEXT,
+	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY(user_id)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE
+);
+
 INSERT INTO users (first_name, last_name, username, email, verified, password, gender, orientation, tags, latitude, longitude, birthdate, fame)
 VALUES 
 ('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 100),
