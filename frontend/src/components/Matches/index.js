@@ -5,6 +5,8 @@ import userService from '../../services/userService'
 import chatService from '../../services/chatService'
 import likeService from '../../services/likeService'
 import notificationService from '../../services/notificationService'
+import socket from '../../socket'
+
 
 const Matches = ({ user, wsClient, setNotifications, notifications }) => {
 	const [matches, setMatches] = useState([])
@@ -51,25 +53,12 @@ const Matches = ({ user, wsClient, setNotifications, notifications }) => {
 
 	useEffect(() => {
 
-		const sendNotification = (notification) => {
-
-			//show some kind of error if connection is not working
-			if (wsClient.current.readyState > 1) {
-				console.log('Error: could not send notification, websocket state', wsClient.current.readyState)
-				return
-			}
-
-			wsClient.current.send(JSON.stringify({
-				...notification,
-				type: 'notification'
-			}))
-
-		}
-
 		wsClient.current.onmessage = message => {
+			console.log('message on client')
+
 			const { type, ...dataFromServer } = JSON.parse(message.data)
 
-			//console.log('message on client', type, dataFromServer)
+			console.log('message on client data:', type, dataFromServer)
 
 			if (type === 'message' || type === "rejected") {
 
@@ -85,8 +74,7 @@ const Matches = ({ user, wsClient, setNotifications, notifications }) => {
 
 				if (type === 'message') {
 					if (dataFromServer.receiver === user.user_id && (!chatToShow || chatToShow.user_id !== match.user_id )) {
-						console.log('we should get here')
-						sendNotification({ user_id: user.user_id, notification: `New message from ${match.username}` })
+						socket.sendNotification(wsClient, { user_id: user.user_id, notification: `New message from ${match.username}` })
 					}
 					else
 						setMatches(updatedMatches)
@@ -105,8 +93,6 @@ const Matches = ({ user, wsClient, setNotifications, notifications }) => {
 							console.log('Error sending notification', e)
 						})
 				}
-
-
 
 			}
 			if (type === 'notification') {

@@ -18,7 +18,6 @@ import notificationService from '../../services/notificationService'
 
 import '../../style/userView.css'
 
-
 const UserView = ({ user, setUser, wsClient }) => {
 
 	const [showUser, setShowUser] = useState(null)
@@ -91,7 +90,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 				}
 			</div>
 		</Nav>
-		
+
 		<Container id="main-container" fluid="lg" className="m-auto text-center">
 
 			<Switch>
@@ -114,7 +113,7 @@ const UserView = ({ user, setUser, wsClient }) => {
 				} />
 				<Route path="/users/:id" render={() => user.user_id
 					? showUser
-						? <UserCard userToShow={showUser} loggedUser={user} />
+						? <UserCard userToShow={showUser} loggedUser={user} wsClient={wsClient} />
 						: null
 					: <Redirect to="/" />
 				} />

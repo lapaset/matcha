@@ -7,12 +7,13 @@ import likeService from '../../services/likeService'
 import reportService from '../../services/reportService'
 import likeDisplayService from '../../services/likeDisplayService'
 import blockService from '../../services/blockService'
+import socket from '../../socket'
 
-const UserCard = ({ userToShow, loggedUser }) => {
+const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 
 	const [selectedPhoto, setSelectedPhoto] = useState(null)
 	const [access, setAccess] = useState(null)
-	const [like, setLike] = useState(0)
+	const [liked, setLiked] = useState(0)
 
 	const users = {
 		from_user_id: loggedUser.user_id,
@@ -42,7 +43,7 @@ const UserCard = ({ userToShow, loggedUser }) => {
 	useEffect(() => {
 		likeDisplayService.unlikeDisplay(users)
 			.then(res => {
-				setLike(res.value)
+				setLiked(res.value)
 			})
 			.catch(e => {
 				console.log(("Error: couldn't get like info"))
@@ -51,10 +52,29 @@ const UserCard = ({ userToShow, loggedUser }) => {
 
 	const likeHandler = event => {
 		event.preventDefault();
+
 		likeService.likeUnlike(users)
 			.then(res => {
-				setLike(res.value)
+
+				if (res.value === 1 && res.status === 'match')
+					socket.sendNotification(wsClient, {
+						user_id: userToShow.user_id,
+						notification: `New match with ${loggedUser.username}`
+					})
+				else if (res.value === 1 && res.status === 'like')
+					socket.sendNotification(wsClient, {
+						user_id: userToShow.user_id,
+						notification: `${loggedUser.username} likes you`
+					})
+				else if (res.value === 0 && res.status === 'unmatch')
+					socket.sendNotification(wsClient, {
+						user_id: userToShow.user_id,
+						notification: `No longer match with ${loggedUser.username}`
+					})
+
+				setLiked(res.value)
 			})
+
 	}
 
 	const reportHandler = event => {
@@ -135,7 +155,7 @@ const UserCard = ({ userToShow, loggedUser }) => {
 						: null}
 					{loggedUser.photos &&
 						<ListGroupItem>
-							{like
+							{liked
 								? <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Unlike</Card.Link>
 								: <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Like</Card.Link>
 							}

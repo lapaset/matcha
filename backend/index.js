@@ -40,15 +40,7 @@ wsServer.on('request', request => {
 
 	connection.on('message', message => {
 
-		console.log('its a message', message)
-		/*if (message.type === 'utf8') {
-			console.log(`received message: ${message.utf8Data}`)
-
-			for (key in clients) {
-				clients[key].sendUTF(message.utf8Data)
-				console.log('sent message to: ', key)
-			}
-		}*/
+		console.log('\n--------------------------\nits a message', message)
 
 		if (message.type === 'utf8') {
 			const messageArray = JSON.parse(message.utf8Data)
@@ -90,12 +82,17 @@ wsServer.on('request', request => {
 
 			if (messageArray.type === 'notification') {
 
+
 				db.query('INSERT INTO notifications (user_id, notification) VALUES ($1, $2) RETURNING *',
 					[messageArray.user_id, messageArray.notification],
 					(err, res) => {
 						if (res && res.rows[0]) {
-							if (clients[messageArray.user_id] && clients[messageArray.user_id].connected)
+							if (clients[messageArray.user_id] && clients[messageArray.user_id].connected) {
 								clients[messageArray.user_id].sendUTF(JSON.stringify({ ...res.rows[0], type: 'notification' }))
+								console.log('notification send to', messageArray.user_id)
+							}
+							else
+								console.log('notification not send')
 						}
 						else
 							console.log(err)

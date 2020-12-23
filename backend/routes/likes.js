@@ -20,24 +20,21 @@ likesRouter.post('/', (req, resp) => {
 				const matchLike = res.rows.find(r => r.to_user_id === req.body.from_user_id)
 
 				if (userLike) {
-					console.log('already liked, unlike')
 					db.query('DELETE FROM likes WHERE like_id=$1',
 						[userLike.like_id], (error, result) => {
 							if (result) {
-								console.log("matchLike", matchLike)
 								if (matchLike && matchLike.match) {
-									console.log('should come here')
 									//remove the match if needed				
 
 									db.query('UPDATE likes SET match=0 WHERE like_id=$1',
 										[matchLike.like_id], (err, res) => {
 											if (res)
-												resp.status(200).send({ value: 0 })
+												resp.status(200).send({ value: 0, status: 'unmatch' })
 											else
 												resp.status(500).send(error)
 										})
 								} else
-									resp.status(200).send({ value: 0 })
+									resp.status(200).send({ value: 0, status: 'unlike'})
 							}
 							else
 								resp.status(500).send(error)
@@ -45,7 +42,6 @@ likesRouter.post('/', (req, resp) => {
 
 
 				} else {
-					console.log('its a match!')
 					//add a like and the match
 					db.query('INSERT INTO likes (from_user_id, to_user_id, match) VALUES ($1, $2, $3) RETURNING *',
 						[req.body.from_user_id, req.body.to_user_id, 1], (error, result) => {
@@ -53,7 +49,7 @@ likesRouter.post('/', (req, resp) => {
 								db.query('UPDATE likes SET match=1 WHERE like_id=$1',
 									[matchLike.like_id], (err, res) => {
 										if (res)
-											resp.status(200).send({ value: 1 })
+											resp.status(200).send({ value: 1, status: 'match' })
 										else
 											resp.status(500).send(error)
 									})
@@ -69,7 +65,7 @@ likesRouter.post('/', (req, resp) => {
 				db.query('INSERT INTO likes (from_user_id, to_user_id, match) VALUES ($1, $2, $3) RETURNING *',
 					[req.body.from_user_id, req.body.to_user_id, 0], (error, result) => {
 						if (result)
-							resp.status(200).send({ value: 1 })
+							resp.status(200).send({ value: 1, status: 'like' })
 						else
 							resp.status(500).send(error)
 					})
@@ -77,33 +73,22 @@ likesRouter.post('/', (req, resp) => {
 			else
 				console.log(err)
 		})
+})
 
-	/*
-	db.query('SELECT * FROM likes WHERE from_user_id = $1 AND to_user_id = $2',
-		[req.body.from_user_id, req.body.to_user_id], (err, res) => {
-			if (res && res.rows[0]) {
-				db.query('DELETE FROM likes WHERE from_user_id = $1 AND to_user_id = $2',
-					[req.body.from_user_id, req.body.to_user_id], (error, result) => {
-						if (result)
-							resp.status(200).send({ value: 0 })
-						else
-							resp.status(500).send(error)
-					})
-			} else if (err) {
-				resp.status(501).send(err)
-			}
-			else {
-				//resp.status(500).send(err)
-				//db.query('DELETE FROM likes WHERE from_user_id = $1 AND to_user_id = $2')
-				db.query('INSERT INTO likes (from_user_id, to_user_id) VALUES ($1, $2) RETURNING *',
-					[req.body.from_user_id, req.body.to_user_id], (error, result) => {
-						if (result)
-							resp.status(200).send({ value: 1 })
-						else
-							resp.status(500).send(error)
-					})
-			}
-		})*/
+likesRouter.delete('/:id', (req, resp) => {
+	db.query('DELETE FROM likes WHERE like_id = $1', [req.params.id], (err, res) => {
+		if (res) {
+			db.query('UPDATE likes SET match=0 WHERE like_id=$1',
+				[matchLike.like_id], (err, res) => {
+					if (res)
+						resp.status(200).send({ value: 0 })
+					else
+						resp.status(500).send(error)
+				})
+		}
+		else
+			resp.status(500).send(error)
+	})
 })
 
 module.exports = likesRouter
