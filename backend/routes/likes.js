@@ -2,22 +2,24 @@ const likesRouter = require('express').Router()
 const db = require('../utils/db')
 
 likesRouter.get('/', (req, resp) => {
-	console.log(req.query)
+
 	let query = 'SELECT user_id, username, like_id FROM likes\
-	INNER JOIN users ON to_user_id = user_id'
+		INNER JOIN users ON to_user_id = user_id'
 	const parameters = []
 
 	if (req.query.from_user_id) {
-		console.log('here')
 		query = query.concat(' WHERE from_user_id = $1')
 		parameters.push(req.query.from_user_id)
 
+		if (req.query.to_user_id) {
+			parameters.push(req.query.to_user_id)
+			query = query.concat(` AND to_user_id = $${parameters.length}`)
+		}
 		if (req.query.match) {
-			query = query.concat(' AND match = $2')
 			parameters.push(req.query.match)
+			query = query.concat(` AND match = $${parameters.length}`)
 		}
 	}
-	console.log('query', query, 'parameters', parameters)
 
 	db.query(query, parameters, (err, res) => {
 		if (res)
@@ -29,8 +31,11 @@ likesRouter.get('/', (req, resp) => {
 })
 
 likesRouter.post('/', (req, resp) => {
-	db.query('SELECT * from likes WHERE from_user_id=$1 AND to_user_id=$2 OR from_user_id=$2 AND to_user_id=$1;',
+
+	db.query('SELECT * from likes WHERE from_user_id=$1 AND to_user_id=$2\
+		OR from_user_id=$2 AND to_user_id=$1;',
 		[req.body.from_user_id, req.body.to_user_id], (err, res) => {
+			
 			if (res && res.rows[0]) {
 				console.log("res", res.rows)
 				const userLike = res.rows.find(r => r.from_user_id === req.body.from_user_id)

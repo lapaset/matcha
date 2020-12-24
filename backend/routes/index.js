@@ -8,7 +8,6 @@ module.exports = {
 	map: require('./map'),
 	chat: require('./chat'),
 	likes: require('./likes'),
-	likeDisplay: require('./likeDisplay'),
 	report: require('./report'),
 	block: require('./block'),
 	notifications: require('./notifications')

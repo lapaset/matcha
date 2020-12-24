@@ -5,7 +5,6 @@ import { faCircle, faHeart, faFlag, faBan } from '@fortawesome/free-solid-svg-ic
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 import likeService from '../../services/likeService'
 import reportService from '../../services/reportService'
-import likeDisplayService from '../../services/likeDisplayService'
 import blockService from '../../services/blockService'
 import socket from '../../socket'
 
@@ -13,7 +12,7 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 
 	const [selectedPhoto, setSelectedPhoto] = useState(null)
 	const [access, setAccess] = useState(null)
-	const [liked, setLiked] = useState(0)
+	const [liked, setLiked] = useState(false)
 
 	const users = {
 		from_user_id: loggedUser.user_id,
@@ -51,14 +50,16 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 	}, [profilePic])
 
 	useEffect(() => {
-		likeDisplayService.unlikeDisplay(users)
+		likeService
+			.getLike(loggedUser.user_id, userToShow.user_id)
 			.then(res => {
-				setLiked(res.value)
+				if (res.length > 0)
+					setLiked(true)
 			})
 			.catch(e => {
 				console.log(("Error: couldn't get like info"))
 			})
-	}, [users])
+	}, [loggedUser.user_id, userToShow.user_id])
 
 	const likeHandler = event => {
 		const sendNotification = notification => {
