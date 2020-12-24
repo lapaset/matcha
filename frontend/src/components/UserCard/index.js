@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircle, faHeart, faFlag, faBan } from '@fortawesome/free-solid-svg-icons'
-import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Modal, Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 import likeService from '../../services/likeService'
 import reportService from '../../services/reportService'
 import blockService from '../../services/blockService'
@@ -13,6 +13,7 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 	const [selectedPhoto, setSelectedPhoto] = useState(null)
 	const [access, setAccess] = useState(null)
 	const [liked, setLiked] = useState(false)
+	const [showMatchAlert, setShowMatchAlert] = useState(false)
 
 	const users = {
 		from_user_id: loggedUser.user_id,
@@ -75,8 +76,10 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 		likeService.likeUnlike(users)
 			.then(res => {
 
-				if (res.value === 1 && res.status === 'match')
+				if (res.value === 1 && res.status === 'match') {
 					sendNotification(`New match with ${loggedUser.username}`)
+					setShowMatchAlert(true)
+				}
 
 				else if (res.value === 1 && res.status === 'like')
 					sendNotification(`${loggedUser.username} likes you`)
@@ -119,68 +122,78 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 
 	return access
 		? null
-		: <Card className="w-100 m-auto">
-			<>
-				<Card.Img variant="top" src={selectedPhoto ? selectedPhoto.photoStr : null} />
-				<Card.Body className="text-center">
-					{profilePic && !access
-						? <>
-							<Card.Link onClick={() => changePhoto(profilePic.id)}>
-								{photoSelector(profilePic.id)}
-							</Card.Link>
-							{userToShow.photos
-								.filter(p => !p.profilePic)
-								.map(p => <Card.Link key={p.id} onClick={() => changePhoto(p.id)}>
-									{photoSelector(p.id)}
-								</Card.Link>)
-							}
-						</>
-						: null
-					}
+		: <>
+			<Card className="w-100 m-auto">
+				<>
+					<Card.Img variant="top" src={selectedPhoto ? selectedPhoto.photoStr : null} />
+					<Card.Body className="text-center">
+						{profilePic && !access
+							? <>
+								<Card.Link onClick={() => changePhoto(profilePic.id)}>
+									{photoSelector(profilePic.id)}
+								</Card.Link>
+								{userToShow.photos
+									.filter(p => !p.profilePic)
+									.map(p => <Card.Link key={p.id} onClick={() => changePhoto(p.id)}>
+										{photoSelector(p.id)}
+									</Card.Link>)
+								}
+							</>
+							: null
+						}
 
-				</Card.Body>
-				<Card.Body>
-					<Card.Title>{userToShow.username}, {userToShow.age}</Card.Title>
-					<Card.Text>{userToShow.firstName} {userToShow.lastName}</Card.Text>
-					<Card.Text>
-						{userToShow.bio}
-					</Card.Text>
-				</Card.Body>
-				<ListGroup className="list-group-flush">
-					<ListGroupItem>{userToShow.gender}</ListGroupItem>
-					<ListGroupItem>
-						looking for {userToShow.orientation
-							.map((o, i) => i < userToShow.orientation.length - 1
-								? `${o}, `
-								: o
-							)}
-					</ListGroupItem>
-
-					{userToShow.tags
-						? <ListGroupItem>
-							{userToShow.tags.split('#')
-								.map((t, i) => i > 1
-									? ` #${t}`
-									: i === 1 ? `#${t}` : null
+					</Card.Body>
+					<Card.Body>
+						<Card.Title>{userToShow.username}, {userToShow.age}</Card.Title>
+						<Card.Text>{userToShow.firstName} {userToShow.lastName}</Card.Text>
+						<Card.Text>
+							{userToShow.bio}
+						</Card.Text>
+					</Card.Body>
+					<ListGroup className="list-group-flush">
+						<ListGroupItem>{userToShow.gender}</ListGroupItem>
+						<ListGroupItem>
+							looking for {userToShow.orientation
+								.map((o, i) => i < userToShow.orientation.length - 1
+									? `${o}, `
+									: o
 								)}
 						</ListGroupItem>
-						: null}
-					{loggedUser.photos &&
+
+						{userToShow.tags
+							? <ListGroupItem>
+								{userToShow.tags.split('#')
+									.map((t, i) => i > 1
+										? ` #${t}`
+										: i === 1 ? `#${t}` : null
+									)}
+							</ListGroupItem>
+							: null}
+						{loggedUser.photos &&
+							<ListGroupItem>
+								{liked
+									? <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Unlike</Card.Link>
+									: <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Like</Card.Link>
+								}
+								<Card.Link href="#" onClick={event => reportHandler(event)}><FontAwesomeIcon icon={faFlag} /> Report</Card.Link>
+								<Card.Link href="#" onClick={event => blockHandler(event)}><FontAwesomeIcon icon={faBan} /> Block</Card.Link>
+							</ListGroupItem>
+						}
 						<ListGroupItem>
-							{liked
-								? <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Unlike</Card.Link>
-								: <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Like</Card.Link>
-							}
-							<Card.Link href="#" onClick={event => reportHandler(event)}><FontAwesomeIcon icon={faFlag} /> Report</Card.Link>
-							<Card.Link href="#" onClick={event => blockHandler(event)}><FontAwesomeIcon icon={faBan} /> Block</Card.Link>
+							<Card.Link as={Link} to="/">Back to the list</Card.Link>
 						</ListGroupItem>
-					}
-					<ListGroupItem>
-						<Card.Link as={Link} to="/">Back to the list</Card.Link>
-					</ListGroupItem>
-				</ListGroup>
-			</>
-		</Card>
+					</ListGroup>
+				</>
+			</Card>
+			<Modal show={showMatchAlert} variant="success" onHide={() => setShowMatchAlert(false)}>
+				<Modal.Header closeButton>
+					<Modal.Title>It's a match!</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Link to='/matches'>You can now chat with {userToShow.username}</Link>
+				</Modal.Body>
+			</Modal>
+		</>
 }
 
 export default UserCard
