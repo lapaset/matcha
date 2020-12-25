@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircle, faHeart, faFlag, faBan } from '@fortawesome/free-solid-svg-icons'
-import { Modal, Card, ListGroup, ListGroupItem, OverlayTrigger, Tooltip, Button } from 'react-bootstrap'
+import { Modal, Card, ListGroup, ListGroupItem } from 'react-bootstrap'
+import Photos from './Photos'
 import ActionButtons from './ActionButtons'
 import likeService from '../../services/likeService'
 import reportService from '../../services/reportService'
@@ -14,7 +13,6 @@ import socket from '../../socket'
 
 const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 
-	const [selectedPhoto, setSelectedPhoto] = useState(null)
 	const [access, setAccess] = useState(null)
 	const [liked, setLiked] = useState(false)
 	const [showMatchAlert, setShowMatchAlert] = useState(false)
@@ -23,10 +21,6 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 		from_user_id: loggedUser.user_id,
 		to_user_id: userToShow.user_id
 	};
-
-	const profilePic = userToShow.photos
-		? userToShow.photos.find(p => p.profilePic)
-		: null
 
 	useEffect(() => {
 
@@ -50,9 +44,7 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 			})
 	}, [users])
 
-	useEffect(() => {
-		setSelectedPhoto(profilePic)
-	}, [profilePic])
+
 
 	useEffect(() => {
 		likeService
@@ -114,14 +106,6 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 			})
 	}
 
-	const changePhoto = id => setSelectedPhoto(userToShow.photos.find(p => p.id === id))
-
-	const photoSelector = id => selectedPhoto
-		? selectedPhoto.id === id
-			? <FontAwesomeIcon icon={faCircle} color="gold" />
-			: <FontAwesomeIcon icon={faCircle} />
-		: null
-
 	const actionButtonProps = {
 		liked, likeHandler, reportHandler, blockHandler,
 		hasPhoto: loggedUser.photos && loggedUser.photos.length > 0
@@ -134,59 +118,42 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 		? null
 		: <>
 			<Card className="w-100 m-auto">
-				<>
-					<Card.Img variant="top" src={selectedPhoto ? selectedPhoto.photoStr : null} />
-					<Card.Body className="text-center">
-						{profilePic && !access
-							? <>
-								<Card.Link onClick={() => changePhoto(profilePic.id)}>
-									{photoSelector(profilePic.id)}
-								</Card.Link>
-								{userToShow.photos
-									.filter(p => !p.profilePic)
-									.map(p => <Card.Link key={p.id} onClick={() => changePhoto(p.id)}>
-										{photoSelector(p.id)}
-									</Card.Link>)
-								}
-							</>
-							: null
-						}
 
-					</Card.Body>
-					<Card.Body>
-						<Card.Title>{userToShow.username}, {userToShow.age}</Card.Title>
-						<Card.Text>{userToShow.firstName} {userToShow.lastName}</Card.Text>
-						<Card.Text>
-							{userToShow.bio}
-						</Card.Text>
-					</Card.Body>
-					<ListGroup className="list-group-flush">
-						<ListGroupItem>{userToShow.gender}</ListGroupItem>
-						<ListGroupItem>
-							looking for {userToShow.orientation
-								.map((o, i) => i < userToShow.orientation.length - 1
-									? `${o}, `
-									: o
+				<Photos photos={userToShow.photos} />
+				<Card.Body>
+					<Card.Title>{userToShow.username}, {userToShow.age}</Card.Title>
+					<Card.Text>{userToShow.firstName} {userToShow.lastName}</Card.Text>
+					<Card.Text>
+						{userToShow.bio}
+					</Card.Text>
+				</Card.Body>
+				<ListGroup className="list-group-flush">
+					<ListGroupItem>{userToShow.gender}</ListGroupItem>
+					<ListGroupItem>
+						looking for {userToShow.orientation
+							.map((o, i) => i < userToShow.orientation.length - 1
+								? `${o}, `
+								: o
+							)}
+					</ListGroupItem>
+
+					{userToShow.tags
+						? <ListGroupItem>
+							{userToShow.tags.split('#')
+								.map((t, i) => i > 1
+									? ` #${t}`
+									: i === 1 ? `#${t}` : null
 								)}
 						</ListGroupItem>
+						: null}
 
-						{userToShow.tags
-							? <ListGroupItem>
-								{userToShow.tags.split('#')
-									.map((t, i) => i > 1
-										? ` #${t}`
-										: i === 1 ? `#${t}` : null
-									)}
-							</ListGroupItem>
-							: null}
+					<ActionButtons {...actionButtonProps} />
 
-						<ActionButtons {...actionButtonProps} />
+					<ListGroupItem>
+						<Card.Link as={Link} to="/">Back to the list</Card.Link>
+					</ListGroupItem>
+				</ListGroup>
 
-						<ListGroupItem>
-							<Card.Link as={Link} to="/">Back to the list</Card.Link>
-						</ListGroupItem>
-					</ListGroup>
-				</>
 			</Card>
 			<Modal show={showMatchAlert} variant="success" onHide={() => setShowMatchAlert(false)} centered>
 				<Modal.Header closeButton>
