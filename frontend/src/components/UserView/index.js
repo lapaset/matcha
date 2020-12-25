@@ -13,6 +13,7 @@ import UserCard from '../UserCard'
 import Matches from '../Matches'
 import logoutService from '../../services/logoutService'
 import userService from '../../services/userService'
+import Views from '../Views/index'
 
 const UserView = ({ user, setUser, wsClient }) => {
 
@@ -56,7 +57,10 @@ const UserView = ({ user, setUser, wsClient }) => {
 				{user.username
 					? <><Link to="/matches">matches</Link>
 						<Link to="/profile">{user.username}</Link>
-						<Link to="/login" onClick={() => logoutService.handleLogout(wsClient, user.user_id)}>logout</Link></>
+						<Views />
+						<Link to="/login" onClick={() => logoutService.handleLogout(wsClient, user.user_id)}>logout</Link>
+					</>
+						
 
 					: <><Link to="/signup">signup</Link>
 						<Link to="/login">login</Link></>

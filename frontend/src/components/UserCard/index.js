@@ -7,6 +7,7 @@ import likeService from '../../services/likeService'
 import reportService from '../../services/reportService'
 import likeDisplayService from '../../services/likeDisplayService'
 import blockService from '../../services/blockService'
+import viewService from '../../services/viewsService'
 
 const UserCard = ({ userToShow, loggedUser }) => {
 
@@ -23,6 +24,18 @@ const UserCard = ({ userToShow, loggedUser }) => {
 		? userToShow.photos.find(p => p.profilePic)
 		: null
 
+	//views working
+	/* eslint-disable react-hooks/exhaustive-deps */
+	useEffect(() => {
+		viewService.views(users)
+		.then(res => {
+			console.log(res.message)
+		})
+		.catch(e => {
+			console.log(("Error: couldn't get block info"))
+		})
+	}, []) 
+	//
 	useEffect(() => {
 		blockService.blockedUser(users)
 			.then(res => {
