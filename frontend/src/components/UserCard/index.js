@@ -8,12 +8,13 @@ import reportService from '../../services/reportService'
 import likeDisplayService from '../../services/likeDisplayService'
 import blockService from '../../services/blockService'
 import viewService from '../../services/viewsService'
+import socket from '../../socket'
 
-const UserCard = ({ userToShow, loggedUser }) => {
+const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 
 	const [selectedPhoto, setSelectedPhoto] = useState(null)
 	const [access, setAccess] = useState(null)
-	const [like, setLike] = useState(0)
+	const [liked, setLiked] = useState(0)
 
 	const users = {
 		from_user_id: loggedUser.user_id,
@@ -37,6 +38,16 @@ const UserCard = ({ userToShow, loggedUser }) => {
 	}, []) 
 	//
 	useEffect(() => {
+
+		socket.sendNotification(wsClient, {
+			user_id: userToShow.user_id,
+			from_id: loggedUser.user_id,
+			notification: `${loggedUser.username} viewed your profile`
+		})
+
+	}, [loggedUser.user_id, loggedUser.username, userToShow.user_id, wsClient])
+
+	useEffect(() => {
 		blockService.blockedUser(users)
 			.then(res => {
 				setAccess(res.value);
@@ -55,7 +66,7 @@ const UserCard = ({ userToShow, loggedUser }) => {
 	useEffect(() => {
 		likeDisplayService.unlikeDisplay(users)
 			.then(res => {
-				setLike(res.value)
+				setLiked(res.value)
 			})
 			.catch(e => {
 				console.log(("Error: couldn't get like info"))
@@ -63,11 +74,31 @@ const UserCard = ({ userToShow, loggedUser }) => {
 	}, [users])
 
 	const likeHandler = event => {
+		const sendNotification = notification => {
+			socket.sendNotification(wsClient, {
+				user_id: userToShow.user_id,
+				from_id: loggedUser.user_id,
+				notification
+			})
+		}
+
 		event.preventDefault();
+
 		likeService.likeUnlike(users)
 			.then(res => {
-				setLike(res.value)
+
+				if (res.value === 1 && res.status === 'match')
+					sendNotification(`New match with ${loggedUser.username}`)
+
+				else if (res.value === 1 && res.status === 'like')
+					sendNotification(`${loggedUser.username} likes you`)
+
+				else if (res.value === 0 && res.status === 'unmatch')
+					sendNotification(`No longer match with ${loggedUser.username}`)
+
+				setLiked(res.value)
 			})
+
 	}
 
 	const reportHandler = event => {
@@ -148,7 +179,7 @@ const UserCard = ({ userToShow, loggedUser }) => {
 						: null}
 					{loggedUser.photos &&
 						<ListGroupItem>
-							{like
+							{liked
 								? <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Unlike</Card.Link>
 								: <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Like</Card.Link>
 							}

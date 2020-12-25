@@ -1,6 +1,6 @@
 import { w3cwebsocket as W3CWebSocket } from 'websocket'
 
-const createWs = (from) => {
+const createWs = from => {
 	const client = new W3CWebSocket('ws://127.0.0.1:3001')
 
 	client.onerror = () => {
@@ -20,8 +20,28 @@ const createWs = (from) => {
 		console.log('Websocket connection closed')
 	}
 	
-
 	return client
 }
 
-export default { createWs }
+const sendNotification = (wsClient, notification) => {
+
+	//console.log('socket.sendNotification', notification)
+	//show some kind of error if connection is not working
+	if (!wsClient.current) {
+		console.log('Error: could not send notification, no websocket')
+		return
+	}
+	
+	if (wsClient.current.readyState > 1) {
+		console.log('Error: could not send notification, websocket state', wsClient.current.readyState)
+		return
+	}
+
+	wsClient.current.send(JSON.stringify({
+		...notification,
+		type: 'notification'
+	}))
+
+}
+
+export default { createWs, sendNotification }

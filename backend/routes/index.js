@@ -11,5 +11,6 @@ module.exports = {
 	likeDisplay: require('./likeDisplay'),
 	report: require('./report'),
 	block: require('./block'),
-	views: require('./views')
+	views: require('./views'),
+	notifications: require('./notifications')
 }

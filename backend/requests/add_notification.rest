@@ -1,0 +1,7 @@
+POST http://localhost:3001/notifications
+Content-Type: application/json
+
+{
+	"user_id": 1,
+	"notification": "ulla send you a new message"
+}
