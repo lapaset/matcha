@@ -19,7 +19,7 @@ const Views = () => {
     //console.log(viewhistory);
     var i = 0;
     return <>
-        <a  href="#/" onClick={() => setModalIsOpen(true)} variant="light">visit</a>
+        <a  href="#/" onClick={() => setModalIsOpen(true)} variant="light">views</a>
         <Modal show={modalIsOpen} onHide={() => setModalIsOpen(false)}>
             <Modal.Header closeButton>
                 <Modal.Title>Your visit history</Modal.Title>
@@ -28,7 +28,7 @@ const Views = () => {
                 {viewhistory && viewhistory.length > 0
                     ? <ListGroup className="text-left" variant="flush">
                         {viewhistory.map(u =>
-                            (u.from_visit_username === "mhasan" ?
+                            (u.from_visit_username === coords.username ?
                                 <ListGroup.Item key={i++}>
                                     <div style={{ display: "inline-block", width: "60%" }}>You visited <a href={`http://localhost:3000/users/${u.to_user_id}`}>{u.to_visit_username} </a>profile</div>
                                 </ListGroup.Item>
