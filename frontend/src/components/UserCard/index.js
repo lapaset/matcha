@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircle, faHeart, faFlag, faBan } from '@fortawesome/free-solid-svg-icons'
-import { Modal, Card, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Modal, Card, ListGroup, ListGroupItem, OverlayTrigger, Tooltip, Button } from 'react-bootstrap'
+import ActionButtons from './ActionButtons'
 import likeService from '../../services/likeService'
 import reportService from '../../services/reportService'
 import blockService from '../../services/blockService'
 import socket from '../../socket'
+
+
+
 
 const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 
@@ -118,6 +122,12 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 			: <FontAwesomeIcon icon={faCircle} />
 		: null
 
+	const actionButtonProps = {
+		liked, likeHandler, reportHandler, blockHandler,
+		hasPhoto: loggedUser.photos && loggedUser.photos.length > 0
+	};
+
+
 	//console.log('profile pic', profilePic, 'photos', user.photos);
 
 	return access
@@ -169,23 +179,16 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 									)}
 							</ListGroupItem>
 							: null}
-						{loggedUser.photos &&
-							<ListGroupItem>
-								{liked
-									? <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Unlike</Card.Link>
-									: <Card.Link href="#" onClick={event => likeHandler(event)}><FontAwesomeIcon icon={faHeart} /> Like</Card.Link>
-								}
-								<Card.Link href="#" onClick={event => reportHandler(event)}><FontAwesomeIcon icon={faFlag} /> Report</Card.Link>
-								<Card.Link href="#" onClick={event => blockHandler(event)}><FontAwesomeIcon icon={faBan} /> Block</Card.Link>
-							</ListGroupItem>
-						}
+
+						<ActionButtons {...actionButtonProps} />
+
 						<ListGroupItem>
 							<Card.Link as={Link} to="/">Back to the list</Card.Link>
 						</ListGroupItem>
 					</ListGroup>
 				</>
 			</Card>
-			<Modal show={showMatchAlert} variant="success" onHide={() => setShowMatchAlert(false)}>
+			<Modal show={showMatchAlert} variant="success" onHide={() => setShowMatchAlert(false)} centered>
 				<Modal.Header closeButton>
 					<Modal.Title>It's a match!</Modal.Title>
 				</Modal.Header>
