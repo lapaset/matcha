@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Modal, Card, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faAward } from '@fortawesome/free-solid-svg-icons'
 import Photos from './Photos'
 import ActionButtons from './ActionButtons'
+import UserInformation from './UserInformation'
+import MatchModal from './MatchModal'
 import likeService from '../../services/likeService'
 import reportService from '../../services/reportService'
 import blockService from '../../services/blockService'
 import socket from '../../socket'
-
-
+import ConfirmationModal from './ConfirmationModal'
 
 
 const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 
 	const [access, setAccess] = useState(null)
 	const [liked, setLiked] = useState(false)
-	const [showMatchAlert, setShowMatchAlert] = useState(false)
+	const [matchModal, setMatchModal] = useState(null)
+	const [confirmationModal, setConfirmationModal] = useState(null)
 
 	const users = {
 		from_user_id: loggedUser.user_id,
@@ -32,6 +36,8 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 
 	}, [loggedUser.user_id, loggedUser.username, userToShow.user_id, wsClient])
 
+
+	//access value is all twisted!
 	useEffect(() => {
 		blockService.blockedUser(users)
 			.then(res => {
@@ -43,7 +49,6 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 				console.log(("Error: couldn't get block info"))
 			})
 	}, [users])
-
 
 
 	useEffect(() => {
@@ -74,7 +79,7 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 
 				if (res.value === 1 && res.status === 'match') {
 					sendNotification(`New match with ${loggedUser.username}`)
-					setShowMatchAlert(true)
+					setMatchModal(userToShow.username)
 				}
 
 				else if (res.value === 1 && res.status === 'like')
@@ -88,81 +93,42 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 
 	}
 
-	const reportHandler = event => {
-		event.preventDefault();
-
+	const reportHandler = () => {
 		reportService.report(users)
-			.then(res => {
-				alert(res.message);
+			.then(() => setConfirmationModal(null))
+			.catch(e => {
+				console.log(e)
 			})
 	}
 
-	const blockHandler = event => {
-		event.preventDefault();
+	const blockHandler = () => {
 		blockService.block(users)
-			.then(res => {
-				alert(res.message + userToShow.username)
+			.then(() => {
 				window.location.href = "http://localhost:3000";
+			})
+			.catch(e => {
+				console.log(e)
 			})
 	}
 
 	const actionButtonProps = {
-		liked, likeHandler, reportHandler, blockHandler,
-		hasPhoto: loggedUser.photos && loggedUser.photos.length > 0
+		liked, likeHandler, reportHandler, blockHandler, setConfirmationModal,
+		hasPhoto: loggedUser.photos && loggedUser.photos.length > 0,
+		username: userToShow.username
 	};
 
-
-	//console.log('profile pic', profilePic, 'photos', user.photos);
-
-	return access
-		? null
-		: <>
+	return !access && <>
 			<Card className="w-100 m-auto">
-
-				<Photos photos={userToShow.photos} />
 				<Card.Body>
-					<Card.Title>{userToShow.username}, {userToShow.age}</Card.Title>
-					<Card.Text>{userToShow.firstName} {userToShow.lastName}</Card.Text>
-					<Card.Text>
-						{userToShow.bio}
-					</Card.Text>
+					<span style={{ float: "left" }}><Link to="/">Back to the list</Link></span>
+					<span style={{ float: "right" }}><FontAwesomeIcon icon={faAward} /> {userToShow.fame}</span>
 				</Card.Body>
-				<ListGroup className="list-group-flush">
-					<ListGroupItem>{userToShow.gender}</ListGroupItem>
-					<ListGroupItem>
-						looking for {userToShow.orientation
-							.map((o, i) => i < userToShow.orientation.length - 1
-								? `${o}, `
-								: o
-							)}
-					</ListGroupItem>
-
-					{userToShow.tags
-						? <ListGroupItem>
-							{userToShow.tags.split('#')
-								.map((t, i) => i > 1
-									? ` #${t}`
-									: i === 1 ? `#${t}` : null
-								)}
-						</ListGroupItem>
-						: null}
-
-					<ActionButtons {...actionButtonProps} />
-
-					<ListGroupItem>
-						<Card.Link as={Link} to="/">Back to the list</Card.Link>
-					</ListGroupItem>
-				</ListGroup>
-
+				<Photos photos={userToShow.photos} />
+				<UserInformation user={userToShow} />
+				<ActionButtons { ...actionButtonProps } />
 			</Card>
-			<Modal show={showMatchAlert} variant="success" onHide={() => setShowMatchAlert(false)} centered>
-				<Modal.Header closeButton>
-					<Modal.Title>It's a match!</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					<Link to='/matches'>You can now chat with {userToShow.username}</Link>
-				</Modal.Body>
-			</Modal>
+			<MatchModal modal={matchModal} setModal={setMatchModal} />
+			<ConfirmationModal modal={confirmationModal} setModal={setConfirmationModal} />
 		</>
 }
 

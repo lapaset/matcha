@@ -47,7 +47,7 @@ const Photos = ({ photos }) => {
 	};
 
 	return selectedPhoto && <>
-		<Card.Img variant="top" src={selectedPhoto.photoStr} />
+		<Card.Img src={selectedPhoto.photoStr} />
 		<PhotoSelector {...photoSelectorProps} />
 	</>
 }
