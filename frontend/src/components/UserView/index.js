@@ -14,6 +14,7 @@ import Notifications from '../Notifications'
 import NotificationsList from '../Notifications/NotificationsList'
 import logoutService from '../../services/logoutService'
 import userService from '../../services/userService'
+import Views from '../Views/index'
 import notificationService from '../../services/notificationService'
 
 import '../../style/userView.css'
@@ -104,6 +105,7 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 				{user.username
 					? <><Link to="/matches">matches</Link>
 						<Link to="/profile">{user.username}</Link>
+						<Views />
 						<Notifications user_id={user.user_id} notifications={notifications} handleClick={handleNotificationClick} markAllAsRead={markAllNotificationsRead} />
 						<Link to="/login" onClick={() => logoutService.handleLogout(wsClient, user.user_id)}>logout</Link></>
 

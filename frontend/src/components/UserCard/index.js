@@ -7,6 +7,7 @@ import likeService from '../../services/likeService'
 import reportService from '../../services/reportService'
 import likeDisplayService from '../../services/likeDisplayService'
 import blockService from '../../services/blockService'
+import viewService from '../../services/viewsService'
 import socket from '../../socket'
 
 const UserCard = ({ userToShow, loggedUser, wsClient }) => {
@@ -24,6 +25,18 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 		? userToShow.photos.find(p => p.profilePic)
 		: null
 
+	//views working
+	/* eslint-disable react-hooks/exhaustive-deps */
+	useEffect(() => {
+		viewService.views(users)
+		.then(res => {
+			console.log(res.message)
+		})
+		.catch(e => {
+			console.log(("Error: couldn't get block info"))
+		})
+	}, []) 
+	//
 	useEffect(() => {
 
 		socket.sendNotification(wsClient, {
