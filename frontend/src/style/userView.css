@@ -29,6 +29,7 @@
 	width: 70%;
 	float: left;
 	text-align: right;
+	position: relative;
 }
 
 footer {

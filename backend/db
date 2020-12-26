@@ -61,6 +61,15 @@ CREATE TABLE chat (
 	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+CREATE TABLE IF NOT EXISTS "views"
+(
+	"view_id"      bigserial NOT NULL PRIMARY KEY,
+	"date_created" timestamp DEFAULT CURRENT_TIMESTAMP ,
+	"from_user_id" bigint NOT NULL REFERENCES "users" ( "user_id" ) ON DELETE CASCADE,
+	"to_user_id"   bigint NOT NULL REFERENCES "users" ( "user_id" ) ON DELETE CASCADE
+)
+
 CREATE TABLE notifications (
 	id SERIAL PRIMARY KEY,
 	user_id INT NOT NULL,

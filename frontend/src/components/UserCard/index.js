@@ -10,6 +10,7 @@ import MatchModal from './MatchModal'
 import likeService from '../../services/likeService'
 import reportService from '../../services/reportService'
 import blockService from '../../services/blockService'
+import viewService from '../../services/viewsService'
 import socket from '../../socket'
 import ConfirmationModal from './ConfirmationModal'
 
@@ -26,6 +27,18 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 		to_user_id: userToShow.user_id
 	};
 
+	//views working
+	/* eslint-disable react-hooks/exhaustive-deps */
+	useEffect(() => {
+		viewService.views(users)
+		.then(res => {
+			console.log(res.message)
+		})
+		.catch(e => {
+			console.log(("Error: couldn't get block info"))
+		})
+	}, []) 
+	//
 	useEffect(() => {
 
 		socket.sendNotification(wsClient, {
