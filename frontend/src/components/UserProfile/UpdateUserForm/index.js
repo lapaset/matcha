@@ -45,15 +45,16 @@ const UpdateUserForm = ({ user, setUser }) => {
 			return 'fm'
 		}
 
-		const updatedUser = {
-			...data,
-			gender: data.gender.value,
-			orientation: orientationToDb(data.orientation),
-			tags: userTagsState.value && userTagsState.value.length !== 0
-				? userTagsState.value.map(t => t.value).join('') : '',
-		}
+		const { password, password2, ...updatedUser } = data
 
-		//console.log('update', updatedUser)
+		updatedUser.gender = data.gender.value
+		updatedUser.orientation = orientationToDb(data.orientation)
+		updatedUser.tags = userTagsState.value && userTagsState.value.length !== 0
+			? userTagsState.value.map(t => t.value).join('')
+			: ''
+		
+		if (password)
+			updatedUser.password = password
 
 		userService
 			.updateUser(updatedUser, user.user_id)
@@ -65,7 +66,8 @@ const UpdateUserForm = ({ user, setUser }) => {
 					...data,
 					photos: user.photos ? user.photos : [],
 					latitude: user.latitude,
-					longitude: user.longitude
+					longitude: user.longitude,
+					user_id: user.user_id
 				})
 			})
 			.catch(e => {

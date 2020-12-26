@@ -2,8 +2,13 @@ const usersRouter = require('express').Router()
 const db = require('../utils/db')
 const bcrypt = require('bcryptjs')
 const nodemailer = require('nodemailer')
+const jwt = require('jsonwebtoken')
+const tokenSecret = require('../utils/config').TOKEN_SECRET
 
 usersRouter.get('/', (req, resp) => {
+
+	if (!jwt.verify(req.token, tokenSecret))
+		return resp.status(401).json({ error: 'token missing or invalid' })
 
 	let query = `SELECT username, user_id, longitude, latitude, 
 	AGE(birthdate) as age, tags, gender, orientation, fame 
@@ -11,21 +16,14 @@ usersRouter.get('/', (req, resp) => {
 
 	const parameters = []
 
-	//console.log('query parameters', req.query)
-
 	if (req.query.orientation) {
-		query = query
-			.concat(`
-			WHERE CAST(orientation AS text) LIKE $1`)
-
+		query = query.concat(` WHERE CAST(orientation AS text) LIKE $1`)
 		parameters.push(`%${req.query.orientation}%`)
 	}
 
 	if (req.query.gender) {
 
-		query = query.concat(` ${parameters.length === 0
-			? 'WHERE'
-			: 'AND'}`)
+		query = query.concat(` ${parameters.length === 0 ? 'WHERE' : 'AND'}`)
 
 		req.query.gender
 			.split('')
@@ -43,9 +41,6 @@ usersRouter.get('/', (req, resp) => {
 			})
 	}
 
-	//console.log('query', query)
-	//console.log('parameters', parameters)
-
 	db.query(`${query} ORDER BY fame DESC`, parameters, (err, res) => {
 		if (err)
 			resp.status(500).send(err)
@@ -55,6 +50,9 @@ usersRouter.get('/', (req, resp) => {
 })
 
 usersRouter.get('/:id', (req, resp) => {
+
+	if (!jwt.verify(req.token, tokenSecret))
+		return resp.status(401).json({ error: 'token missing or invalid' })
 
 	db.query('SELECT user_id, first_name, last_name, username, email, verified, \
 	token, password, gender, orientation, bio, tags, AGE(birthdate) as age, \
@@ -80,15 +78,15 @@ usersRouter.post('/', async (req, resp) => {
 				user: 'testing.matcha',
 				pass: 'matcha1234'
 			}
-		});
+		})
 
 		//could add user_id to the verify address
 		const mailOptions = {
 			from: 'testing.matcha@gmail.com',
 			to: email,
-			subject: 'Sending Email using Node.js',
+			subject: 'Verify your matcha account',
 			text: `Hello! Please click the following link to verify your email http://localhost:3001/verify?token=${token}`
-		};
+		}
 
 		transporter.sendMail(mailOptions, function (error, info) {
 			if (error) {
@@ -96,120 +94,95 @@ usersRouter.post('/', async (req, resp) => {
 			} else {
 				console.log('Email sent: ' + info.response);
 			}
-		});
+		})
 	}
-
-	// LETS VALIDATE THE DATA BEFORE MAKE A USER and it comes from validation.js file
-	//const { error } = registerValidation(req.body);
-	//if (error) return res.status(400).send({ message: error.details[0].message });
 
 	const { firstName, lastName, username, email, token, birthdate } = req.body;
 
-	// Hash password	
 	const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
-	// Add user
 	db.query('INSERT INTO users (first_name, last_name, username, email, password, token, birthdate) \
 		VALUES ($1, $2, $3, $4, $5, $6, $7)',
 		[firstName, lastName, username, email, hashedPassword, token, birthdate],
 		(err, res) => {
 			if (res)
 				resp.status(201).send(res.rows[0])
+
 			else if (err.detail && err.detail.startsWith('Key (email)'))
 				resp.status(409).send({ error: 'email already exists' })
+
 			else if (err.detail && err.detail.startsWith('Key (username)'))
 				resp.status(409).send({ error: 'username already exists' })
+
 			else
 				resp.status(500).send(err)
 		})
 
-	//send the email!
 	sendEmail(email, token)
 })
 
-usersRouter.put('/:id', async (req, resp) => {
-	const { firstName, lastName, email, gender, orientation, tags, bio } = req.body
+usersRouter.patch('/:id', async (req, resp) => {
+	const user = jwt.verify(req.token, tokenSecret)
 
-	console.log('got here')
+	if (!user || user.user_id !== Number(req.params.id))
+		return resp.status(401).json({ error: 'token missing or invalid' })
+
+	const { password, firstName, lastName, ...body } = req.body
+
+	if (firstName)
+		body.first_name = firstName
+	
+	if (lastName)
+		body.last_name = lastName
+
+	let query = 'UPDATE users SET '
+	const parameters = []
 
 	if (req.body.password) {
-
-		console.log('why here???');
-
-		const hashedPassword = await bcrypt.hash(req.body.password, 10)
-		db.query('UPDATE users \
-			SET (first_name, last_name, email, gender, orientation, tags, bio, password) \
-			= ($1, $2, $3, $4, $5, $6, $7, $8) \
-			WHERE user_id = $9 \
-			RETURNING user_id, first_name, last_name, username, email, verified, \
-			token, password, gender, orientation, bio, tags, AGE(birthdate) as age',
-			[firstName, lastName, email, gender, orientation, tags, bio, hashedPassword, req.params.id],
-			(err, res) => {
-
-				if (res && res.rows[0])
-					resp.status(200).send(res.rows[0])
-				else if (res)
-					resp.status(500).send({ error: 'User not found' })
-				else if (err.detail && err.detail.startsWith('Key (email)'))
-					resp.status(409).send({ error: 'email already exists' })
-				else if (err.detail && err.detail.startsWith('Key (username)'))
-					resp.status(409).send({ error: 'username already exists' })
-				else
-					resp.status(500).send(err)
-			})
-
-	} else {
-
-		console.log('should have got here')
-
-
-		db.query('UPDATE users \
-			SET (first_name, last_name, email, gender, orientation, tags, bio) \
-			= ($1, $2, $3, $4, $5, $6, $7) \
-			WHERE user_id = $8 \
-			RETURNING user_id, first_name, last_name, username, email, verified, \
-			token, password, gender, orientation, bio, tags, AGE(birthdate) as age',
-			[firstName, lastName, email, gender, orientation, tags, bio, req.params.id],
-			(err, res) => {
-
-				console.log('err', err)
-
-				if (res && res.rows[0])
-					resp.status(200).send(res.rows[0])
-				else if (res)
-					resp.status(500).send({ error: 'User not found' })
-				else if (err.detail && err.detail.startsWith('Key (email)'))
-					resp.status(409).send({ error: 'email already exists' })
-				else if (err.detail && err.detail.startsWith('Key (username)'))
-					resp.status(409).send({ error: 'username already exists' })
-				else
-					resp.status(500).send(err)
-			})
+		body.password = await bcrypt.hash(req.body.password, 10)
 	}
+
+	console.log('body after pw', body)
+	
+	Object.keys(body).forEach((k, i) => {
+		query = query.concat(`${k} = $${i + 1}, `)
+		parameters.push(body[k])
+	})
+	
+	query = query.slice(0, -2).concat(` WHERE user_id = $${parameters.length + 1}
+		RETURNING first_name, last_name, username, email, gender, orientation,
+		bio, tags, AGE(birthdate) as age, longitude, latitude`)
+
+	console.log('query', query, 'parameters', parameters)
+
+	db.query(query, [...parameters, user.user_id], (err, res) => {
+
+		if (res && res.rows[0])
+			resp.status(200).send(res.rows[0])
+
+		else if (res)
+			resp.status(500).send({ error: 'User not found' })
+
+		else if (err.detail && err.detail.startsWith('Key (email)'))
+			resp.status(409).send({ error: 'email already exists' })
+
+		else
+			resp.status(500).send(err)
+	})
 })
 
 usersRouter.delete('/:id', (req, resp) => {
-	db.query('DELETE FROM users WHERE user_id = $1', [req.params.id], (err, res) => {
-		if (res) {
-			db.query('DELETE FROM photos WHERE user_id = $1', [req.params.id], () => {
-				resp.status(204).end()
-			})
-		}
-	})
-})
+	const user = jwt.verify(req.token, tokenSecret)
 
-usersRouter.get('/verify', (req, resp) => {
-	db.query('SELECT * FROM users', [], (err, res) => {
-		if (err)
-			resp.status(500).send(err)
+	if (!user || user.user_id !== Number(req.params.id))
+		return resp.status(401).json({ error: 'token missing or invalid' })
+
+	db.query('DELETE FROM users WHERE user_id = $1', [req.params.id], (err, res) => {
+		if (res)
+			resp.status(204).end()
 		else
-			resp.status(200).send(res.rows)
+			resp.status(500).send(err)
 	})
-	/*console.log('req.query.token', req.params.token)
-	db.query('UPDATE users SET verified = 1 WHERE token = $1',
-		[req.params.token], (err, res) => {
-			resp.redirect('http://localhost:3000')
-	})*/
 })
 
 module.exports = usersRouter

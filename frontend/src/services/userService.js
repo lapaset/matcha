@@ -1,4 +1,5 @@
 import axios from 'axios'
+import auth from '../utils/auth'
 const baseUrl = 'http://localhost:3001/users'
 
 const orientationFromDb = orientation => {
@@ -16,7 +17,7 @@ const orientationFromDb = orientation => {
 }
 
 const getAll = async () => {
-	const resp = await axios.get(baseUrl)
+	const resp = await axios.get(baseUrl, auth.config())
 
 	return resp.data.map(u => ({
 		...u,
@@ -28,9 +29,7 @@ const getUser = async userId => {
 	if (!userId)
 		return
 
-	const resp = await axios.get(`${baseUrl}/${userId}`)
-
-	//console.log('response data at getuser', resp.data)
+	const resp = await axios.get(`${baseUrl}/${userId}`, auth.config())
 
 	if (!resp.data[0])
 		return resp.data
@@ -44,8 +43,6 @@ const getUser = async userId => {
 		})
 	}
 
-	//console.log('user photos at getuser', user.photos)
-
 	return ({
 		...user,
 		firstName: first_name,
@@ -56,7 +53,8 @@ const getUser = async userId => {
 }
 
 const updateUser = async (userObject, id) => {
-	const resp = await axios.put(`${baseUrl}/${id}`, userObject)
+
+	const resp = await axios.patch(`${baseUrl}/${id}`, userObject, auth.config())
 
 	const { first_name, last_name, orientation, ...user } = resp.data
 
@@ -75,10 +73,9 @@ const createUser = async userObject => {
 }
 
 const getByGenderOrientation = async (gender, orientation) => {
-	const genderStr = gender
-		.map(o => o.substring(0,1))
-		.join('')
-	const resp = await axios.get(`${baseUrl}?gender=${genderStr}&orientation=${orientation.substring(0,1)}`)
+	const genderStr = gender.map(o => o.substring(0,1)).join('')	
+	const resp = await axios
+		.get(`${baseUrl}?gender=${genderStr}&orientation=${orientation.substring(0,1)}`, auth.config())
 	return resp.data
 }
 
