@@ -5,7 +5,6 @@ module.exports = {
 	verify: require('./verify'),
 	reset: require('./reset'),
 	photos: require('./photos'),
-	map: require('./map'),
 	chat: require('./chat'),
 	likes: require('./likes'),
 	report: require('./report'),

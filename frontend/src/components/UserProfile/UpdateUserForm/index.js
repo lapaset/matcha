@@ -59,19 +59,14 @@ const UpdateUserForm = ({ user, setUser }) => {
 		userService
 			.updateUser(updatedUser, user.user_id)
 			.then(data => {
-				//console.log('data when updated', data)
 				setErrorMessage('')
 				setNotification('user updated')
 				setUser({
-					...data,
-					photos: user.photos ? user.photos : [],
-					latitude: user.latitude,
-					longitude: user.longitude,
-					user_id: user.user_id
+					...user,
+					...data
 				})
 			})
 			.catch(e => {
-				//console.log('error', e.response.data)
 				if (e.response && e.response.data)
 					setErrorMessage(e.response.data.error)
 				setNotification('')

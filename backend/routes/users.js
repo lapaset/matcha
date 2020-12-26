@@ -141,8 +141,6 @@ usersRouter.patch('/:id', async (req, resp) => {
 	if (req.body.password) {
 		body.password = await bcrypt.hash(req.body.password, 10)
 	}
-
-	console.log('body after pw', body)
 	
 	Object.keys(body).forEach((k, i) => {
 		query = query.concat(`${k} = $${i + 1}, `)
@@ -150,10 +148,13 @@ usersRouter.patch('/:id', async (req, resp) => {
 	})
 	
 	query = query.slice(0, -2).concat(` WHERE user_id = $${parameters.length + 1}
-		RETURNING first_name, last_name, username, email, gender, orientation,
-		bio, tags, AGE(birthdate) as age, longitude, latitude`)
+		RETURNING `)
 
-	console.log('query', query, 'parameters', parameters)
+	Object.keys(body).forEach(k => {
+		query = query.concat(`${k}, `)
+	})
+
+	query = query.slice(0, -2)
 
 	db.query(query, [...parameters, user.user_id], (err, res) => {
 

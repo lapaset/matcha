@@ -11,29 +11,27 @@ const containerStyle = {
 	margin: '2em auto'
 };
 
-const MyProfileMap = () => {
+const Map = ({ user, setUser }) => {
 	const [mapCentre, setMapCentre] = useState({lat: 0, lng: 0});
-	var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
+	//var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
 	//console.log(coords.latitude);
 
 	/* eslint-disable react-hooks/exhaustive-deps */
 	useEffect(() => {
-		setMapCentre({lat: coords.latitude, lng: coords.longitude});
-	}, []);
+		setMapCentre({lat: user.latitude, lng: user.longitude});
+	}, [user]);
 
 	const dragEndHandler= (e) => {
 		const latitude = e.latLng.lat();
 		const longitude = e.latLng.lng();
-		const user_id = coords.user_id;
 		const userObject = {
 			latitude,
-			longitude,
-			user_id
+			longitude
 		}
 
-		mapService.updateMap(userObject)
+		mapService.updateMap(userObject, user.user_id)
 		.then(res => {
-			console.log(res);
+			setUser({ ...user, latitude: res.latitude, longitude: res.longitude })
 		})
 	}
 
@@ -56,4 +54,4 @@ const MyProfileMap = () => {
 	)
 };
 
-export default MyProfileMap;
+export default Map;

@@ -10,7 +10,7 @@ const UserProfile = ({ user, setUser }) => {
 		<h1>{user.username}</h1>
 		<UserPhotos user={user} setUser={setUser} />
 		<UpdateUserForm user={user} setUser={setUser} />
-		<Map />
+		<Map user={user} setUser={setUser} />
 		<BlockList user={user}/>
 	</>
 }

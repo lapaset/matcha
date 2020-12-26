@@ -56,15 +56,20 @@ const updateUser = async (userObject, id) => {
 
 	const resp = await axios.patch(`${baseUrl}/${id}`, userObject, auth.config())
 
-	const { first_name, last_name, orientation, ...user } = resp.data
+	if (resp.data.first_name) {
+		let { first_name, ...userObject } = resp.data
+		userObject.firstName = first_name
+	}
 
-	return ({
-		...user,
-		firstName: first_name,
-		lastName: last_name,
-		orientation: orientationFromDb(orientation),
-		age: resp.data.age.years
-	})
+	if (resp.data.last_name) {
+		let { last_name, ...userObject } = resp.data
+		userObject.lastName = last_name
+	}
+
+	if (resp.data.orientation)
+		userObject.orientation = orientationFromDb(resp.data.orientation)
+
+	return userObject
 }
 
 const createUser = async userObject => {
