@@ -44,7 +44,7 @@ loginRouter.post('/', (request, response) => {
 
 					const userForToken = {
 						username: result.rows[0].username,
-						id: result.rows[0].user_id,
+						user_id: result.rows[0].user_id,
 					}
 
 					const session_token = jwt.sign(userForToken, tokenSecret)
