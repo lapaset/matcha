@@ -47,7 +47,7 @@ loginRouter.post('/', (request, response) => {
 						user_id: result.rows[0].user_id,
 					}
 
-					const session_token = jwt.sign(userForToken, tokenSecret)
+					const sessionToken = jwt.sign(userForToken, tokenSecret)
 
 					return response
 						.status(200)
@@ -59,7 +59,7 @@ loginRouter.post('/', (request, response) => {
 								profilePic: r.profile_pic
 								}))
 								: [],
-							session_token,
+							sessionToken,
 							firstName: first_name,
 							lastName: last_name,
 							age: age.years,
