@@ -38,13 +38,15 @@ CREATE TABLE likes (
 	like_id SERIAL PRIMARY KEY,
 	from_user_id INT NOT NULL,
 	to_user_id INT NOT NULL,
-	match SMALLINT NOT NULL
+	match SMALLINT NOT NULL,
+	unique (from_user_id, to_user_id)
 );
 
 CREATE TABLE report (
 	report_id SERIAL PRIMARY KEY,
 	from_user_id INT NOT NULL,
-	to_user_id INT NOT NULL
+	to_user_id INT NOT NULL,
+	unique (from_user_id, to_user_id)
 );
 
 CREATE TABLE blocked (
@@ -52,7 +54,7 @@ CREATE TABLE blocked (
 	from_user_id INT NOT NULL,
 	to_user_id INT NOT NULL,
 	unique (from_user_id, to_user_id)
-};
+);
 
 CREATE TABLE chat (
 	id SERIAL PRIMARY KEY,

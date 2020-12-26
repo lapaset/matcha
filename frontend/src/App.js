@@ -78,7 +78,7 @@ const App = () => {
 					}))
 
 					chatService
-						.getChatHistory(user.user_id)
+						.getChatHistory()
 						.then(res => {
 
 							res.forEach(m => {
