@@ -87,7 +87,7 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 
 		event.preventDefault();
 
-		likeService.likeUnlike(users)
+		likeService.toggleLike(userToShow.user_id)
 			.then(res => {
 
 				if (res.value === 1 && res.status === 'match') {
