@@ -18,7 +18,6 @@ const login = async credentials => {
 		return o
 	}
 
-
 	const resp = await axios.post(baseUrl, credentials)
 
 	const { orientation, ...user } = resp.data

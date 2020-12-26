@@ -6,6 +6,7 @@ import notificationService from './services/notificationService'
 import likeService from './services/likeService'
 import chatService from './services/chatService'
 import socket from './socket'
+import auth from './utils/auth'
 import UserView from './components/UserView'
 
 const App = () => {
@@ -36,6 +37,8 @@ const App = () => {
 		if (loggedUserJSON) {
 			const userFromLocalStorage = JSON.parse(loggedUserJSON)
 
+			auth.setToken(userFromLocalStorage.sessionToken)
+			
 			userService
 				.getUser(userFromLocalStorage.user_id)
 				.then(data => {
