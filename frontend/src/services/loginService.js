@@ -20,25 +20,12 @@ const login = async credentials => {
 
 
 	const resp = await axios.post(baseUrl, credentials)
-	//console.log('response data', resp.data)
 
-	const row = resp.data.rows[0]
-	const { first_name, last_name, id, profile_pic, photo_str, orientation, ...user } = row
-
-
-	if (row.id && row.profile_pic !== undefined && row.photo_str) {
-
-		user.photos = resp.data.rows.map(r => {
-			return ({ id: r.id, photoStr: r.photo_str, profilePic: r.profile_pic })
-		})
-	}
+	const { orientation, ...user } = resp.data
 	
 	return ({
 		...user,
-		firstName: first_name,
-		lastName: last_name,
 		orientation: orientationFromDb(orientation),
-		age: row.age.years
 	})
 }
 
