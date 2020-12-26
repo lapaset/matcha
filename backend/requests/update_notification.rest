@@ -1,6 +1,0 @@
-PATCH http://localhost:3001/notifications/668
-Content-Type: application/json
-
-{
-	"read": 1
-}

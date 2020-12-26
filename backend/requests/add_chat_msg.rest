@@ -1,8 +1,0 @@
-POST http://localhost:3001/chat
-Content-Type: application/json
-
-{
-	"from": 3,
-	"to": 1,
-	"msg": "moi kall, ihan ok"
-}

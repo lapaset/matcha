@@ -1,1 +1,0 @@
-GET http://localhost:3001/likes?from_user_id=3&match=1
