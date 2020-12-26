@@ -107,7 +107,7 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 	}
 
 	const reportHandler = () => {
-		reportService.report(users)
+		reportService.report(userToShow.user_id)
 			.then(() => setConfirmationModal(null))
 			.catch(e => {
 				console.log(e)
