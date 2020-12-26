@@ -50,7 +50,8 @@ CREATE TABLE report (
 CREATE TABLE blocked (
 	block_id SERIAL PRIMARY KEY,
 	from_user_id INT NOT NULL,
-	to_user_id INT NOT NULL
+	to_user_id INT NOT NULL,
+	unique (from_user_id, to_user_id)
 };
 
 CREATE TABLE chat (

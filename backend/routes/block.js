@@ -1,11 +1,18 @@
 const blockRouter = require('express').Router()
 const db = require('../utils/db')
+const jwt = require('jsonwebtoken')
+const tokenSecret = require('../utils/config').TOKEN_SECRET
 
 blockRouter.post('/', (req, resp) => {
+	const user = jwt.verify(req.token, tokenSecret)
+
+	if (!user)
+		return resp.status(401).json({ error: 'token missing or invalid' })
+
 	db.query('INSERT INTO blocked (from_user_id, to_user_id) VALUES ($1, $2) RETURNING *',
-		[req.body.from_user_id, req.body.to_user_id], (err, res) => {
+		[user.user_id, req.body.to_user_id], (err, res) => {
 			if (res)
-				resp.status(200).send({ message: "From now you can't see anything from " });
+				resp.status(200).send(res.rows);
 			else
 				resp.status(500).send(err);
 		})
@@ -39,10 +46,14 @@ blockRouter.get('/:id', (req, resp) => {
 })
 
 blockRouter.delete('/:id', (req, resp) => {
+
+	if (!jwt.verify(req.token, tokenSecret))
+		return resp.status(401).json({ error: 'token missing or invalid' })
+
 	db.query('DELETE FROM blocked WHERE block_id = $1',
 		[req.params.id], (err, res) => {
 			if (res)
-				resp.status(200).send({ message: "You just unblocked this users" });
+				resp.status(204).end();
 			else
 				resp.status(500).send(err);
 		})

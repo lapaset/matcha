@@ -115,7 +115,7 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 	}
 
 	const blockHandler = () => {
-		blockService.block(users)
+		blockService.block(userToShow.user_id)
 			.then(() => {
 				window.location.href = "http://localhost:3000";
 			})

@@ -1,9 +1,10 @@
-import axios from 'axios';
+import axios from 'axios'
+import auth from '../utils/auth'
 const baseUrl = 'http://localhost:3001/block'
 const noAccess = 'http://localhost:3001/block/no-access'
 
-const block = async userObject => {
-    const resp = await axios.post(baseUrl, userObject)
+const block = async user_id => {
+    const resp = await axios.post(baseUrl, { to_user_id: user_id }, auth.config())
     return resp.data;
 }
 
@@ -18,7 +19,7 @@ const blockedList = async id => {
 }
 
 const unblockUser = async id => {
-    const resp = await axios.delete(`${baseUrl}/${id}`)
+    const resp = await axios.delete(`${baseUrl}/${id}`, auth.config())
     return resp.data;
 }
 
