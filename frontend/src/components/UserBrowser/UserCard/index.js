@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAward } from '@fortawesome/free-solid-svg-icons'
 import Photos from './Photos'
 import ActionButtons from './ActionButtons'
 import UserInformation from './UserInformation'
 import MatchModal from './MatchModal'
+import CardHeader from './CardHeader'
 import ConfirmationModal from './ConfirmationModal'
 import likeService from '../../../services/likeService'
 import reportService from '../../../services/reportService'
@@ -15,19 +13,7 @@ import viewService from '../../../services/viewsService'
 import userService from '../../../services/userService'
 import socket from '../../../socket'
 
-const BackToTheListLink = ({ setShowUserAtUserSearch }) => {
-
-	const location = useLocation()
-
-	return location.search
-		? <span style={{ float: "left" }}><Link to="/">Back to the list</Link></span>
-		: <span
-			style={{ float: "left", cursor: "pointer" }}
-			className="text-info"
-			onClick={() => setShowUserAtUserSearch(null)}>Back to the list</span>
-}
-
-const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) => {
+const UserCard = ({ user_id, loggedUser, wsClient, hideUser }) => {
 
 	const [liked, setLiked] = useState(false)
 	const [matchModal, setMatchModal] = useState(null)
@@ -39,7 +25,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) =>
 			.getBlockedId(user_id)
 			.then(res => {
 				if (res.length > 0)
-					window.location.href = "http://localhost:3000"
+					window.location.href = "http://localhost:3000/browse"
 			})
 			.catch(e => {
 				console.log(e)
@@ -53,7 +39,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) =>
 				setUserToShow(res)
 			})
 			.catch(() => {
-				window.location.href = "http://localhost:3000"
+				window.location.href = "http://localhost:3000/browse"
 			})
 	}, [user_id])
 
@@ -152,10 +138,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) =>
 	return userToShow
 		? <>
 			<Card className="w-100 m-auto">
-				<Card.Body>
-					<BackToTheListLink setShowUserAtUserSearch={setShowUserAtUserSearch} />
-					<span style={{ float: "right" }}><FontAwesomeIcon icon={faAward} /> {userToShow.fame}</span>
-				</Card.Body>
+				<CardHeader fame={userToShow.fame} hideUser={hideUser} />
 				<Photos photos={userToShow.photos} />
 				<UserInformation user={userToShow} />
 				<ActionButtons {...actionButtonProps} />

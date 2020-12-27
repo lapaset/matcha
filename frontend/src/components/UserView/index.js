@@ -56,7 +56,7 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 			.then((res) => {
 				if (data.notification.endsWith('viewed your profile') ||
 					data.notification.endsWith('likes you'))
-					history.push(`/?user_id=${data.from_id}`)
+					history.push(`browse/?user_id=${data.from_id}`)
 				else if (data.notification.startsWith('New message from') ||
 					data.notification.startsWith('New match with') ||
 					data.notification.startsWith('No longer match with'))
@@ -77,7 +77,7 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 	return <>
 		<Nav className="nav">
 			<div className="navLeft">
-				<Link to="/">matcha</Link>
+				<Link to="/browse">matcha</Link>
 			</div>
 			<div className="navRight">
 				{user.username
@@ -97,6 +97,15 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 
 			<Switch>
 				<Route path="/" exact={true} render={() => {
+
+					return user.user_id
+						? userInfoComplete()
+							? <Redirect to="/browse" />
+							: <Redirect to="/profile" />
+						: <Redirect to="/login" />
+				}} />
+
+				<Route path="/browse" render={() => {
 
 					const showUser = location && location.search.indexOf('user_id=') &&
 						Number(location.search.substring(location.search.indexOf('user_id=') + 8))

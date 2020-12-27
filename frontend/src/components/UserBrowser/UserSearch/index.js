@@ -4,7 +4,7 @@ import ListOfUsers from './ListOfUsers'
 import SortForm from './SortForm'
 import FilterForm from './FilterForm'
 
-const UserSearch = ({ user, wsClient, setShowUser }) => {
+const UserSearch = ({ user, setShowUser }) => {
 
 	const [resultsToShow, setResultsToShow] = useState([])
 
@@ -35,6 +35,7 @@ const UserSearch = ({ user, wsClient, setShowUser }) => {
 		: []
 
 	const handleClick = user => setShowUser(user.user_id)
+
 
 	return <>
 			<SortForm {...sortFormProps} />
