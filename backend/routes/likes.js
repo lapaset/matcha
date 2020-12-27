@@ -63,10 +63,11 @@ likesRouter.post('/', (req, resp) => {
 								resp.status(500).send(err)
 						})
 
-					if (result)
+					else if (result)
 						resp.status(200).send({ value: 0, status: 'unlike' })
 					
-					resp.status(500).send(error)
+					else
+						resp.status(500).send(error)
 				})
 			}
 			else {
