@@ -9,7 +9,7 @@ verifyRouter.get('/', (req, resp) => {
 			} else {
 				resp.redirect('http://localhost:3000')
 			}
-	})
+		})
 })
 
 module.exports = verifyRouter

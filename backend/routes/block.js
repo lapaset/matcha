@@ -70,10 +70,10 @@ blockRouter.delete('/:id', (req, resp) => {
 	db.query('DELETE FROM blocked WHERE block_id = $1',
 		[req.params.id], (err, res) => {
 			if (res)
-				resp.status(204).end();
+				resp.status(204).end()
 			else
-				resp.status(500).send(err);
+				resp.status(500).send(err)
 		})
 })
 
-module.exports = blockRouter;
+module.exports = blockRouter

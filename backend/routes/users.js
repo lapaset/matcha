@@ -22,7 +22,7 @@ usersRouter.get('/', (req, resp) => {
 	const parameters = [user.user_id]
 
 	if (req.query.orientation) {
-		query = query.concat(` AND CAST(orientation AS text) LIKE $2`)
+		query = query.concat(' AND CAST(orientation AS text) LIKE $2')
 		parameters.push(`%${req.query.orientation}%`)
 	}
 
@@ -73,7 +73,7 @@ usersRouter.get('/:id', (req, resp) => {
 	LEFT OUTER JOIN photos USING (user_id) \
 	WHERE users.user_id = $1')
 
-	
+
 	db.query(query, [req.params.id], (err, res) => {
 		if (res && res.rows[0])
 			resp.status(200).send(res.rows)
@@ -114,33 +114,33 @@ usersRouter.post('/', async (req, resp) => {
 
 		transporter.sendMail(mailOptions, function (error, info) {
 			if (error) {
-				console.log(error);
+				console.log(error)
 			} else {
-				console.log('Email sent: ' + info.response);
+				console.log('Email sent: ' + info.response)
 			}
 		})
 	}
 
-	const { firstName, lastName, username, email, token, birthdate } = req.body;
+	const { firstName, lastName, username, email, token, birthdate } = req.body
 
 	const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
 	db.query('INSERT INTO users (first_name, last_name, username, email, password, token, birthdate) \
 		VALUES ($1, $2, $3, $4, $5, $6, $7)',
-		[firstName, lastName, username, email, hashedPassword, token, birthdate],
-		(err, res) => {
-			if (res)
-				resp.status(201).send(res.rows[0])
+	[firstName, lastName, username, email, hashedPassword, token, birthdate],
+	(err, res) => {
+		if (res)
+			resp.status(201).send(res.rows[0])
 
-			else if (err.detail && err.detail.startsWith('Key (email)'))
-				resp.status(409).send({ error: 'email already exists' })
+		else if (err.detail && err.detail.startsWith('Key (email)'))
+			resp.status(409).send({ error: 'email already exists' })
 
-			else if (err.detail && err.detail.startsWith('Key (username)'))
-				resp.status(409).send({ error: 'username already exists' })
+		else if (err.detail && err.detail.startsWith('Key (username)'))
+			resp.status(409).send({ error: 'username already exists' })
 
-			else
-				resp.status(500).send(err)
-		})
+		else
+			resp.status(500).send(err)
+	})
 
 	sendEmail(email, token)
 })
@@ -151,11 +151,11 @@ usersRouter.patch('/:id', async (req, resp) => {
 	if (!user || user.user_id !== Number(req.params.id))
 		return resp.status(401).json({ error: 'token missing or invalid' })
 
-	const { password, firstName, lastName, ...body } = req.body
+	const { firstName, lastName, ...body } = req.body
 
 	if (firstName)
 		body.first_name = firstName
-	
+
 	if (lastName)
 		body.last_name = lastName
 
@@ -165,12 +165,12 @@ usersRouter.patch('/:id', async (req, resp) => {
 	if (req.body.password) {
 		body.password = await bcrypt.hash(req.body.password, 10)
 	}
-	
+
 	Object.keys(body).forEach((k, i) => {
 		query = query.concat(`${k} = $${i + 1}, `)
 		parameters.push(body[k])
 	})
-	
+
 	query = query.slice(0, -2).concat(` WHERE user_id = $${parameters.length + 1}
 		RETURNING `)
 

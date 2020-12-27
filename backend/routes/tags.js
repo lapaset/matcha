@@ -3,10 +3,10 @@ const tagsRouter = require('express').Router()
 
 tagsRouter.get('/', (req, resp) => {
 	db.query('SELECT * FROM tags', (err, res) => {
-		if (err)
-			resp.status(500).send(err)
-		else
+		if (res)
 			resp.status(200).send(res.rows)
+		else
+			resp.status(500).send(err)
 	})
 })
 
@@ -16,10 +16,10 @@ tagsRouter.post('/', (req, resp) => {
 	}
 
 	db.query('INSERT INTO tags (tag) VALUES ($1)', [req.body.tag], (err, res) => {
-		if (err)
-			resp.status(500).send({ error: err.detail })
-		else
+		if (res)
 			resp.status(200).send(req.body.tag)
+		else
+			resp.status(500).send({ error: err.detail })
 	})
 })
 

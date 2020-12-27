@@ -51,24 +51,24 @@ likesRouter.post('/', (req, resp) => {
 
 			if (userLike) {
 				db.query('DELETE FROM likes WHERE like_id = $1',
-				[userLike.like_id], (error, result) => {
+					[userLike.like_id], (error, result) => {
 
-					if (result && matchLike && matchLike.match)
+						if (result && matchLike && matchLike.match)
 
-						db.query('UPDATE likes SET match = 0 WHERE like_id = $1',
-						[matchLike.like_id], (err, res) => {
-							if (res)
-								resp.status(200).send({ value: 0, status: 'unmatch' })
-							else
-								resp.status(500).send(err)
-						})
+							db.query('UPDATE likes SET match = 0 WHERE like_id = $1',
+								[matchLike.like_id], (err, res) => {
+									if (res)
+										resp.status(200).send({ value: 0, status: 'unmatch' })
+									else
+										resp.status(500).send(err)
+								})
 
-					else if (result)
-						resp.status(200).send({ value: 0, status: 'unlike' })
-					
-					else
-						resp.status(500).send(error)
-				})
+						else if (result)
+							resp.status(200).send({ value: 0, status: 'unlike' })
+
+						else
+							resp.status(500).send(error)
+					})
 			}
 			else {
 
@@ -77,18 +77,18 @@ likesRouter.post('/', (req, resp) => {
 
 					if (result) {
 						db.query('UPDATE likes SET match = 1 WHERE like_id = $1',
-						[matchLike.like_id], (err, res) => {
-							if (res)
-								resp.status(200).send({ value: 1, status: 'match' })
-							else
-								resp.status(500).send(err)
-						})
+							[matchLike.like_id], (err, res) => {
+								if (res)
+									resp.status(200).send({ value: 1, status: 'match' })
+								else
+									resp.status(500).send(err)
+							})
 					}
 					else
 						resp.status(500).send(error)
 				})
 			}
-			
+
 		}
 		else if (res) {
 
@@ -102,7 +102,7 @@ likesRouter.post('/', (req, resp) => {
 		}
 		else
 			resp.status(500).send(err)
-		})
+	})
 })
 
 module.exports = likesRouter

@@ -38,11 +38,11 @@ router.post('/', (req, resp) => {
 	db.query('INSERT INTO notifications (user_id, from_id, notification) \
 	VALUES ($1, $2, $3) RETURNING *',
 	[req.body.user_id, req.body.from_id, req.body.notification], (err, res) => {
-			if (res)
-				resp.status(201).send(res.rows[0])
-			else
-				resp.status(500).send(err)
-		})
+		if (res)
+			resp.status(201).send(res.rows[0])
+		else
+			resp.status(500).send(err)
+	})
 })
 
 router.patch('/:id', (req, resp) => {
@@ -67,12 +67,12 @@ router.patch('/', (req, resp) => {
 		return resp.status(401).json({ error: 'token missing or invalid' })
 
 	db.query('UPDATE notifications SET read = $1 WHERE user_id = $2',
-	[req.body.read, user.user_id], (err, res) => {
-		if (res)
-			resp.status(204).end()
-		else
-			resp.status(500).send({ error: err.detail })
-	})
+		[req.body.read, user.user_id], (err, res) => {
+			if (res)
+				resp.status(204).end()
+			else
+				resp.status(500).send({ error: err.detail })
+		})
 })
 
 module.exports = router
