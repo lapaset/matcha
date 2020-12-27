@@ -115,7 +115,7 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 
 					return user.user_id
 						? userInfoComplete()
-							? <UserBrowser user={user} wsClient={wsClient} showUserAtLoad={showUser} />
+							? <UserBrowser user={user} wsClient={wsClient} showUserAtLoad={showUser} matches={matches} setMatches={setMatches} />
 							: <Redirect to="/profile" />
 						: <Redirect to="/login" />
 				}} />

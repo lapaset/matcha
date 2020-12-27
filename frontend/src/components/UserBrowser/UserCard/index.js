@@ -13,7 +13,7 @@ import viewService from '../../../services/viewsService'
 import userService from '../../../services/userService'
 import socket from '../../../socket'
 
-const UserCard = ({ user_id, loggedUser, wsClient, hideUser }) => {
+const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches }) => {
 
 	const [liked, setLiked] = useState(false)
 	const [matchModal, setMatchModal] = useState(null)
@@ -94,17 +94,24 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser }) => {
 
 		likeService.toggleLike(userToShow.user_id)
 			.then(res => {
-
 				if (res.value === 1 && res.status === 'match') {
 					sendNotification(`New match with ${loggedUser.username}`)
 					setMatchModal(userToShow.username)
+					setMatches(matches.concat({
+						user_id: userToShow.user_id,
+						username: userToShow.username,
+						match: 1,
+						messages: []
+					}))
 				}
 
 				else if (res.value === 1 && res.status === 'like')
 					sendNotification(`${loggedUser.username} likes you`)
 
-				else if (res.value === 0 && res.status === 'unmatch')
+				else if (res.value === 0 && res.status === 'unmatch') {
 					sendNotification(`No longer match with ${loggedUser.username}`)
+					setMatches(matches.filter(m => m.user_id !== userToShow.user_id))
+				}
 
 				setLiked(res.value)
 			})

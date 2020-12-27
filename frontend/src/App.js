@@ -151,8 +151,6 @@ const App = () => {
 			}
 			if (type === 'notification' && notifications) {
 
-				console.log('data from server', dataFromServer)
-
 				if (dataFromServer.notification.startsWith('New match with')) {
 					const newMatch = {
 						user_id: dataFromServer.from_id,
@@ -162,6 +160,9 @@ const App = () => {
 					};
 					setMatches(matches.concat(newMatch))
 				}
+
+				if (dataFromServer.notification.startsWith('No longer match with'))
+					setMatches(matches.filter(m => m.user_id !== dataFromServer.from_id))
 
 				const updatedNotifications = [...notifications]
 				updatedNotifications.unshift({ ...dataFromServer })

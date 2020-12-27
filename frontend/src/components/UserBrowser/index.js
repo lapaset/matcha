@@ -4,7 +4,7 @@ import { Switch, Route, useRouteMatch, NavLink, useHistory } from 'react-router-
 import UserCard from './UserCard'
 import UserSearch from './UserSearch'
 
-const UserBrowser = ({ user, wsClient, showUserAtLoad }) => {
+const UserBrowser = ({ user, wsClient, showUserAtLoad, matches, setMatches }) => {
 	const [showUser, setShowUser] = useState(showUserAtLoad)
 	const { path, url } = useRouteMatch()
 	const history = useHistory()
@@ -24,7 +24,7 @@ const UserBrowser = ({ user, wsClient, showUserAtLoad }) => {
 
 	return showUser
 
-		? <UserCard user_id={showUser} loggedUser={user} wsClient={wsClient} hideUser={hideUser} />
+		? <UserCard user_id={showUser} loggedUser={user} wsClient={wsClient} hideUser={hideUser} matches={matches} setMatches={setMatches} />
 
 		: <>
 			<ButtonGroup className="mb-5">
