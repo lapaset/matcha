@@ -67,7 +67,7 @@ usersRouter.get('/:id', (req, resp) => {
 	id, profile_pic, photo_str'
 
 	if (user.user_id === Number(req.params.id))
-		query = query.concat(' email, verified, token, password')
+		query = query.concat(', email, verified, token, password')
 
 	query = query.concat(' FROM users \
 	LEFT OUTER JOIN photos USING (user_id) \
