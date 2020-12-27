@@ -6,10 +6,10 @@ const UploadPhoto = ({ photo, setPhoto, profilePic, setUploadDisabled }) => {
 	const [errorMessage, setErrorMessage] = useState(null)
 
 	const handleImageChange = e => {
-		e.preventDefault();
+		e.preventDefault()
 
-		let reader = new FileReader();
-		let file = e.target.files[0];
+		let reader = new FileReader()
+		let file = e.target.files[0]
 
 		if (!file)
 			return

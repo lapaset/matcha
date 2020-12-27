@@ -6,17 +6,17 @@ import DeletePhotoButton from './DeletePhotoButton'
 const PhotoBox = ({ photo, user, setUser, profilePic }) => {
 
 	const [hovered, setHovered] = useState(false)
-	
+
 	const imgStyle = {
 		maxWidth: hovered ? '101%' : '100%',
 		maxHeight: hovered ? '101%' : '100%',
 	}
 
 	const buttonStyle = {
-		display: hovered ? "block" : "none",
-		position: "absolute",
-		bottom: "5px",
-		right: "5px"
+		display: hovered ? 'block' : 'none',
+		position: 'absolute',
+		bottom: '5px',
+		right: '5px'
 	}
 
 	return <ResponsiveEmbed aspectRatio="1by1">
@@ -29,7 +29,7 @@ const PhotoBox = ({ photo, user, setUser, profilePic }) => {
 			<ButtonGroup style={buttonStyle}>
 				<ProfilePicButton photo={photo} profilePic={profilePic} user={user} setUser={setUser} />
 				<DeletePhotoButton photo={photo} user={user} setUser={setUser} />
-			</ButtonGroup> 
+			</ButtonGroup>
 		</div>
 	</ResponsiveEmbed>
 }

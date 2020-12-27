@@ -12,23 +12,23 @@ const SelectOrientation = ({ orientation, control, errors }) => {
 
 	//console.log('orientation at select orientation', orientation)
 
-	const defVal = () => orientation ? orientation.map(o => ({ value: o, label: o })) : ""
+	const defVal = () => orientation ? orientation.map(o => ({ value: o, label: o })) : ''
 
 	return 	<div className="form-group text-left">
-				<label>looking for</label>
-				{errors.orientation && errors.orientation.type === 'required' && (<span className="text-danger"> *</span>)}<br />
+		<label>looking for</label>
+		{errors.orientation && errors.orientation.type === 'required' && (<span className="text-danger"> *</span>)}<br />
 
-				<Controller
-					class="form-control"
-					name="orientation"
-					as={Select}
-					options={options}
-					value={defVal()}
-					defaultValue={defVal()}
-					control={control}
-					rules={{ required: true }}
-					isMulti />
-			</div>
+		<Controller
+			class="form-control"
+			name="orientation"
+			as={Select}
+			options={options}
+			value={defVal()}
+			defaultValue={defVal()}
+			control={control}
+			rules={{ required: true }}
+			isMulti />
+	</div>
 }
 
 export default SelectOrientation

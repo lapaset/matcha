@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Form, Col } from 'react-bootstrap'
 //import FlashMessage from 'react-flash-message';
 //import Alert from 'react-bootstrap/Alert';
-import '../../style/signup.css';
+import '../../style/signup.css'
 import userService from '../../services/userService'
 import PasswordFields from '../Forms/PasswordFields'
 import RequiredInputField from '../Forms/RequiredInputField'
@@ -15,9 +15,9 @@ const Signup = () => {
 	const [notification, setNotification] = useState('')
 
 	// generating token
-	const rand = () => Math.random(0).toString(36).substr(2);
-	const token_check = (length) => (rand() + rand() + rand() + rand()).substr(0, length);
-	const token = token_check(100);
+	const rand = () => Math.random(0).toString(36).substr(2)
+	const token_check = (length) => (rand() + rand() + rand() + rand()).substr(0, length)
+	const token = token_check(100)
 
 	const onSubmit = (data, e) => {
 		//console.log('data', data);
@@ -85,4 +85,4 @@ const Signup = () => {
 	)
 }
 
-export default Signup;
+export default Signup

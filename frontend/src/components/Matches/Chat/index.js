@@ -39,7 +39,7 @@ const Chat = ({ user, match, handleClose, wsClient }) => {
 
 	useEffect(() => {
 		if (messagesEndRef.current)
-			messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+			messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
 	}, [match])
 
 	return match
@@ -60,7 +60,7 @@ const Chat = ({ user, match, handleClose, wsClient }) => {
 					)}
 
 					<div ref={messagesEndRef}></div>
-					
+
 				</Modal.Body>
 
 				<Modal.Footer>

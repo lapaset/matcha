@@ -2,7 +2,7 @@ export const userGeoLocation = () => {
 	if (navigator.geolocation){
 		navigator.geolocation.getCurrentPosition(position => {
 			if (!position.coords.longitude || !position.coords.latitude)
-				return;
+				return
 			else{
 				localStorage.setItem('coordinates', JSON.stringify({
 					latitude: position.coords.latitude,

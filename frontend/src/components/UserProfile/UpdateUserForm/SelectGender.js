@@ -10,21 +10,21 @@ const SelectGender = ({ gender, control, errors }) => {
 		{ value: 'other', label: 'other' }
 	]
 
-	const defVal = () => gender ? { value: gender, label: gender } : ""
+	const defVal = () => gender ? { value: gender, label: gender } : ''
 
 	return 	<div className="form-group text-left">
-				<label>gender</label>
-				{errors.gender && errors.gender.type === 'required' && (<span className="text-danger"> *</span>)}<br />
-				<Controller
-					class="form-control"
-					name="gender"
-					as={Select}
-					options={options}
-					value={{ value: gender, label: gender }}
-					defaultValue={defVal()}
-					control={control}
-					rules={{ required: true }} />
-			</div>
+		<label>gender</label>
+		{errors.gender && errors.gender.type === 'required' && (<span className="text-danger"> *</span>)}<br />
+		<Controller
+			class="form-control"
+			name="gender"
+			as={Select}
+			options={options}
+			value={{ value: gender, label: gender }}
+			defaultValue={defVal()}
+			control={control}
+			rules={{ required: true }} />
+	</div>
 }
 
 export default SelectGender

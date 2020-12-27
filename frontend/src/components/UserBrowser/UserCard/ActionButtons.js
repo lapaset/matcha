@@ -24,16 +24,16 @@ const ActionButton = ({ action, icon, text, setConfirmationModal, username }) =>
 
 
 const ActionButtons = ({ liked, hasPhoto, likeHandler, reportHandler, blockHandler, setConfirmationModal, username }) => {
-	
+
 	const actionButtonProps = {
 		setConfirmationModal,
 		username
-	};
+	}
 
 	return <Card.Body>
 		{
 			hasPhoto || liked
-				? <LikeButton action={likeHandler} icon={faHeart} text={ liked ? " Unlike" : " Like" } />
+				? <LikeButton action={likeHandler} icon={faHeart} text={ liked ? ' Unlike' : ' Like' } />
 				: <DisabledLikeButton likeHandler={likeHandler}  />
 		}
 		<ActionButton action={reportHandler} icon={faFlag} text=" Report" { ...actionButtonProps } />

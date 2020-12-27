@@ -50,8 +50,8 @@ const FilterForm = ({ user, requiredTag, maxDistance, minFame, minAge, maxAge })
 			</Form.Row>
 		</Form>
 
-		<div id="toggleFilterForm" className="text-info text-right mb-3" 
-		onClick={() => setHideFilterForm(!hideFilterForm)}>
+		<div id="toggleFilterForm" className="text-info text-right mb-3"
+			onClick={() => setHideFilterForm(!hideFilterForm)}>
 			{
 				hideFilterForm
 					? <>show filters</>

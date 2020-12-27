@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import loginService from '../../services/loginService';
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import loginService from '../../services/loginService'
 import { userGeoLocation } from '../../modules/geolocate'
 import auth from '../../utils/auth'
 import socket from '../../socket'
 
 const Login = ({ setUser, wsClient }) => {
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
+	const [username, setUsername] = useState('')
+	const [password, setPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState(null)
 
 	useEffect(() => {
-		userGeoLocation();
-	}, []);
+		userGeoLocation()
+	}, [])
 
 	const handleLogin = event => {
-		event.preventDefault();
-		const coords = JSON.parse(window.localStorage.getItem('coordinates'));
-		
+		event.preventDefault()
+		const coords = JSON.parse(window.localStorage.getItem('coordinates'))
+
 		loginService
-			.login({ 
+			.login({
 				username,
 				password,
-				longitude: coords ? coords.longitude : null, 
+				longitude: coords ? coords.longitude : null,
 				latitude: coords ? coords.latitude : null
 			})
 			.then(data => {
@@ -76,4 +76,4 @@ const Login = ({ setUser, wsClient }) => {
 	)
 }
 
-export default Login;
+export default Login

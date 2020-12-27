@@ -6,7 +6,7 @@ const login = async credentials => {
 
 	const orientationFromDb = orientation => {
 		const o = []
-	
+
 		if (!orientation)
 			return o
 		if (orientation.includes('f'))
@@ -21,7 +21,7 @@ const login = async credentials => {
 	const resp = await axios.post(baseUrl, credentials)
 
 	const { orientation, ...user } = resp.data
-	
+
 	return ({
 		...user,
 		orientation: orientationFromDb(orientation),

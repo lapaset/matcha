@@ -29,23 +29,23 @@ const SortForm = ({ user, resultsToShow, setResultsToShow }) => {
 		let sortedResults = [...res]
 
 		switch (by) {
-			case "age descending":
-				sortedResults.sort((a, b) => b.age.years - a.age.years)
-				break;
-			case "age ascending":
-				sortedResults.sort((a, b) => a.age.years - b.age.years)
-				break;
-			case "fame":
-				sortedResults.sort((a, b) => b.fame - a.fame)
-				break;
-			case "tags":
-				sortedResults = sortByTags()
-				break;
-			case "distance":
-				sortedResults.sort((a, b) => a.distance - b.distance)
-				break;
-			default:
-				break;
+		case 'age descending':
+			sortedResults.sort((a, b) => b.age.years - a.age.years)
+			break
+		case 'age ascending':
+			sortedResults.sort((a, b) => a.age.years - b.age.years)
+			break
+		case 'fame':
+			sortedResults.sort((a, b) => b.fame - a.fame)
+			break
+		case 'tags':
+			sortedResults = sortByTags()
+			break
+		case 'distance':
+			sortedResults.sort((a, b) => a.distance - b.distance)
+			break
+		default:
+			break
 		}
 
 		return sortedResults
@@ -64,18 +64,18 @@ const SortForm = ({ user, resultsToShow, setResultsToShow }) => {
 
 				const calculateDistance = (lat1, lon1, lat2, lon2) => {
 
-					const R = 6371e3; // metres
-					const φ1 = lat1 * Math.PI / 180; // φ, λ in radians
-					const φ2 = lat2 * Math.PI / 180;
-					const Δφ = (lat2 - lat1) * Math.PI / 180;
-					const Δλ = (lon2 - lon1) * Math.PI / 180;
-			
+					const R = 6371e3 // metres
+					const φ1 = lat1 * Math.PI / 180 // φ, λ in radians
+					const φ2 = lat2 * Math.PI / 180
+					const Δφ = (lat2 - lat1) * Math.PI / 180
+					const Δλ = (lon2 - lon1) * Math.PI / 180
+
 					const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
 						Math.cos(φ1) * Math.cos(φ2) *
-						Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-					const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-			
-					return R * c / 1000; //in kilometres
+						Math.sin(Δλ / 2) * Math.sin(Δλ / 2)
+					const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+					return R * c / 1000 //in kilometres
 				}
 
 				const filteredResults = res
@@ -93,7 +93,7 @@ const SortForm = ({ user, resultsToShow, setResultsToShow }) => {
 				setResultsToShow(sortResults(filteredResults, defaultSortValue))
 			})
 			.catch(e => {
-				console.log('error', e);
+				console.log('error', e)
 			})
 	}, [user.latitude, user.longitude, user.gender, user.orientation, user.user_id, setResultsToShow, sortResults])
 

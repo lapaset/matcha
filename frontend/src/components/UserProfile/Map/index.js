@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import {api} from '../../../secret.json';
+import React, { useEffect, useState } from 'react'
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'
+import { api } from '../../../secret.json'
 import userService from '../../../services/userService'
 
 const containerStyle = {
@@ -9,27 +9,27 @@ const containerStyle = {
 	maxWidth: '400px',
 	maxHeight: '400px',
 	margin: '2em auto'
-};
+}
 
 const Map = ({ user, setUser }) => {
-	const [mapCentre, setMapCentre] = useState({lat: 0, lng: 0});
+	const [mapCentre, setMapCentre] = useState({ lat: 0, lng: 0 })
 
 	useEffect(() => {
-		setMapCentre({lat: user.latitude, lng: user.longitude});
-	}, [user]);
+		setMapCentre({ lat: user.latitude, lng: user.longitude })
+	}, [user])
 
 	const dragEndHandler= (e) => {
-		const latitude = e.latLng.lat();
-		const longitude = e.latLng.lng();
+		const latitude = e.latLng.lat()
+		const longitude = e.latLng.lng()
 		const userObject = {
 			latitude,
 			longitude
 		}
 
 		userService.updateUser(userObject, user.user_id)
-		.then(res => {
-			setUser({ ...user, latitude: res.latitude, longitude: res.longitude })
-		})
+			.then(res => {
+				setUser({ ...user, latitude: res.latitude, longitude: res.longitude })
+			})
 	}
 
 	return (
@@ -47,6 +47,6 @@ const Map = ({ user, setUser }) => {
 			</GoogleMap>
 		</LoadScript>
 	)
-};
+}
 
-export default Map;
+export default Map

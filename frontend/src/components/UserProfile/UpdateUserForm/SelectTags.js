@@ -18,54 +18,55 @@ const SelectTags = ({ state, setState }) => {
 	const createOption = label => ({ label, value: label })
 
 	const handleKeyDown = (event) => {
-		const { inputValue, value } = state;
+		const { inputValue, value } = state
 
-		if (!inputValue) return;
+		if (!inputValue) return
 		switch (event.key) {
-			case 'Enter':
-			case 'Tab':
-				event.preventDefault();
+		case 'Enter':
+		case 'Tab':
+			event.preventDefault()
 
-				const newTag = inputValue.startsWith('#')
-					? inputValue
-					: '#' + inputValue
+			// eslint-disable-next-line no-case-declarations
+			const newTag = inputValue.startsWith('#')
+				? inputValue
+				: '#' + inputValue
 
-				if (value.find(o => o.label === newTag) !== undefined) {
-					setState({
-						inputValue: '',
-						value
-					})
-					return
-				}
-				else if (options.find(o => o.label === newTag) !== undefined) {
+			if (value.find(o => o.label === newTag) !== undefined) {
+				setState({
+					inputValue: '',
+					value
+				})
+				return
+			}
+			else if (options.find(o => o.label === newTag) !== undefined) {
+
+				setState({
+					inputValue: '',
+					value: [...value, createOption(newTag)]
+				})
+
+				setOptions(options.filter(o => o.label !== newTag))
+				return
+			}
+
+			tagService
+				.addTag({ tag: newTag })
+				.then(() => {
 
 					setState({
 						inputValue: '',
 						value: [...value, createOption(newTag)]
 					})
 
-					setOptions(options.filter(o => o.label !== newTag))
-					return
-				}
+					setOptions(options.concat(createOption(newTag)))
 
-				tagService
-					.addTag({ tag: newTag })
-					.then(() => {
-
-						setState({
-							inputValue: '',
-							value: [...value, createOption(newTag)]
-						})
-
-						setOptions(options.concat(createOption(newTag)))
-
-					})
-					.catch((e) => {
-						console.log('Failed to add tag', e.response.data)
-					})
-				break
-			default:
-				return
+				})
+				.catch((e) => {
+					console.log('Failed to add tag', e.response.data)
+				})
+			break
+		default:
+			return
 		}
 	}
 

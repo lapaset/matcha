@@ -35,7 +35,7 @@ const Notifications = ({ notifications, handleClick, markAllAsRead }) => {
 			<Dropdown.Divider className='p-0' />
 
 			<Dropdown.Item as={Link} to='/notifications'>View all</Dropdown.Item>
-			<Dropdown.Item onClick={markAllAsRead}>Mark all as read</Dropdown.Item> 
+			<Dropdown.Item onClick={markAllAsRead}>Mark all as read</Dropdown.Item>
 
 		</DropdownButton>
 		: null

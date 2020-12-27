@@ -4,7 +4,7 @@ const handleLogout = (wsClient, user_id) => {
 		type: 'close',
 		from: user_id
 	})))
-	window.location.href="/login";
+	window.location.href='/login'
 }
 
-export default { handleLogout };
+export default { handleLogout }

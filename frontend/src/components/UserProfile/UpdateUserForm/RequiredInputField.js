@@ -6,7 +6,7 @@ const RequiredInputField = ({ label, errors, name, defVal, maxLen, requirements 
 		{errors && (<span className="text-danger"> {errors.message}</span>)}<br />
 
 		<input className="form-control" name={name} defaultValue={defVal} maxLength={maxLen}
-			ref={requirements} />		
+			ref={requirements} />
 	</div>
 )
 

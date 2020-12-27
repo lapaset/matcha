@@ -18,8 +18,8 @@ const getMatches = async () => {
 }
 
 const toggleLike = async user_id => {
-    const resp = await axios.post(baseUrl, { to_user_id: user_id }, auth.config())
-    return resp.data;
+	const resp = await axios.post(baseUrl, { to_user_id: user_id }, auth.config())
+	return resp.data
 }
 
 export default { getLikes, getLike, getMatches, toggleLike }

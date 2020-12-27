@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 const MatchModal = ({ modal, setModal }) => modal &&
 	<Modal show={modal !== null} variant="success" onHide={() => setModal(null)} centered>
 		<Modal.Header closeButton>
-			<Modal.Title>It's a match!</Modal.Title>
+			<Modal.Title>You got a match!</Modal.Title>
 		</Modal.Header>
 		<Modal.Body>
 			<Link to='/matches'>You can now chat with {modal}</Link>

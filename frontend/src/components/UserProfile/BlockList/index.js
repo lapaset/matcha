@@ -18,7 +18,7 @@ const BlockList = ({ user }) => {
 
 		blockService
 			.unblockUser(block_id)
-			.then(res => {
+			.then(() => {
 				setBlockedUsers(blockedUsers.filter(u => u.block_id !== block_id))
 			})
 	}
@@ -34,8 +34,8 @@ const BlockList = ({ user }) => {
 					? <ListGroup className="text-left" variant="flush">
 						{blockedUsers.map(u =>
 							<ListGroup.Item key={u.username}>
-								<div style={{ display: "inline-block", width: "60%" }}>{u.username}</div>
-								<div style={{ display: "inline-block", width: "40%", textAlign: "right" }}>
+								<div style={{ display: 'inline-block', width: '60%' }}>{u.username}</div>
+								<div style={{ display: 'inline-block', width: '40%', textAlign: 'right' }}>
 									<Button onClick={() => unblockUser(u.block_id)} variant="warning">Unblock</Button>
 								</div>
 							</ListGroup.Item>
@@ -48,4 +48,4 @@ const BlockList = ({ user }) => {
 	</>
 }
 
-export default BlockList;
+export default BlockList

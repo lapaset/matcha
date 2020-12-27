@@ -15,10 +15,10 @@ const ListOfUsers = ({ users, handleClick }) => {
 						style={{ cursor: 'pointer' }}
 						onClick={() => handleClick(u)} >
 
-						<div style={{ display: "inline-block", width: "60%" }}>
+						<div style={{ display: 'inline-block', width: '60%' }}>
 							{u.username}, {u.age.years}
 						</div>
-						<div style={{ display: "inline-block", width: "40%", textAlign: "right" }}>
+						<div style={{ display: 'inline-block', width: '40%', textAlign: 'right' }}>
 							{parseInt(u.distance)} km<br />
 							<FontAwesomeIcon icon={faAward} /> {u.fame}
 						</div>

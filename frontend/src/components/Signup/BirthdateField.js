@@ -18,7 +18,7 @@ const BirthdateField = ({ errors, register, watch }) => {
 	}
 
 	return <div className="text-left">
-		
+
 		<Form.Label >birthdate</Form.Label>
 		<span className="text-danger"> { errors && valueMissing() && '*'}</span>
 		<span className="text-danger"> { errors && !valueMissing() && 'not a valid date'}</span><br />

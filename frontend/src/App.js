@@ -17,7 +17,7 @@ const App = () => {
 	const [chatToShow, setChatToShow] = useState(null)
 
 	var wsClient = useRef({})
-	const loadingUser = useRef(true);
+	const loadingUser = useRef(true)
 
 	const props = {
 		user,
@@ -29,7 +29,7 @@ const App = () => {
 		chatToShow,
 		setChatToShow,
 		wsClient
-	};
+	}
 
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem('loggedMatchaUser')
@@ -38,7 +38,7 @@ const App = () => {
 			const userFromLocalStorage = JSON.parse(loggedUserJSON)
 
 			auth.setToken(userFromLocalStorage.sessionToken)
-			
+
 			userService
 				.getUser(userFromLocalStorage.user_id)
 				.then(data => {
@@ -101,7 +101,7 @@ const App = () => {
 
 			const { type, ...dataFromServer } = JSON.parse(message.data)
 
-			if (type === 'message' || type === "rejected") {
+			if (type === 'message' || type === 'rejected') {
 
 				const updatedMatches = [...matches]
 
@@ -150,7 +150,7 @@ const App = () => {
 						username: dataFromServer.notification.slice(15),
 						match: 1,
 						messages: []
-					};
+					}
 					setMatches(matches.concat(newMatch))
 				}
 
@@ -173,4 +173,4 @@ const App = () => {
 		</Router>
 }
 
-export default App;
+export default App

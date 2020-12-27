@@ -15,7 +15,7 @@ const UserBrowser = ({ user, wsClient, showUserAtLoad, matches, setMatches }) =>
 
 	const activeLinkStyle = {
 		fontWeight: 'bold'
-	};
+	}
 
 	const hideUser = () => {
 		history.push('/browse')

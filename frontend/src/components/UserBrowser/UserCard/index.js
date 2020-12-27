@@ -26,7 +26,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 			.getBlockedId(user_id)
 			.then(res => {
 				if (res.length > 0)
-					window.location.href = "http://localhost:3000/browse"
+					window.location.href = 'http://localhost:3000/browse'
 			})
 			.catch(e => {
 				console.log(e)
@@ -40,7 +40,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 				setUserToShow(res)
 			})
 			.catch(() => {
-				window.location.href = "http://localhost:3000/browse"
+				window.location.href = 'http://localhost:3000/browse'
 			})
 	}, [user_id])
 
@@ -93,7 +93,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 
 	const likeHandler = event => {
 
-		event.preventDefault();
+		event.preventDefault()
 
 		likeService.toggleLike(userToShow.user_id)
 			.then(res => {
@@ -132,11 +132,11 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 	const blockHandler = () => {
 
 		if (isMatch)
-		sendNotification(`No longer match with ${loggedUser.username}`)
-		
+			sendNotification(`No longer match with ${loggedUser.username}`)
+
 		blockService.block(user_id)
 			.then(() => {
-				window.location.href = "http://localhost:3000"
+				window.location.href = 'http://localhost:3000'
 			})
 			.catch(e => {
 				console.log(e)
@@ -147,7 +147,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 		liked, likeHandler, reportHandler, blockHandler, setConfirmationModal,
 		hasPhoto: loggedUser.photos && loggedUser.photos.length > 0,
 		username: userToShow ? userToShow.username : ''
-	};
+	}
 
 	return userToShow
 		? <>

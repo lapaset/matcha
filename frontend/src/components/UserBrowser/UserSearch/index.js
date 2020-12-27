@@ -38,12 +38,12 @@ const UserSearch = ({ user, setShowUser }) => {
 
 
 	return <>
-			<SortForm {...sortFormProps} />
+		<SortForm {...sortFormProps} />
 
-			<FilterForm {...filterFormProps} />
+		<FilterForm {...filterFormProps} />
 
-			<ListOfUsers users={filterResults()} handleClick={handleClick} />
-		</>
+		<ListOfUsers users={filterResults()} handleClick={handleClick} />
+	</>
 
 }
 

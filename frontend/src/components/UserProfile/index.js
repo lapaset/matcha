@@ -15,4 +15,4 @@ const UserProfile = ({ user, setUser }) => {
 	</>
 }
 
-export default UserProfile;
+export default UserProfile

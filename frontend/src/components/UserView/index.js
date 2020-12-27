@@ -30,11 +30,10 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 	const matchProps = {
 		user,
 		matches,
-		setMatches,
 		chatToShow,
 		setChatToShow,
 		wsClient
-	};
+	}
 
 	useEffect(() => {
 		if (user.user_id) {
@@ -53,7 +52,7 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 	const handleNotificationClick = data => {
 		notificationService
 			.markAsRead(data.id)
-			.then((res) => {
+			.then(() => {
 				if (data.notification.endsWith('viewed your profile') ||
 					data.notification.endsWith('likes you'))
 					history.push(`browse/?user_id=${data.from_id}`)

@@ -11,7 +11,7 @@ const createWs = from => {
 
 		console.log('Websocket client connected')
 		client.send(JSON.stringify({
-			type: "connected",
+			type: 'connected',
 			from
 		}))
 	}
@@ -19,7 +19,7 @@ const createWs = from => {
 	client.onclose = () => {
 		console.log('Websocket connection closed')
 	}
-	
+
 	return client
 }
 
@@ -31,7 +31,7 @@ const sendNotification = (wsClient, notification) => {
 		console.log('Error: could not send notification, no websocket')
 		return
 	}
-	
+
 	if (wsClient.current.readyState > 1) {
 		console.log('Error: could not send notification, websocket state', wsClient.current.readyState)
 		return

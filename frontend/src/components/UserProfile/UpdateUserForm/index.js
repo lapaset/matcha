@@ -45,6 +45,7 @@ const UpdateUserForm = ({ user, setUser }) => {
 			return 'fm'
 		}
 
+		// eslint-disable-next-line no-unused-vars
 		const { password, password2, ...updatedUser } = data
 
 		updatedUser.gender = data.gender.value
@@ -52,7 +53,7 @@ const UpdateUserForm = ({ user, setUser }) => {
 		updatedUser.tags = userTagsState.value && userTagsState.value.length !== 0
 			? userTagsState.value.map(t => t.value).join('')
 			: ''
-		
+
 		if (password)
 			updatedUser.password = password
 
@@ -82,7 +83,7 @@ const UpdateUserForm = ({ user, setUser }) => {
 		<Form.Group className="text-left">
 			<Form.Label>
 				age
-    		</Form.Label>
+			</Form.Label>
 			<Form.Control plaintext readOnly defaultValue={user.age} />
 		</Form.Group>
 
@@ -141,7 +142,7 @@ const UpdateUserForm = ({ user, setUser }) => {
 				ref={register({
 					maxLength: {
 						value: 1000,
-						message: "max length 1000"
+						message: 'max length 1000'
 					}
 				})} />
 			{errors.bio && (<p className="text-danger">{errors.bio.message}</p>)}

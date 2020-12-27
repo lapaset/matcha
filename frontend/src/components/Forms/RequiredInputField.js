@@ -17,7 +17,7 @@ const RequiredInputField = ({ label, errors, name, defVal, maxLen, requirements,
 					value: maxLen,
 					message: `max length ${maxLen}`
 				}
-			})} />		
+			})} />
 	</Form.Group>
 )
 

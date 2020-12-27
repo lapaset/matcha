@@ -2,7 +2,7 @@ import React from 'react'
 import { ListGroup } from 'react-bootstrap'
 import Chat from './Chat'
 
-const Matches = ({ user, matches, setMatches, chatToShow, setChatToShow, wsClient }) => {
+const Matches = ({ user, matches, chatToShow, setChatToShow, wsClient }) => {
 
 	return matches && matches.length !== 0
 		? <>
