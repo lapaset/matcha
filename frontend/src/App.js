@@ -150,6 +150,19 @@ const App = () => {
 
 			}
 			if (type === 'notification' && notifications) {
+
+				console.log('data from server', dataFromServer)
+
+				if (dataFromServer.notification.startsWith('New match with')) {
+					const newMatch = {
+						user_id: dataFromServer.from_id,
+						username: dataFromServer.notification.slice(15),
+						match: 1,
+						messages: []
+					};
+					setMatches(matches.concat(newMatch))
+				}
+
 				const updatedNotifications = [...notifications]
 				updatedNotifications.unshift({ ...dataFromServer })
 				setNotifications(updatedNotifications)
