@@ -57,15 +57,20 @@ usersRouter.get('/', (req, resp) => {
 
 usersRouter.get('/:id', (req, resp) => {
 
-	if (!jwt.verify(req.token, tokenSecret))
-		return resp.status(401).json({ error: 'token missing or invalid' })
+	const user = jwt.verify(req.token, tokenSecret)
 
-	db.query('SELECT user_id, first_name, last_name, username, email, verified, \
-	token, password, gender, orientation, bio, tags, AGE(birthdate) as age, \
-	id, profile_pic, photo_str, longitude, latitude, fame \
-	FROM users \
-	LEFT OUTER JOIN photos USING (user_id) \
-	WHERE users.user_id = $1', [req.params.id], (err, res) => {
+	if (!user)
+		return resp.status(401).json({ error: 'token missing or invalid' })
+	
+	let query = `SELECT user_id, first_name, last_name, username, gender,\
+	orientation, bio, tags, AGE(birthdate) as age, longitude, latitude, fame\
+	id, profile_pic, photo_str ${
+		Number(req.params.id) === user.user_id
+		? ', email, verified, token, password' : '' 
+	} FROM users LEFT OUTER JOIN photos USING (user_id) \
+	WHERE users.user_id = $1`
+
+	db.query(query, [req.params.id], (err, res) => {
 		if (res && res.rows[0])
 			resp.status(200).send(res.rows)
 		else if (res)
