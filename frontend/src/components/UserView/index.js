@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { useRouteMatch, Switch, Route, Link, Redirect, useHistory } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { useLocation, Switch, Route, Link, Redirect, useHistory } from 'react-router-dom'
 import { Container, Nav } from 'react-bootstrap'
 import UserProfile from '../UserProfile'
 import Signup from '../Signup'
@@ -8,12 +8,12 @@ import Verify from '../Verify'
 import Forgot from '../ForgotPassword'
 import Reset from '../ForgotPassword/resetNewPasswd'
 import UserSearch from '../UserSearch'
-import UserCard from '../UserCard'
+//import UserCard from '../UserCard'
 import Matches from '../Matches'
 import Notifications from '../Notifications'
 import NotificationsList from '../Notifications/NotificationsList'
 import logoutService from '../../services/logoutService'
-import userService from '../../services/userService'
+//import userService from '../../services/userService'
 import Views from '../Views/index'
 import notificationService from '../../services/notificationService'
 
@@ -22,15 +22,13 @@ import '../../style/userView.css'
 const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifications,
 	chatToShow, setChatToShow, wsClient }) => {
 
-	const [showUser, setShowUser] = useState(null)
+	//const [showUser, setShowUser] = useState(null)
 	const history = useHistory()
-	const matchUserRoute = useRouteMatch('/users/:id')
-	const matchChatRoute = useRouteMatch('/chat/:id')
+	let location = useLocation()
+	/*const matchUserRoute = useRouteMatch('/users/:id')
 	const id = matchUserRoute
 		? matchUserRoute.params.id
-		: matchChatRoute
-			? matchChatRoute.params.id
-			: null
+		: null*/
 
 	const userInfoComplete = () => {
 		return user.firstName && user.lastName && user.username && user.email && user.gender && user.orientation
@@ -45,17 +43,17 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 		wsClient
 	};
 
-	useEffect(() => {
-		userService
-			.getUser(id)
-			.then(data => {
-				//console.log('data', data, 'id', id)
-				setShowUser(data)
-			})
-			.catch(e => {
-				console.log(`Error: could not get user id ${id}`, e)
-			})
-	}, [id])
+	/*	useEffect(() => {
+			userService
+				.getUser(id)
+				.then(data => {
+					//console.log('data', data, 'id', id)
+					setShowUser(data)
+				})
+				.catch(e => {
+					console.log(`Error: could not get user id ${id}`, e)
+				})
+		}, [id])*/
 
 
 	useEffect(() => {
@@ -78,8 +76,8 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 			.then((res) => {
 				if (data.notification.endsWith('viewed your profile') ||
 					data.notification.endsWith('likes you'))
-					history.push(`/users/${res.from_id}`)
-				else if (data.notification.startsWith('New message from') || 
+					history.push(`/?user_id=${data.from_id}`)
+				else if (data.notification.startsWith('New message from') ||
 					data.notification.startsWith('New match with') ||
 					data.notification.startsWith('No longer match with'))
 					history.push('/matches')
@@ -87,7 +85,7 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 
 			})
 	}
-	
+
 	const markAllNotificationsRead = () => {
 		notificationService
 			.markAllAsRead(user.user_id)
@@ -118,12 +116,20 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 		<Container id="main-container" fluid="lg" className="m-auto text-center">
 
 			<Switch>
-				<Route path="/" exact={true} render={() => user.user_id
-					? userInfoComplete()
-						? <UserSearch user={user} />
-						: <Redirect to="/profile" />
-					: <Redirect to="/login" />
-				} />
+				<Route path="/" exact={true} render={() => {
+
+					const showUser = location && location.search.indexOf('user_id=') &&
+						Number(location.search.substring(location.search.indexOf('user_id=') + 8))
+
+						? Number(location.search.substring(location.search.indexOf('user_id=') + 8))
+						: null
+
+					return user.user_id
+						? userInfoComplete()
+							? <UserSearch user={user} wsClient={wsClient} showUserAtLoad={showUser} />
+							: <Redirect to="/profile" />
+						: <Redirect to="/login" />
+				}} />
 				<Route path="/signup" component={Signup} />
 				<Route path="/forgot" component={Forgot} />
 				<Route path="/reset-password/:token" component={Reset} />
@@ -134,12 +140,6 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 				<Route path="/verify" render={() => user.user_id
 					? <Redirect to="/" />
 					: <Verify setUser={setUser} />
-				} />
-				<Route path="/users/:id" render={() => user.user_id
-					? showUser
-						? <UserCard userToShow={showUser} loggedUser={user} wsClient={wsClient} />
-						: null
-					: <Redirect to="/" />
 				} />
 				<Route path="/profile" render={() => user.user_id
 					? userInfoComplete()

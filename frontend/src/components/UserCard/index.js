@@ -13,73 +13,89 @@ import blockService from '../../services/blockService'
 import viewService from '../../services/viewsService'
 import socket from '../../socket'
 import ConfirmationModal from './ConfirmationModal'
+import userService from '../../services/userService'
 
 
-const UserCard = ({ userToShow, loggedUser, wsClient }) => {
+const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) => {
 
-	const [access, setAccess] = useState(null)
 	const [liked, setLiked] = useState(false)
 	const [matchModal, setMatchModal] = useState(null)
 	const [confirmationModal, setConfirmationModal] = useState(null)
+	const [userToShow, setUserToShow] = useState(null)
 
 	const users = {
 		from_user_id: loggedUser.user_id,
-		to_user_id: userToShow.user_id
+		to_user_id: user_id
 	};
 
-	//views working
-	/* eslint-disable react-hooks/exhaustive-deps */
 	useEffect(() => {
-		viewService.views(users)
-		.then(res => {
-			console.log(res.message)
-		})
-		.catch(e => {
-			console.log(("Error: couldn't get block info"))
-		})
-	}, []) 
-	//
+		userService
+			.getUser(user_id)
+			.then(res => {
+				setUserToShow(res)
+			})
+			.catch(e => {
+				console.log(e)
+			})
+	}, [user_id])
+
 	useEffect(() => {
 
-		socket.sendNotification(wsClient, {
-			user_id: userToShow.user_id,
-			from_id: loggedUser.user_id,
-			notification: `${loggedUser.username} viewed your profile`
-		})
+		if (userToShow && userToShow.user_id !== loggedUser.user_id) {
 
-	}, [loggedUser.user_id, loggedUser.username, userToShow.user_id, wsClient])
+			socket.sendNotification(wsClient, {
+				user_id: userToShow.user_id,
+				from_id: loggedUser.user_id,
+				notification: `${loggedUser.username} viewed your profile`
+			})
+
+			viewService
+				.views({
+					from_user_id: loggedUser.user_id,
+					to_user_id: userToShow.user_id
+				})
+				.then(res => {
+					console.log(res.message)
+				})
+				.catch(e => {
+					console.log(e)
+				})
+		}
+
+	}, [userToShow, loggedUser, wsClient])
 
 
 	//access value is all twisted!
 	useEffect(() => {
-		blockService.blockedUser(users)
+		blockService
+			.blockedUser(users)
 			.then(res => {
-				setAccess(res.value);
 				if (res.value === 1)
-					window.location.href = "http://localhost:3000";
+					setShowUserAtUserSearch(null)
 			})
 			.catch(e => {
 				console.log(("Error: couldn't get block info"))
 			})
-	}, [users])
+	}, [users, setShowUserAtUserSearch])
 
 
 	useEffect(() => {
-		likeService
-			.getLike(loggedUser.user_id, userToShow.user_id)
-			.then(res => {
-				if (res.length > 0)
-					setLiked(true)
-			})
-			.catch(e => {
-				console.log(("Error: couldn't get like info"))
-			})
-	}, [loggedUser.user_id, userToShow.user_id])
+		if (userToShow)
+			likeService
+				.getLike(user_id)
+				.then(res => {
+					if (res.length > 0)
+						setLiked(true)
+				})
+				.catch(e => {
+					console.log(e)
+				})
+	}, [userToShow, user_id])
 
 	const likeHandler = event => {
 		const sendNotification = notification => {
 			socket.sendNotification(wsClient, {
-				user_id: userToShow.user_id,
+				user_id: user_id,
 				from_id: loggedUser.user_id,
 				notification
 			})
@@ -107,7 +123,7 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 	}
 
 	const reportHandler = () => {
-		reportService.report(userToShow.user_id)
+		reportService.report(user_id)
 			.then(() => setConfirmationModal(null))
 			.catch(e => {
 				console.log(e)
@@ -115,9 +131,9 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 	}
 
 	const blockHandler = () => {
-		blockService.block(userToShow.user_id)
+		blockService.block(user_id)
 			.then(() => {
-				window.location.href = "http://localhost:3000";
+				setShowUserAtUserSearch(null)
 			})
 			.catch(e => {
 				console.log(e)
@@ -127,10 +143,13 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 	const actionButtonProps = {
 		liked, likeHandler, reportHandler, blockHandler, setConfirmationModal,
 		hasPhoto: loggedUser.photos && loggedUser.photos.length > 0,
-		username: userToShow.username
+		username: userToShow ? userToShow.username : ''
 	};
 
-	return !access && <>
+	console.log('render user card', userToShow)
+
+	return userToShow
+		? <>
 			<Card className="w-100 m-auto">
 				<Card.Body>
 					<span style={{ float: "left" }}><Link to="/">Back to the list</Link></span>
@@ -138,11 +157,12 @@ const UserCard = ({ userToShow, loggedUser, wsClient }) => {
 				</Card.Body>
 				<Photos photos={userToShow.photos} />
 				<UserInformation user={userToShow} />
-				<ActionButtons { ...actionButtonProps } />
+				<ActionButtons {...actionButtonProps} />
 			</Card>
 			<MatchModal modal={matchModal} setModal={setMatchModal} />
 			<ConfirmationModal modal={confirmationModal} setModal={setConfirmationModal} />
 		</>
+		: null
 }
 
 export default UserCard
