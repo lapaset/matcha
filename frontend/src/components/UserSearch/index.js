@@ -4,7 +4,6 @@ import ListOfUsers from './ListOfUsers'
 import SortForm from './SortForm'
 import FilterForm from './FilterForm'
 import UserCard from './UserCard'
-import blockService from '../../services/blockService'
 
 const UserSearch = ({ user, wsClient, showUserAtLoad }) => {
 
@@ -19,17 +18,7 @@ const UserSearch = ({ user, wsClient, showUserAtLoad }) => {
 	const sortFormProps = ({ user, resultsToShow, setResultsToShow })
 	const filterFormProps = ({ user, requiredTag, maxDistance, minFame, minAge, maxAge })
 
-	//const [blockedUsers, setBlockedUsers] = useState(null)
 	const [showUser, setShowUser] = useState(null)
-
-	/*useEffect(() => {
-		blockService
-			.getAllBlocked()
-			.then(res => {
-				setBlockedUsers(res.map(r => r.to_user_id === user.user_id ? r.from_user_id : r.to_user_id))
-			})
-
-	}, [user.user_id])*/
 
 	useEffect(() => {
 		setShowUser(showUserAtLoad)

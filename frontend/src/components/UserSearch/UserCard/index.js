@@ -8,7 +8,6 @@ import ActionButtons from './ActionButtons'
 import UserInformation from './UserInformation'
 import MatchModal from './MatchModal'
 import ConfirmationModal from './ConfirmationModal'
-
 import likeService from '../../../services/likeService'
 import reportService from '../../../services/reportService'
 import blockService from '../../../services/blockService'
@@ -39,7 +38,6 @@ const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) =>
 		blockService
 			.getBlockedId(user_id)
 			.then(res => {
-				console.log('blocked res', res)
 				if (res.length > 0)
 					window.location.href = "http://localhost:3000"
 			})
@@ -150,8 +148,6 @@ const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) =>
 		hasPhoto: loggedUser.photos && loggedUser.photos.length > 0,
 		username: userToShow ? userToShow.username : ''
 	};
-
-	console.log('render user card', userToShow)
 
 	return userToShow
 		? <>
