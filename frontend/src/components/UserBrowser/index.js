@@ -14,7 +14,7 @@ const UserBrowser = ({ user, wsClient, showUserAtLoad }) => {
 
 	? <UserCard user_id={showUser} loggedUser={user} wsClient={wsClient} setShowUserAtUserSearch={setShowUser} />
 
-	: <UserSearch user={user} wsClient={wsClient} showUsersetShowUser={setShowUser} />
+	: <UserSearch user={user} wsClient={wsClient} setShowUser={setShowUser} />
 }
 
 export default UserBrowser
