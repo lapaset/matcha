@@ -81,14 +81,16 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 				})
 	}, [userToShow, user_id])
 
+
+	const sendNotification = notification => {
+		socket.sendNotification(wsClient, {
+			user_id: user_id,
+			from_id: loggedUser.user_id,
+			notification
+		})
+	}
+
 	const likeHandler = event => {
-		const sendNotification = notification => {
-			socket.sendNotification(wsClient, {
-				user_id: user_id,
-				from_id: loggedUser.user_id,
-				notification
-			})
-		}
 
 		event.preventDefault();
 
@@ -127,6 +129,11 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 	}
 
 	const blockHandler = () => {
+		const isMatch = matches.find(m => m.user_id = user_id)
+
+		if (isMatch)
+		sendNotification(`No longer match with ${loggedUser.username}`)
+		
 		blockService.block(user_id)
 			.then(() => {
 				window.location.href = "http://localhost:3000"

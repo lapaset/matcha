@@ -32,39 +32,55 @@ module.exports = server => {
 
 				if (messageArray.type === 'message') {
 
-					db.query(`INSERT INTO chat (sender, receiver, msg) VALUES($1, $2, $3) RETURNING *`,
-						[messageArray.from, messageArray.to, messageArray.msg], (err, res) => {
+					db.query('SELECT from_user_id, to_user_id FROM blocked\
+					WHERE (from_user_id = $1 AND to_user_id = $2)\
+					OR (from_user_id = $2 AND to_user_id = $1)',
+						[messageArray.from, messageArray.to], (err, res) => {
+							if (res && res.rowCount === 0) {
+								db.query(`INSERT INTO chat (sender, receiver, msg) VALUES($1, $2, $3) RETURNING *`,
+									[messageArray.from, messageArray.to, messageArray.msg], (err, res) => {
 
-							if (res && res.rows[0]) {
+										if (res && res.rows[0]) {
 
-								if (clients[messageArray.to] && clients[messageArray.to].connected) {
+											if (clients[messageArray.to] && clients[messageArray.to].connected) {
 
-									clients[messageArray.to].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
-									clients[messageArray.from].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
-								}
+												clients[messageArray.to].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
+												clients[messageArray.from].sendUTF(JSON.stringify({ ...res.rows[0], type: 'message' }))
+											}
 
-								else
-									clients[messageArray.from].sendUTF(JSON.stringify({ ...res.rows[0], type: 'rejected' }))
+											else
+												clients[messageArray.from].sendUTF(JSON.stringify({ ...res.rows[0], type: 'rejected' }))
+										}
+
+									})
 							}
-
-							else
-								console.log(err)
 						})
+
+
 				}
 
 				if (messageArray.type === 'notification') {
 
-					db.query('INSERT INTO notifications (user_id, from_id, notification) VALUES ($1, $2, $3) RETURNING *',
-						[messageArray.user_id, messageArray.from_id, messageArray.notification],
-						(err, res) => {
-							if (res && res.rows[0]) {
-								if (clients[messageArray.user_id] && clients[messageArray.user_id].connected)
-									clients[messageArray.user_id].sendUTF(JSON.stringify({ ...res.rows[0], type: 'notification' }))
-							}
-							else
-								console.log(err)
-						})
 
+					db.query('SELECT from_user_id, to_user_id FROM blocked\
+						WHERE (from_user_id = $1 AND to_user_id = $2)\
+						OR (from_user_id = $2 AND to_user_id = $1)',
+						[messageArray.from, messageArray.to], (err, res) => {
+
+							if (res && res.rowCount === 0) {
+								
+								db.query('INSERT INTO notifications (user_id, from_id, notification) VALUES ($1, $2, $3) RETURNING *',
+									[messageArray.user_id, messageArray.from_id, messageArray.notification],
+									(err, res) => {
+										if (res && res.rows[0]) {
+											if (clients[messageArray.user_id] && clients[messageArray.user_id].connected)
+												clients[messageArray.user_id].sendUTF(JSON.stringify({ ...res.rows[0], type: 'notification' }))
+										}
+										else
+											console.log(err)
+									})
+							}
+						})
 				}
 			}
 		})

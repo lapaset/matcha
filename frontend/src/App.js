@@ -101,7 +101,6 @@ const App = () => {
 
 			const { type, ...dataFromServer } = JSON.parse(message.data)
 
-			//console.log('message in client', type, dataFromServer)
 			if (type === 'message' || type === "rejected") {
 
 				const updatedMatches = [...matches]
@@ -109,7 +108,6 @@ const App = () => {
 				const match = updatedMatches
 					.find(u => u.user_id === dataFromServer.sender || u.user_id === dataFromServer.receiver)
 
-				console.log('match', match)
 				if (!match)
 					return
 
@@ -117,11 +115,6 @@ const App = () => {
 
 				if (type === 'message') {
 					if (dataFromServer.receiver === user.user_id && (!chatToShow || chatToShow.user_id !== match.user_id)) {
-						console.log('should come here', {
-							user_id: user.user_id,
-							from_id: match.user_id,
-							notification: `New message from ${match.username}`
-						})
 
 						socket.sendNotification(wsClient, {
 							user_id: user.user_id,

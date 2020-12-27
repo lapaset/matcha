@@ -11,8 +11,17 @@ blockRouter.post('/', (req, resp) => {
 
 	db.query('INSERT INTO blocked (from_user_id, to_user_id) VALUES ($1, $2) RETURNING *',
 		[user.user_id, req.body.to_user_id], (err, res) => {
-			if (res)
-				resp.status(200).send(res.rows)
+			if (res) {
+				db.query('DELETE FROM likes WHERE (from_user_id = $1 AND to_user_id = $2)\
+				OR (from_user_id = $2 AND to_user_id = $1)', [user.user_id, req.body.to_user_id],
+				(error, response) => {
+					if (response)
+						resp.status(200).send(res.rows)
+					else
+						resp.status(500).send(error)
+				})
+
+			}
 			else if (err.code === '23505')
 				resp.status(204).end()
 			else
