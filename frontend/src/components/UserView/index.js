@@ -7,13 +7,11 @@ import Login from '../Login'
 import Verify from '../Verify'
 import Forgot from '../ForgotPassword'
 import Reset from '../ForgotPassword/resetNewPasswd'
-import UserSearch from '../UserSearch'
-//import UserCard from '../UserCard'
+import UserBrowser from '../UserBrowser'
 import Matches from '../Matches'
 import Notifications from '../Notifications'
 import NotificationsList from '../Notifications/NotificationsList'
 import logoutService from '../../services/logoutService'
-//import userService from '../../services/userService'
 import Views from '../Views/index'
 import notificationService from '../../services/notificationService'
 
@@ -22,13 +20,8 @@ import '../../style/userView.css'
 const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifications,
 	chatToShow, setChatToShow, wsClient }) => {
 
-	//const [showUser, setShowUser] = useState(null)
 	const history = useHistory()
 	let location = useLocation()
-	/*const matchUserRoute = useRouteMatch('/users/:id')
-	const id = matchUserRoute
-		? matchUserRoute.params.id
-		: null*/
 
 	const userInfoComplete = () => {
 		return user.firstName && user.lastName && user.username && user.email && user.gender && user.orientation
@@ -42,19 +35,6 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 		setChatToShow,
 		wsClient
 	};
-
-	/*	useEffect(() => {
-			userService
-				.getUser(id)
-				.then(data => {
-					//console.log('data', data, 'id', id)
-					setShowUser(data)
-				})
-				.catch(e => {
-					console.log(`Error: could not get user id ${id}`, e)
-				})
-		}, [id])*/
-
 
 	useEffect(() => {
 		if (user.user_id) {
@@ -126,7 +106,7 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 
 					return user.user_id
 						? userInfoComplete()
-							? <UserSearch user={user} wsClient={wsClient} showUserAtLoad={showUser} />
+							? <UserBrowser user={user} wsClient={wsClient} showUserAtLoad={showUser} />
 							: <Redirect to="/profile" />
 						: <Redirect to="/login" />
 				}} />

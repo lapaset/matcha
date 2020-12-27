@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { useFilter } from '../../hooks/index'
+import React, { useState } from 'react'
+import { useFilter } from '../../../hooks/index'
 import ListOfUsers from './ListOfUsers'
 import SortForm from './SortForm'
 import FilterForm from './FilterForm'
-import UserCard from './UserCard'
 
-const UserSearch = ({ user, wsClient, showUserAtLoad }) => {
+const UserSearch = ({ user, wsClient, setShowUser }) => {
 
 	const [resultsToShow, setResultsToShow] = useState([])
 
@@ -17,12 +16,6 @@ const UserSearch = ({ user, wsClient, showUserAtLoad }) => {
 
 	const sortFormProps = ({ user, resultsToShow, setResultsToShow })
 	const filterFormProps = ({ user, requiredTag, maxDistance, minFame, minAge, maxAge })
-
-	const [showUser, setShowUser] = useState(null)
-
-	useEffect(() => {
-		setShowUser(showUserAtLoad)
-	}, [showUserAtLoad])
 
 	const requiredTagFound = tags => tags && requiredTag.value
 		? tags.split('#').includes(requiredTag.value)
@@ -43,11 +36,7 @@ const UserSearch = ({ user, wsClient, showUserAtLoad }) => {
 
 	const handleClick = user => setShowUser(user.user_id)
 
-	return showUser
-
-		? <UserCard user_id={showUser} loggedUser={user} wsClient={wsClient} setShowUserAtUserSearch={setShowUser} />
-
-		: <>
+	return <>
 			<SortForm {...sortFormProps} />
 
 			<FilterForm {...filterFormProps} />

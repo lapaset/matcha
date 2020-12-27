@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react'
-import userService from '../../services/userService'
+import userService from '../../../services/userService'
 import { Form } from 'react-bootstrap'
 
 const SortForm = ({ user, resultsToShow, setResultsToShow }) => {
