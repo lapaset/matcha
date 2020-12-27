@@ -61,15 +61,19 @@ usersRouter.get('/:id', (req, resp) => {
 
 	if (!user)
 		return resp.status(401).json({ error: 'token missing or invalid' })
-	
-	let query = `SELECT user_id, first_name, last_name, username, gender,\
-	orientation, bio, tags, AGE(birthdate) as age, longitude, latitude, fame\
-	id, profile_pic, photo_str ${
-		Number(req.params.id) === user.user_id
-		? ', email, verified, token, password' : '' 
-	} FROM users LEFT OUTER JOIN photos USING (user_id) \
-	WHERE users.user_id = $1`
 
+	let query = 'SELECT user_id, first_name, last_name, username, gender,\
+	orientation, bio, tags, AGE(birthdate) as age, longitude, latitude, fame,\
+	id, profile_pic, photo_str'
+
+	if (user.user_id === Number(req.params.id))
+		query = query.concat(' email, verified, token, password')
+
+	query = query.concat(' FROM users \
+	LEFT OUTER JOIN photos USING (user_id) \
+	WHERE users.user_id = $1')
+
+	
 	db.query(query, [req.params.id], (err, res) => {
 		if (res && res.rows[0])
 			resp.status(200).send(res.rows)
@@ -80,6 +84,15 @@ usersRouter.get('/:id', (req, resp) => {
 	})
 })
 
+/*
+SELECT user_id, first_name, last_name, username, email, verified,
+token, password, gender, orientation, bio, tags, AGE(birthdate) as age,
+id, profile_pic, photo_str, longitude, latitude, fame
+	FROM users \
+	LEFT OUTER JOIN photos USING (user_id) \
+	WHERE users.user_id = $1
+
+*/
 usersRouter.post('/', async (req, resp) => {
 
 	const sendEmail = (email, token) => {
