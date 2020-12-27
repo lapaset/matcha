@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import {api} from '../../../secret.json';
-import mapService from '../../../services/mapService'
+import userService from '../../../services/userService'
 
 const containerStyle = {
 	width: '90vw',
@@ -13,10 +13,7 @@ const containerStyle = {
 
 const Map = ({ user, setUser }) => {
 	const [mapCentre, setMapCentre] = useState({lat: 0, lng: 0});
-	//var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'));
-	//console.log(coords.latitude);
 
-	/* eslint-disable react-hooks/exhaustive-deps */
 	useEffect(() => {
 		setMapCentre({lat: user.latitude, lng: user.longitude});
 	}, [user]);
@@ -29,16 +26,14 @@ const Map = ({ user, setUser }) => {
 			longitude
 		}
 
-		mapService.updateMap(userObject, user.user_id)
+		userService.updateUser(userObject, user.user_id)
 		.then(res => {
 			setUser({ ...user, latitude: res.latitude, longitude: res.longitude })
 		})
 	}
 
 	return (
-		<LoadScript
-			googleMapsApiKey={api}
-		>
+		<LoadScript googleMapsApiKey={api} >
 			<GoogleMap
 				mapContainerStyle={containerStyle}
 				center={mapCentre}

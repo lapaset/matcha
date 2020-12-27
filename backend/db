@@ -31,7 +31,10 @@ CREATE TABLE photos (
 	id SERIAL PRIMARY KEY,
 	user_id INT NOT NULL,
 	profile_pic SMALLINT NOT NULL DEFAULT '0',
-	photo_str VARCHAR(500000) NOT NULL
+	photo_str VARCHAR(500000) NOT NULL,
+	FOREIGN KEY(user_id)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE
 );
 
 CREATE TABLE likes (
@@ -39,21 +42,39 @@ CREATE TABLE likes (
 	from_user_id INT NOT NULL,
 	to_user_id INT NOT NULL,
 	match SMALLINT NOT NULL,
-	unique (from_user_id, to_user_id)
+	unique (from_user_id, to_user_id),
+	FOREIGN KEY(from_user_id)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE,
+	FOREIGN KEY(to_user_id)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE
 );
 
 CREATE TABLE report (
 	report_id SERIAL PRIMARY KEY,
 	from_user_id INT NOT NULL,
 	to_user_id INT NOT NULL,
-	unique (from_user_id, to_user_id)
+	unique (from_user_id, to_user_id),
+	FOREIGN KEY(from_user_id)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE,
+	FOREIGN KEY(to_user_id)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE
 );
 
 CREATE TABLE blocked (
 	block_id SERIAL PRIMARY KEY,
 	from_user_id INT NOT NULL,
 	to_user_id INT NOT NULL,
-	unique (from_user_id, to_user_id)
+	unique (from_user_id, to_user_id),
+	FOREIGN KEY(from_user_id)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE,
+	FOREIGN KEY(to_user_id)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE
 );
 
 CREATE TABLE chat (
@@ -61,7 +82,13 @@ CREATE TABLE chat (
 	sender INT NOT NULL,
 	receiver INT NOT NULL,
 	msg VARCHAR(1000),
-	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY(sender)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE,
+	FOREIGN KEY(receiver)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE
 );
 
 
