@@ -24,7 +24,7 @@ const UserSearch = ({ user, wsClient, showUserAtLoad }) => {
 
 	useEffect(() => {
 		blockService
-			.blockedList(user.user_id)
+			.getAllBlocked()
 			.then(res => {
 				setBlockedUsers(res.map(r => r.to_user_id === user.user_id ? r.from_user_id : r.to_user_id))
 			})

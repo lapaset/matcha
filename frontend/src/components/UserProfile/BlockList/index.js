@@ -8,7 +8,7 @@ const BlockList = ({ user }) => {
 
 	useEffect(() => {
 		blockService
-			.blockedList(user.user_id)
+			.getBlockedByUser(user.user_id)
 			.then(res => {
 				setBlockedUsers(res.filter(r => r.from_user_id === user.user_id))
 			})

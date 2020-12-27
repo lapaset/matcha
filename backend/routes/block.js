@@ -12,40 +12,46 @@ blockRouter.post('/', (req, resp) => {
 	db.query('INSERT INTO blocked (from_user_id, to_user_id) VALUES ($1, $2) RETURNING *',
 		[user.user_id, req.body.to_user_id], (err, res) => {
 			if (res)
-				resp.status(200).send(res.rows);
+				resp.status(200).send(res.rows)
 			else if (err.code === '23505')
 				resp.status(204).end()
-			else
-				resp.status(500).send(err);
-		})
-})
-
-blockRouter.post('/no-access', (req, resp) => {
-	db.query('SELECT * FROM blocked\
-	WHERE (from_user_id = $1 AND to_user_id = $2) OR (from_user_id = $2 AND to_user_id = $1)',
-		[req.body.from_user_id, req.body.to_user_id], (err, res) => {
-			if (res && res.rows[0]) {
-				resp.status(200).send({ value: 1 })
-			}
-			else if (res)
-				resp.status(200).send({ value: 0 })
-			else
-				resp.status(400).send({ value: "Query execution failed" });
-		}
-	)
-})
-
-blockRouter.get('/:id', (req, resp) => {
-	db.query('SELECT username, block_id, from_user_id, to_user_id FROM blocked\
-	INNER JOIN users ON to_user_id = users.user_id\
-	WHERE to_user_id = $1 OR from_user_id = $1',
-		[req.params.id], (err, res) => {
-			if (res)
-				resp.status(200).send(res.rows)
 			else
 				resp.status(500).send(err)
 		})
 })
+
+blockRouter.get('/', (req, resp) => {
+	const user = jwt.verify(req.token, tokenSecret)
+
+	if (!user || req.query.from_user_id && Number(req.query.from_user_id) !== user.user_id)
+		return resp.status(401).json({ error: 'token missing or invalid' })
+
+	let query
+	const parameters = [user.user_id]
+
+	if (req.query.from_user_id)
+		query = 'SELECT username, block_id, from_user_id, to_user_id FROM users, blocked\
+		WHERE from_user_id = $1 AND user_id = to_user_id'
+
+	else {
+		query = 'SELECT from_user_id, to_user_id FROM blocked WHERE (from_user_id = $1'
+
+		if (req.query.user_id) {
+			query = query.concat(' AND to_user_id = $2) OR (from_user_id = $2 AND to_user_id = $1)')
+			parameters.push(req.query.user_id)
+		}
+		else
+			query = query.concat(' OR to_user_id = $1)')
+	}
+
+	db.query(query, parameters, (err, res) => {
+		if (res)
+			resp.status(200).send(res.rows)
+		else
+			resp.status(500).send(err)
+	})
+})
+
 
 blockRouter.delete('/:id', (req, resp) => {
 

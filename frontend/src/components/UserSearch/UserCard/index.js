@@ -31,32 +31,19 @@ const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) =>
 	const [confirmationModal, setConfirmationModal] = useState(null)
 	const [userToShow, setUserToShow] = useState(null)
 
-	const location = useLocation()
-
-	const users = {
-		from_user_id: loggedUser.user_id,
-		to_user_id: user_id
-	};
-
-	const redirectToUserSearch = () => {
-		if (location.search)
-			window.location.href = "http://localhost:3000"
-
-		setShowUserAtUserSearch(null)
-	}
-
 	//access value is all twisted!
 	useEffect(() => {
 		blockService
-			.blockedUser(users)
+			.getBlockedId(user_id)
 			.then(res => {
-				if (res.value === 1)
+				console.log('blocked res', res)
+				if (res.length > 0)
 					window.location.href = "http://localhost:3000"
 			})
 			.catch(e => {
 				console.log(e)
 			})
-	}, [users])
+	}, [user_id])
 
 	useEffect(() => {
 		userService
@@ -148,7 +135,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) =>
 	const blockHandler = () => {
 		blockService.block(user_id)
 			.then(() => {
-				setShowUserAtUserSearch(null)
+				window.location.href = "http://localhost:3000"
 			})
 			.catch(e => {
 				console.log(e)
