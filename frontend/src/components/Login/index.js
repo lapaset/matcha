@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import loginService from '../../services/loginService';
 import { userGeoLocation } from '../../modules/geolocate'
+import auth from '../../utils/auth'
 import socket from '../../socket'
-
 
 const Login = ({ setUser, wsClient }) => {
 	const [username, setUsername] = useState("");
@@ -29,6 +29,7 @@ const Login = ({ setUser, wsClient }) => {
 					sessionToken: data.sessionToken,
 					user_id: data.user_id
 				}))
+				auth.setToken(data.sessionToken)
 				wsClient.current = socket.createWs(data.user_id)
 				setUsername('')
 				setPassword('')
