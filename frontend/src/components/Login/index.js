@@ -17,12 +17,14 @@ const Login = ({ setUser, wsClient }) => {
 	const handleLogin = event => {
 		event.preventDefault();
 		const coords = JSON.parse(window.localStorage.getItem('coordinates'));
-
-		const latitude = coords ? coords.latitude : null
-		const longitude = coords ? coords.longitude : null
 		
 		loginService
-			.login({ username, password, longitude, latitude })
+			.login({ 
+				username,
+				password,
+				longitude: coords ? coords.longitude : null, 
+				latitude: coords ? coords.latitude : null
+			})
 			.then(data => {
 
 				window.localStorage.setItem('loggedMatchaUser', JSON.stringify({

@@ -28,6 +28,8 @@ loginRouter.post('/', (request, response) => {
 
 		const coords = await getLoginCoordinates(request, res.rows[0])
 
+		console.log('coordinates at login router', coords)
+
 		db.query("WITH updated AS (\
 			UPDATE users\
 				SET (latitude, longitude) = ($1, $2)\
