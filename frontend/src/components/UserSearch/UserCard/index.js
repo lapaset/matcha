@@ -7,13 +7,14 @@ import Photos from './Photos'
 import ActionButtons from './ActionButtons'
 import UserInformation from './UserInformation'
 import MatchModal from './MatchModal'
+import ConfirmationModal from './ConfirmationModal'
+
 import likeService from '../../../services/likeService'
 import reportService from '../../../services/reportService'
 import blockService from '../../../services/blockService'
 import viewService from '../../../services/viewsService'
-import socket from '../../../socket'
-import ConfirmationModal from './ConfirmationModal'
 import userService from '../../../services/userService'
+import socket from '../../../socket'
 
 const BackToTheListLink = ({ setShowUserAtUserSearch }) => {
 
@@ -21,7 +22,10 @@ const BackToTheListLink = ({ setShowUserAtUserSearch }) => {
 
 	return location.search
 		? <span style={{ float: "left" }}><Link to="/">Back to the list</Link></span>
-		: <span style={{ float: "left" }} className="text-info" onClick={() => setShowUserAtUserSearch(null)}>Back to the list</span>
+		: <span
+			style={{ float: "left", cursor: "pointer" }}
+			className="text-info"
+			onClick={() => setShowUserAtUserSearch(null)}>Back to the list</span>
 }
 
 const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) => {
@@ -31,7 +35,6 @@ const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) =>
 	const [confirmationModal, setConfirmationModal] = useState(null)
 	const [userToShow, setUserToShow] = useState(null)
 
-	//access value is all twisted!
 	useEffect(() => {
 		blockService
 			.getBlockedId(user_id)

@@ -19,17 +19,17 @@ const UserSearch = ({ user, wsClient, showUserAtLoad }) => {
 	const sortFormProps = ({ user, resultsToShow, setResultsToShow })
 	const filterFormProps = ({ user, requiredTag, maxDistance, minFame, minAge, maxAge })
 
-	const [blockedUsers, setBlockedUsers] = useState(null)
+	//const [blockedUsers, setBlockedUsers] = useState(null)
 	const [showUser, setShowUser] = useState(null)
 
-	useEffect(() => {
+	/*useEffect(() => {
 		blockService
 			.getAllBlocked()
 			.then(res => {
 				setBlockedUsers(res.map(r => r.to_user_id === user.user_id ? r.from_user_id : r.to_user_id))
 			})
 
-	}, [user.user_id])
+	}, [user.user_id])*/
 
 	useEffect(() => {
 		setShowUser(showUserAtLoad)
@@ -47,30 +47,25 @@ const UserSearch = ({ user, wsClient, showUserAtLoad }) => {
 		requiredTagFound(r.tags)
 
 	const filterResults = () => resultsToShow
-		? blockedUsers && blockedUsers.length > 0
-			? resultsToShow
-				.filter(r =>
-					!blockedUsers.find(id => id === r.user_id) &&
-					matchesFilters(r))
-			: resultsToShow
-				.filter(r => matchesFilters(r))
+
+		? resultsToShow
+			.filter(r => matchesFilters(r))
 		: []
 
 	const handleClick = user => setShowUser(user.user_id)
 
-	return blockedUsers
-		? showUser
-		
-			? <UserCard user_id={showUser} loggedUser={user} wsClient={wsClient} setShowUserAtUserSearch={setShowUser} />
-			
-			: <>
+	return showUser
+
+		? <UserCard user_id={showUser} loggedUser={user} wsClient={wsClient} setShowUserAtUserSearch={setShowUser} />
+
+		: <>
 			<SortForm {...sortFormProps} />
 
 			<FilterForm {...filterFormProps} />
 
 			<ListOfUsers users={filterResults()} handleClick={handleClick} />
 		</>
-		: null
+
 }
 
 export default UserSearch

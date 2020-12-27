@@ -7,23 +7,28 @@ const tokenSecret = require('../utils/config').TOKEN_SECRET
 
 usersRouter.get('/', (req, resp) => {
 
-	if (!jwt.verify(req.token, tokenSecret))
+	const user = jwt.verify(req.token, tokenSecret)
+
+	if (!user)
 		return resp.status(401).json({ error: 'token missing or invalid' })
 
-	let query = `SELECT username, user_id, longitude, latitude, 
-	AGE(birthdate) as age, tags, gender, orientation, fame 
-	FROM users`
+	let query = 'SELECT username, user_id, longitude, latitude,\
+	AGE(birthdate) as age, tags, gender, orientation, fame FROM users\
+	WHERE NOT EXISTS (SELECT 1 FROM blocked\
+	WHERE (from_user_id = $1 AND to_user_id = users.user_id) OR\
+	(from_user_id = users.user_id AND to_user_id = $1))\
+	AND user_id != $1'
 
-	const parameters = []
+	const parameters = [user.user_id]
 
 	if (req.query.orientation) {
-		query = query.concat(` WHERE CAST(orientation AS text) LIKE $1`)
+		query = query.concat(` AND CAST(orientation AS text) LIKE $2`)
 		parameters.push(`%${req.query.orientation}%`)
 	}
 
 	if (req.query.gender) {
 
-		query = query.concat(` ${parameters.length === 0 ? 'WHERE' : 'AND'}`)
+		query = query.concat(' AND (')
 
 		req.query.gender
 			.split('')
@@ -34,14 +39,15 @@ usersRouter.get('/', (req, resp) => {
 						? 'male'
 						: 'other')
 
-				query = query.concat(`${i === 0
+				query = query.concat(` ${i === 0
 					? ''
 					: ' OR'} gender=$${parameters.length}`)
 
 			})
+		query = query.concat(')')
 	}
 
-	db.query(`${query} ORDER BY fame DESC`, parameters, (err, res) => {
+	db.query(query, parameters, (err, res) => {
 		if (err)
 			resp.status(500).send(err)
 		else
