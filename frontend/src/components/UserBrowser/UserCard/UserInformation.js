@@ -1,11 +1,12 @@
 import React from 'react'
 import { Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 
-const UserInformation = ({ user }) => <>
+const UserInformation = ({ user, isMatch }) => <>
 
 	<Card.Body>
-		<Card.Title>{user.username}, {user.age} </Card.Title>
-		<Card.Text>{user.firstName} {user.lastName}</Card.Text>
+		<Card.Title>{user.username}</Card.Title>
+		<Card.Text>{user.firstName} {user.lastName}, {user.age}</Card.Text>
+		{ isMatch && <Card.Text><span className="p-1 border border-info rounded text-info">Match</span></Card.Text> }
 		<Card.Text>
 			{user.bio}
 		</Card.Text>

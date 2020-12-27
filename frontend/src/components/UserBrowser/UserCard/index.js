@@ -19,6 +19,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 	const [matchModal, setMatchModal] = useState(null)
 	const [confirmationModal, setConfirmationModal] = useState(null)
 	const [userToShow, setUserToShow] = useState(null)
+	const isMatch = matches ? matches.find(m => m.user_id = user_id) !== undefined : false
 
 	useEffect(() => {
 		blockService
@@ -129,7 +130,6 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 	}
 
 	const blockHandler = () => {
-		const isMatch = matches.find(m => m.user_id = user_id)
 
 		if (isMatch)
 		sendNotification(`No longer match with ${loggedUser.username}`)
@@ -154,7 +154,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 			<Card className="w-100 m-auto">
 				<CardHeader fame={userToShow.fame} hideUser={hideUser} />
 				<Photos photos={userToShow.photos} />
-				<UserInformation user={userToShow} />
+				<UserInformation user={userToShow} isMatch={isMatch} />
 				<ActionButtons {...actionButtonProps} />
 			</Card>
 			<MatchModal modal={matchModal} setModal={setMatchModal} />
