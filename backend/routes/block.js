@@ -13,6 +13,8 @@ blockRouter.post('/', (req, resp) => {
 		[user.user_id, req.body.to_user_id], (err, res) => {
 			if (res)
 				resp.status(200).send(res.rows);
+			else if (err.code === '23505')
+				resp.status(204).end()
 			else
 				resp.status(500).send(err);
 		})
@@ -41,7 +43,7 @@ blockRouter.get('/:id', (req, resp) => {
 			if (res)
 				resp.status(200).send(res.rows)
 			else
-				resp.status(500).send({ error: err.detail })
+				resp.status(500).send(err)
 		})
 })
 
