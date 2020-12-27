@@ -3,7 +3,7 @@ import { useFilter } from '../../hooks/index'
 import ListOfUsers from './ListOfUsers'
 import SortForm from './SortForm'
 import FilterForm from './FilterForm'
-import UserCard from '../UserCard'
+import UserCard from './UserCard'
 import blockService from '../../services/blockService'
 
 const UserSearch = ({ user, wsClient, showUserAtLoad }) => {

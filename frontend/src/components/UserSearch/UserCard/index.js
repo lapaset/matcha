@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Card } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAward } from '@fortawesome/free-solid-svg-icons'
@@ -7,14 +7,22 @@ import Photos from './Photos'
 import ActionButtons from './ActionButtons'
 import UserInformation from './UserInformation'
 import MatchModal from './MatchModal'
-import likeService from '../../services/likeService'
-import reportService from '../../services/reportService'
-import blockService from '../../services/blockService'
-import viewService from '../../services/viewsService'
-import socket from '../../socket'
+import likeService from '../../../services/likeService'
+import reportService from '../../../services/reportService'
+import blockService from '../../../services/blockService'
+import viewService from '../../../services/viewsService'
+import socket from '../../../socket'
 import ConfirmationModal from './ConfirmationModal'
-import userService from '../../services/userService'
+import userService from '../../../services/userService'
 
+const BackToTheListLink = ({ setShowUserAtUserSearch }) => {
+
+	const location = useLocation()
+
+	return location.search
+		? <span style={{ float: "left" }}><Link to="/">Back to the list</Link></span>
+		: <span style={{ float: "left" }} className="text-info" onClick={() => setShowUserAtUserSearch(null)}>Back to the list</span>
+}
 
 const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) => {
 
@@ -23,10 +31,32 @@ const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) =>
 	const [confirmationModal, setConfirmationModal] = useState(null)
 	const [userToShow, setUserToShow] = useState(null)
 
+	const location = useLocation()
+
 	const users = {
 		from_user_id: loggedUser.user_id,
 		to_user_id: user_id
 	};
+
+	const redirectToUserSearch = () => {
+		if (location.search)
+			window.location.href = "http://localhost:3000"
+
+		setShowUserAtUserSearch(null)
+	}
+
+	//access value is all twisted!
+	useEffect(() => {
+		blockService
+			.blockedUser(users)
+			.then(res => {
+				if (res.value === 1)
+					window.location.href = "http://localhost:3000"
+			})
+			.catch(e => {
+				console.log(e)
+			})
+	}, [users])
 
 	useEffect(() => {
 		userService
@@ -34,8 +64,8 @@ const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) =>
 			.then(res => {
 				setUserToShow(res)
 			})
-			.catch(e => {
-				console.log(e)
+			.catch(() => {
+				window.location.href = "http://localhost:3000"
 			})
 	}, [user_id])
 
@@ -63,21 +93,6 @@ const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) =>
 		}
 
 	}, [userToShow, loggedUser, wsClient])
-
-
-	//access value is all twisted!
-	useEffect(() => {
-		blockService
-			.blockedUser(users)
-			.then(res => {
-				if (res.value === 1)
-					setShowUserAtUserSearch(null)
-			})
-			.catch(e => {
-				console.log(("Error: couldn't get block info"))
-			})
-	}, [users, setShowUserAtUserSearch])
-
 
 	useEffect(() => {
 		if (userToShow)
@@ -152,7 +167,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, setShowUserAtUserSearch }) =>
 		? <>
 			<Card className="w-100 m-auto">
 				<Card.Body>
-					<span style={{ float: "left" }}><Link to="/">Back to the list</Link></span>
+					<BackToTheListLink setShowUserAtUserSearch={setShowUserAtUserSearch} />
 					<span style={{ float: "right" }}><FontAwesomeIcon icon={faAward} /> {userToShow.fame}</span>
 				</Card.Body>
 				<Photos photos={userToShow.photos} />
