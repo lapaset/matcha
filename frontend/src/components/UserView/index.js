@@ -10,9 +10,9 @@ import Reset from '../ForgotPassword/resetNewPasswd'
 import UserBrowser from '../UserBrowser'
 import Matches from '../Matches'
 import Navigation from './Navigation'
+import UserInfoForm from './UserInfoForm'
 import NotificationsList from '../Notifications/NotificationsList'
 import notificationService from '../../services/notificationService'
-
 import '../../style/userView.css'
 
 const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifications,
@@ -35,7 +35,7 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 
 	}, [user.user_id, setNotifications])
 
-	const userInfoComplete = () => {
+	const userInfoComplete = user => {
 		return user.firstName && user.lastName && user.username && user.email && user.gender && user.orientation
 	}
 
@@ -75,7 +75,11 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 	}
 
 	const navigationProps = {
-		user, wsClient, ...notificationProps
+		user, wsClient, userInfoComplete, ...notificationProps
+	}
+
+	const userInfoFormProps = {
+		user, setUser
 	}
 
 	return <>
@@ -85,11 +89,10 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 			<div id="middle-column">
 				<Switch>
 					<Route path="/" exact={true} render={() => {
-
 						return user.user_id
-							? userInfoComplete()
+							? userInfoComplete(user)
 								? <Redirect to="/browse" />
-								: <Redirect to="/profile" />
+								: <UserInfoForm {...userInfoFormProps} />
 							: <Redirect to="/login" />
 					}} />
 
@@ -101,11 +104,9 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 							? Number(location.search.substring(location.search.indexOf('user_id=') + 8))
 							: null
 
-						return user.user_id
-							? userInfoComplete()
-								? <UserBrowser user={user} wsClient={wsClient} showUserAtLoad={showUser} matches={matches} setMatches={setMatches} />
-								: <Redirect to="/profile" />
-							: <Redirect to="/login" />
+						return user.user_id && userInfoComplete(user)
+							? <UserBrowser user={user} wsClient={wsClient} showUserAtLoad={showUser} matches={matches} setMatches={setMatches} />
+							: <Redirect to="/" />
 					}} />
 					<Route path="/signup" component={Signup} />
 					<Route path="/forgot" component={Forgot} />
@@ -118,11 +119,8 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 						? <Redirect to="/" />
 						: <Verify setUser={setUser} wsClient={wsClient} />
 					} />
-					<Route path="/profile" render={() => user.user_id
-						? userInfoComplete()
-							? <UserProfile user={user} setUser={setUser} />
-							: <><p className="text-center text-info">fill your info to start matching</p>
-								<UserProfile user={user} setUser={setUser} /></>
+					<Route path="/profile" render={() => user.user_id && userInfoComplete(user)
+						? <UserProfile user={user} setUser={setUser} />
 						: <Redirect to="/" />
 					} />
 					<Route path="/matches" render={() => user.user_id

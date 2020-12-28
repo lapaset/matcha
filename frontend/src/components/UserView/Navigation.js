@@ -15,7 +15,7 @@ const NavigationLink = ({ icon, children, ...props }) =>
 
 const Navigation = (props) => {
 
-	const { user, wsClient, ...notificationProps } = props
+	const { user, wsClient, userInfoComplete, ...notificationProps } = props
 
 
 	return <Navbar className='nav' fixed='top'>
@@ -26,17 +26,19 @@ const Navigation = (props) => {
 			</NavigationLink>
 		</Nav>
 
-		{user.username
-			? <Nav>
-				<NavigationLink to='/matches' title='chat' icon={faComments} />
+		{user && user.user_id
+			? userInfoComplete(user)
+				? <Nav>
+					<NavigationLink to='/matches' title='chat' icon={faComments} />
 
-				<NavigationLink to='/profile' title='your profile' icon={faUser} />
+					<NavigationLink to='/profile' title='your profile' icon={faUser} />
 
-				<NavigationLink to="/login" title='logout' onClick={() => logoutService.handleLogout(wsClient, user.user_id)} icon={faSignOutAlt} />
+					<NavigationLink to="/login" title='logout' onClick={() => logoutService.handleLogout(wsClient, user.user_id)} icon={faSignOutAlt} />
 
-				<Notifications {...notificationProps} />
+					<Notifications {...notificationProps} />
 
-			</Nav>
+				</Nav>
+				: null
 
 			: <Nav>
 

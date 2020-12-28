@@ -121,4 +121,4 @@ VALUES
 ('heikki', 'h', 'heikki', 'heikki@heikki', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.1695, 24.9354, '1987-02-1', 90),
 ('muumi', 'maa', 'muumio', 'peikko@born1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 61.1695, 24.9354, '2000-02-1', 100),
 ('ada', 'l', 'adalmiina', 'binar@h1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 25.1354, '1999-02-1', 100),
-('kalle', 'pihlajakatunen', 'tohtori', 'poniheppatoequards@gmail.com', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90)
+('kalle', 'pihlajakatunen', 'totori', 'ponihepatoequards@gmail.com', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90)
