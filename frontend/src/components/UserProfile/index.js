@@ -11,7 +11,7 @@ const UserProfile = ({ user, setUser }) => {
 
 	return <>
 		<h1>{user.username}</h1>
-		<div className='text-left'>
+		<div className='text-left pt-3'>
 
 			<Togglable title='Photos'>
 				<UserPhotos user={user} setUser={setUser} />

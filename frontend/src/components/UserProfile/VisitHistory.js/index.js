@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { ListGroup } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import viewService from '../../../services/viewsService'
 
 const VisitHistory = ({ user }) => {
@@ -19,10 +20,13 @@ const VisitHistory = ({ user }) => {
 		? <ListGroup className="text-left" variant="flush">
 			{viewhistory.map(u => u.from_visit_username === user.username
 				? <ListGroup.Item key={i++}>
-					<div style={{ display: 'inline-block', width: '60%' }}>You visited <a href={`http://localhost:3000/users/${u.to_user_id}`}>{u.to_visit_username} </a>profile</div>
+					<div style={{ display: 'inline-block', width: '60%' }}>
+						You visited <Link to={`browse/?user_id=${u.to_user_id}`}>{u.to_visit_username}</Link> profile
+					</div>
 				</ListGroup.Item>
 				: <ListGroup.Item key={i++}>
-					<div key={i++} style={{ display: 'inline-block', width: '60%' }}><a href={`http://localhost:3000/users/${u.from_user_id}`}>{u.from_visit_username}</a> visited your profile</div>
+					<div style={{ display: 'inline-block', width: '60%' }}>
+						<Link to={`browse/?user_id=${u.from_user_id}`}>{u.from_visit_username}</Link> visited your profile</div>
 				</ListGroup.Item>
 			)}
 		</ListGroup>
