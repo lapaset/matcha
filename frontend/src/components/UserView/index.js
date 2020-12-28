@@ -78,65 +78,67 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 	return <>
 		<Navigation {...navigationProps} />
 
-		<Container id="main-container" fluid="lg" className="m-auto text-center">
+		<Container id="main-container" fluid="lg">
+			<div id="middle-column">
+				<Switch>
+					<Route path="/" exact={true} render={() => {
 
-			<Switch>
-				<Route path="/" exact={true} render={() => {
+						return user.user_id
+							? userInfoComplete()
+								? <Redirect to="/browse" />
+								: <Redirect to="/profile" />
+							: <Redirect to="/login" />
+					}} />
 
-					return user.user_id
+					<Route path="/browse" render={() => {
+
+						const showUser = location && location.search.indexOf('user_id=') &&
+							Number(location.search.substring(location.search.indexOf('user_id=') + 8))
+
+							? Number(location.search.substring(location.search.indexOf('user_id=') + 8))
+							: null
+
+						return user.user_id
+							? userInfoComplete()
+								? <UserBrowser user={user} wsClient={wsClient} showUserAtLoad={showUser} matches={matches} setMatches={setMatches} />
+								: <Redirect to="/profile" />
+							: <Redirect to="/login" />
+					}} />
+					<Route path="/signup" component={Signup} />
+					<Route path="/forgot" component={Forgot} />
+					<Route path="/reset-password/:token" component={Reset} />
+					<Route path="/login" render={() => user.user_id
+						? <Redirect to="/" />
+						: <Login setUser={setUser} wsClient={wsClient} />
+					} />
+					<Route path="/verify" render={() => user.user_id
+						? <Redirect to="/" />
+						: <Verify setUser={setUser} />
+					} />
+					<Route path="/profile" render={() => user.user_id
 						? userInfoComplete()
-							? <Redirect to="/browse" />
-							: <Redirect to="/profile" />
-						: <Redirect to="/login" />
-				}} />
-
-				<Route path="/browse" render={() => {
-
-					const showUser = location && location.search.indexOf('user_id=') &&
-						Number(location.search.substring(location.search.indexOf('user_id=') + 8))
-
-						? Number(location.search.substring(location.search.indexOf('user_id=') + 8))
-						: null
-
-					return user.user_id
-						? userInfoComplete()
-							? <UserBrowser user={user} wsClient={wsClient} showUserAtLoad={showUser} matches={matches} setMatches={setMatches} />
-							: <Redirect to="/profile" />
-						: <Redirect to="/login" />
-				}} />
-				<Route path="/signup" component={Signup} />
-				<Route path="/forgot" component={Forgot} />
-				<Route path="/reset-password/:token" component={Reset} />
-				<Route path="/login" render={() => user.user_id
-					? <Redirect to="/" />
-					: <Login setUser={setUser} wsClient={wsClient} />
-				} />
-				<Route path="/verify" render={() => user.user_id
-					? <Redirect to="/" />
-					: <Verify setUser={setUser} />
-				} />
-				<Route path="/profile" render={() => user.user_id
-					? userInfoComplete()
-						? <UserProfile user={user} setUser={setUser} />
-						: <><p className="text-center text-info">fill your info to start matching</p>
-							<UserProfile user={user} setUser={setUser} /></>
-					: <Redirect to="/" />
-				} />
-				<Route path="/matches" render={() => user.user_id
-					? <Matches {...matchProps} />
-					: <Redirect to="/" />
-				} />
-				<Route path="/notifications" render={() => user.user_id
-					? <NotificationsList notifications={notifications} handleClick={handleNotificationClick} markAllAsRead={markAllNotificationsRead} />
-					: <Redirect to="/" />
-				} />
-			</Switch>
-
+							? <UserProfile user={user} setUser={setUser} />
+							: <><p className="text-center text-info">fill your info to start matching</p>
+								<UserProfile user={user} setUser={setUser} /></>
+						: <Redirect to="/" />
+					} />
+					<Route path="/matches" render={() => user.user_id
+						? <Matches {...matchProps} />
+						: <Redirect to="/" />
+					} />
+					<Route path="/notifications" render={() => user.user_id
+						? <NotificationsList notifications={notifications} handleClick={handleNotificationClick} markAllAsRead={markAllNotificationsRead} />
+						: <Redirect to="/" />
+					} />
+				</Switch>
+			</div>
 		</Container>
-
 		<footer>
-			this is footer
+			<Container fluid="lg">
+				lapaset & mhjony 2020
+			</Container>
 		</footer>
+
 	</>
 }
 
