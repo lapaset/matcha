@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Form, Image, ResponsiveEmbed } from 'react-bootstrap'
 
-
 const UploadPhoto = ({ photo, setPhoto, profilePic, setUploadDisabled }) => {
 	const [errorMessage, setErrorMessage] = useState(null)
 

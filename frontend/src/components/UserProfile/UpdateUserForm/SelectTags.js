@@ -61,8 +61,8 @@ const SelectTags = ({ state, setState }) => {
 					setOptions(options.concat(createOption(newTag)))
 
 				})
-				.catch((e) => {
-					console.log('Failed to add tag', e.response.data)
+				.catch(e => {
+					console.log('Database error', e)
 				})
 			break
 		default:

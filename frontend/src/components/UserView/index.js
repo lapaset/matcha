@@ -29,7 +29,7 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 					setNotifications(res)
 				})
 				.catch(e => {
-					console.log('Error: could not get notifications', e)
+					console.log('Database error', e)
 				})
 		}
 
@@ -60,6 +60,9 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 			.markAllAsRead(user.user_id)
 			.then(() => {
 				setNotifications(notifications.map(n => ({ ...n, read: 1 })))
+			})
+			.catch(e => {
+				console.log('Database error', e)
 			})
 	}
 

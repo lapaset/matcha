@@ -30,6 +30,9 @@ const Map = ({ user, setUser }) => {
 			.then(res => {
 				setUser({ ...user, latitude: res.latitude, longitude: res.longitude })
 			})
+			.catch(e => {
+				console.log('Database error', e)
+			})
 	}
 
 	return (

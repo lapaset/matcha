@@ -93,7 +93,7 @@ const SortForm = ({ user, resultsToShow, setResultsToShow }) => {
 				setResultsToShow(sortResults(filteredResults, defaultSortValue))
 			})
 			.catch(e => {
-				console.log('error', e)
+				console.log('Database error', e)
 			})
 	}, [user.latitude, user.longitude, user.gender, user.orientation, user.user_id, setResultsToShow, sortResults])
 

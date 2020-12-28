@@ -34,10 +34,7 @@ const UploadModal = ({ user, setUser, showModal, closeModal }) => {
 				setUser(updatedUser)
 			})
 			.catch(e => {
-				console.log('error', e)
-				//if (e.response && e.response.data)
-				//setErrorMessage(e.response.data.error)
-				//setNotification('')
+				console.log('Database error', e)
 			})
 	}
 

@@ -13,6 +13,10 @@ const VisitHistory = ({ user }) => {
 			.then(res => {
 				setViewhistory(res)
 			})
+			.catch(e => {
+				console.log('Database error', e)
+			})
+
 	}, [user.username])
 
 	var i = 0

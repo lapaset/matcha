@@ -11,6 +11,9 @@ const BlockList = ({ user }) => {
 			.then(res => {
 				setBlockedUsers(res.filter(r => r.from_user_id === user.user_id))
 			})
+			.catch(e => {
+				console.log('Database error', e)
+			})
 	}, [user.user_id])
 
 	const unblockUser = block_id => {
@@ -19,6 +22,9 @@ const BlockList = ({ user }) => {
 			.unblockUser(block_id)
 			.then(() => {
 				setBlockedUsers(blockedUsers.filter(u => u.block_id !== block_id))
+			})
+			.catch(e => {
+				console.log('Database error', e)
 			})
 	}
 

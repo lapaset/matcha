@@ -29,7 +29,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 					window.location.href = 'http://localhost:3000/browse'
 			})
 			.catch(e => {
-				console.log(e)
+				console.log('Database error', e)
 			})
 	}, [user_id])
 
@@ -63,7 +63,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 					console.log(res.message)
 				})
 				.catch(e => {
-					console.log(e)
+					console.log('Database error', e)
 				})
 		}
 
@@ -78,7 +78,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 						setLiked(true)
 				})
 				.catch(e => {
-					console.log(e)
+					console.log('Database error', e)
 				})
 	}, [userToShow, user_id])
 
@@ -118,6 +118,9 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 
 				setLiked(res.value)
 			})
+			.catch(e => {
+				console.log('Database error', e)
+			})
 
 	}
 
@@ -125,7 +128,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 		reportService.report(user_id)
 			.then(() => setConfirmationModal(null))
 			.catch(e => {
-				console.log(e)
+				console.log('Database error', e)
 			})
 	}
 
@@ -139,7 +142,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 				window.location.href = 'http://localhost:3000'
 			})
 			.catch(e => {
-				console.log(e)
+				console.log('Database error', e)
 			})
 	}
 

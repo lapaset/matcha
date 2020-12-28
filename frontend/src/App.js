@@ -20,15 +20,8 @@ const App = () => {
 	const loadingUser = useRef(true)
 
 	const props = {
-		user,
-		setUser,
-		matches,
-		setMatches,
-		notifications,
-		setNotifications,
-		chatToShow,
-		setChatToShow,
-		wsClient
+		user, setUser, matches, setMatches, notifications, setNotifications,
+		chatToShow, setChatToShow, wsClient
 	}
 
 	useEffect(() => {
@@ -47,7 +40,7 @@ const App = () => {
 					setUser(data)
 				})
 				.catch(e => {
-					console.log(e)
+					console.log('Database error', e)
 				})
 
 			return () => {
@@ -89,8 +82,14 @@ const App = () => {
 
 							setMatches(matchesFromDb)
 						})
+						.catch(e => {
+							console.log('Database error', e)
+						})
 
 					setMatches()
+				})
+				.catch(e => {
+					console.log('Database error', e)
 				})
 		}
 	}, [user.user_id])
@@ -137,7 +136,7 @@ const App = () => {
 							setMatches(updatedMatches)
 						})
 						.catch(e => {
-							console.log('Error sending notification', e)
+							console.log('Database error', e)
 						})
 				}
 

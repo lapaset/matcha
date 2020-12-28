@@ -70,6 +70,9 @@ const UpdateUserForm = ({ user, setUser }) => {
 			.catch(e => {
 				if (e.response && e.response.data)
 					setErrorMessage(e.response.data.error)
+				else
+					console.log('Database error', e)
+
 				setNotification('')
 			})
 	}
