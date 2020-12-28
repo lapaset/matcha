@@ -46,7 +46,8 @@ const UploadPhoto = ({ photo, setPhoto, profilePic, setUploadDisabled }) => {
 			{imagePreview()}
 
 			<Form.Group>
-				<Form.Control type="file"
+				<Form.Label htmlFor="upload" className="btn btn-primary mt-3">Choose photo</Form.Label>
+				<Form.Control id="upload" type="file"
 					accept=".png, .jpg, .jpeg" onChange={handleImageChange} />
 			</Form.Group>
 			{errorMessage && <div className="text-center text-danger" >{errorMessage}</div>}
