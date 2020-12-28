@@ -18,6 +18,10 @@ const createWs = from => {
 
 	client.onclose = () => {
 		console.log('Websocket connection closed')
+		client.send(JSON.stringify({
+			type: 'closed',
+			from
+		}))
 	}
 
 	return client

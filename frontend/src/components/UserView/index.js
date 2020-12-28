@@ -116,7 +116,7 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 					} />
 					<Route path="/verify" render={() => user.user_id
 						? <Redirect to="/" />
-						: <Verify setUser={setUser} />
+						: <Verify setUser={setUser} wsClient={wsClient} />
 					} />
 					<Route path="/profile" render={() => user.user_id
 						? userInfoComplete()

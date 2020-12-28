@@ -39,7 +39,10 @@ const Login = ({ setUser, wsClient }) => {
 				setUser(data)
 			})
 			.catch(e => {
-				setErrorMessage(e.response.data.error)
+				if (e.response && e.response.data)
+					setErrorMessage(e.response.data.error)
+				else
+					console.log('Database error', e)
 			})
 	}
 
