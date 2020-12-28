@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Form, Button } from 'react-bootstrap'
-import SelectGender from '../../UserProfile/UpdateUserForm/SelectGender'
-import SelectOrientation from '../../UserProfile/UpdateUserForm/SelectOrientation'
-import SelectTags from '../../UserProfile/UpdateUserForm/SelectTags'
+import SelectGender from '../../UI/Forms/SelectGender'
+import SelectOrientation from '../../UI/Forms/SelectOrientation'
+import SelectTags from '../../UI/Forms/SelectTags'
+import BioTextArea from '../../UI/Forms/BioTextArea'
 import UploadFirstPhoto from './UploadFirstPhoto'
 import userService from '../../../services/userService'
 import photoService from '../../../services/photoService'
@@ -80,17 +81,7 @@ const UserInfoForm = ({ user, setUser }) => {
 
 			<SelectTags name='tags' state={userTagsState} setState={setUserTagsState} control={control} errors={errors} />
 
-			<Form.Group className="text-left">
-				<Form.Label>bio</Form.Label><br />
-				<Form.Control as="textarea" name="bio" defaultValue={user.bio} maxLength="1000"
-					ref={register({
-						maxLength: {
-							value: 1000,
-							message: 'max length 1000'
-						}
-					})} />
-				{errors.bio && (<p className="text-danger">{errors.bio.message}</p>)}
-			</Form.Group>
+			<BioTextArea bio={user.bio} register={register} errors={errors.bio} />
 
 			<Button className="mt-3" type="submit">Update</Button>
 		</Form>
