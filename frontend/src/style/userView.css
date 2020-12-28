@@ -4,32 +4,17 @@
 }
 
 .nav {
-	height: 3em;
-	width: 100%;
-	position: fixed;
 	background: white;
-	z-index: 1;
+	font-size: 1.2rem;
 }
 
-.nav a, .nav div {
-	padding: 0.5em;
+.navbar-nav .nav-link {
+	padding: 0 2rem;
+	cursor: pointer;
 }
 
-.nav {
-	margin-bottom: 1em;
-	padding: 0.5em;
-}
-
-.navLeft {
-	width: 30%;
-	float: left;
-}
-
-.navRight {
-	width: 70%;
-	float: left;
-	text-align: right;
-	position: relative;
+#title .active {
+	color: black;
 }
 
 footer {

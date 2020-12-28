@@ -1,11 +1,11 @@
 import React from 'react'
-import { Dropdown, DropdownButton } from 'react-bootstrap'
+import { NavDropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell, faCircle } from '@fortawesome/free-solid-svg-icons'
 import Notification from './Notification'
 
-const Notifications = ({ notifications, handleClick, markAllAsRead }) => {
+const Notifications = ({ notifications, handleNotificationClick, markAllNotificationsRead }) => {
 
 	const notificationsToRender = () => notifications
 		? notifications.slice(0, 8)
@@ -24,20 +24,18 @@ const Notifications = ({ notifications, handleClick, markAllAsRead }) => {
 	</>
 
 	return notifications
-		? <DropdownButton className='notifications' variant='link' title={dropDownButton()}>
-			<Dropdown.Header>Notifications</Dropdown.Header>
+		? <NavDropdown title={dropDownButton()} id="nav-dropdown" alignRight>
+			<NavDropdown.Header>Notifications</NavDropdown.Header>
 			{
 				notificationsToRender()
-					.map(n => <Dropdown.Item key={n.id} onClick={() => handleClick(n)} className='p-2'>
-						<Notification data={n} handleClick={handleClick} />
-					</Dropdown.Item>)
+					.map(n => <NavDropdown.Item key={n.id} onClick={() => handleNotificationClick(n)} className='p-2'>
+						<Notification data={n} handleClick={handleNotificationClick} />
+					</NavDropdown.Item>)
 			}
-			<Dropdown.Divider className='p-0' />
-
-			<Dropdown.Item as={Link} to='/notifications'>View all</Dropdown.Item>
-			<Dropdown.Item onClick={markAllAsRead}>Mark all as read</Dropdown.Item>
-
-		</DropdownButton>
+			<NavDropdown.Divider className='p-0' />
+			<NavDropdown.Item as={Link} to='/notifications'>View all</NavDropdown.Item>
+			<NavDropdown.Item onClick={markAllNotificationsRead}>Mark all as read</NavDropdown.Item>
+		</NavDropdown>
 		: null
 
 }

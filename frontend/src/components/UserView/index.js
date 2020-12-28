@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import { useLocation, Switch, Route, Link, Redirect, useHistory } from 'react-router-dom'
-import { Container, Nav } from 'react-bootstrap'
+import { useLocation, Switch, Route, Redirect, useHistory } from 'react-router-dom'
+import { Container } from 'react-bootstrap'
 import UserProfile from '../UserProfile'
 import Signup from '../Signup'
 import Login from '../Login'
@@ -9,10 +9,8 @@ import Forgot from '../ForgotPassword'
 import Reset from '../ForgotPassword/resetNewPasswd'
 import UserBrowser from '../UserBrowser'
 import Matches from '../Matches'
-import Notifications from '../Notifications'
+import Navigation from './Navigation'
 import NotificationsList from '../Notifications/NotificationsList'
-import logoutService from '../../services/logoutService'
-import Views from '../Views/index'
 import notificationService from '../../services/notificationService'
 
 import '../../style/userView.css'
@@ -22,18 +20,6 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 
 	const history = useHistory()
 	let location = useLocation()
-
-	const userInfoComplete = () => {
-		return user.firstName && user.lastName && user.username && user.email && user.gender && user.orientation
-	}
-
-	const matchProps = {
-		user,
-		matches,
-		chatToShow,
-		setChatToShow,
-		wsClient
-	}
 
 	useEffect(() => {
 		if (user.user_id) {
@@ -48,6 +34,10 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 		}
 
 	}, [user.user_id, setNotifications])
+
+	const userInfoComplete = () => {
+		return user.firstName && user.lastName && user.username && user.email && user.gender && user.orientation
+	}
 
 	const handleNotificationClick = data => {
 		notificationService
@@ -73,24 +63,20 @@ const UserView = ({ user, setUser, matches, setMatches, notifications, setNotifi
 			})
 	}
 
-	return <>
-		<Nav className="nav">
-			<div className="navLeft">
-				<Link to="/browse">matcha</Link>
-			</div>
-			<div className="navRight">
-				{user.username
-					? <><Link to="/matches">matches</Link>
-						<Link to="/profile">{user.username}</Link>
-						<Views />
-						<Notifications user_id={user.user_id} notifications={notifications} handleClick={handleNotificationClick} markAllAsRead={markAllNotificationsRead} />
-						<Link to="/login" onClick={() => logoutService.handleLogout(wsClient, user.user_id)}>logout</Link></>
+	const matchProps = {
+		user, matches, chatToShow, setChatToShow, wsClient
+	}
 
-					: <><Link to="/signup">signup</Link>
-						<Link to="/login">login</Link></>
-				}
-			</div>
-		</Nav>
+	const notificationProps = {
+		notifications, handleNotificationClick, markAllNotificationsRead
+	}
+
+	const navigationProps = {
+		user, wsClient, ...notificationProps
+	}
+
+	return <>
+		<Navigation {...navigationProps} />
 
 		<Container id="main-container" fluid="lg" className="m-auto text-center">
 
