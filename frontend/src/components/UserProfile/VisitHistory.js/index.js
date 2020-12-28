@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { ListGroup, Modal } from 'react-bootstrap'
-import viewService from '../../services/viewsService'
+import viewService from '../../../services/viewsService'
 
-const Views = () => {
+const VisitHistory = () => {
 	var coords = JSON.parse(window.localStorage.getItem('loggedMatchaUser'))
 	const userObject = {
 		username: coords.username
@@ -47,4 +47,4 @@ const Views = () => {
 	</>
 }
 
-export default Views
+export default VisitHistory
