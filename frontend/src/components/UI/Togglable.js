@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Button } from 'react-bootstrap'
 
 const Togglable = (props) => {
 	const [visible, setVisible] = useState(false)
@@ -9,9 +10,9 @@ const Togglable = (props) => {
 		<div className='pb-1 pt-1' onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
 			{props.title && <span className='float-left font-weight-bold'>{props.title}</span>}
 
-			<span className='float-right text-primary text-right'>
+			<Button className='float-right text-primary text-right' variant='link'>
 				{visible ? props.hideText || 'hide' : props.showText || 'show'}
-			</span><br/>
+			</Button><br/>
 		</div>
 		<div style={showWhenVisible}>
 			{props.children}
