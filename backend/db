@@ -21,7 +21,7 @@ CREATE TABLE users (
 	longitude DOUBLE PRECISION,
 	birthdate DATE NOT NULL,
 	fame INTEGER DEFAULT 100,
-	last_online TIMESTAMP,
+	last_online TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	online SMALLINT NOT NULL DEFAULT 0
 );
 
@@ -68,15 +68,9 @@ CREATE TABLE report (
 
 CREATE TABLE blocked (
 	block_id SERIAL PRIMARY KEY,
-	from_user_id INT NOT NULL,
-	to_user_id INT NOT NULL,
+	from_user_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+	to_user_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
 	unique (from_user_id, to_user_id),
-	FOREIGN KEY(from_user_id)
-		REFERENCES users(user_id)
-		ON DELETE CASCADE,
-	FOREIGN KEY(to_user_id)
-		REFERENCES users(user_id)
-		ON DELETE CASCADE
 );
 
 CREATE TABLE chat (
@@ -119,12 +113,12 @@ CREATE TABLE notifications (
 
 INSERT INTO users (first_name, last_name, username, email, verified, password, gender, orientation, tags, latitude, longitude, birthdate, fame)
 VALUES 
-('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 100),
-('liina', 'lol', 'liina', 'liina@h', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'female', 'fmo', '#hot', 60.1695, 24.9354, '1984-02-1', 100),
-('kaisa', 'varis', 'hiihtaja', 'ski@hi', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'female', 'm', '#hot', 60.1695, 24.9354, '1990-02-1', 50),
-('muumi', 'maa', 'muumi', 'peikko@born', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'other', 'mo', '#hot', 60.1695, 24.9354, '2000-02-1', 100),
-('ada', 'l', 'ada', 'binar@h', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'other', 'f', '#hot', 60.1695, 24.9354, '1999-02-1', 100),
-('heikki', 'h', 'heikki', 'heikki@heikki', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'male', 'fmo', '#hot', 60.1695, 24.9354, '1987-02-1', 90),
-('muumi', 'maa', 'muumio', 'peikko@born1', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'other', 'mo', '#hot', 61.1695, 24.9354, '2000-02-1', 100),
-('ada', 'l', 'adalmiina', 'binar@h1', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'other', 'f', '#hot', 60.1695, 25.1354, '1999-02-1', 100),
-('kalle', 'pihlajakatunen', 'tohtori', 'poniheppatoequards@gmail.com', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90)
+('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 100),
+('liina', 'lol', 'liina', 'liina@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fmo', '#hot', 60.1695, 24.9354, '1984-02-1', 100),
+('kaisa', 'varis', 'hiihtaja', 'ski@hi', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'm', '#hot', 60.1695, 24.9354, '1990-02-1', 50),
+('muumi', 'maa', 'muumi', 'peikko@born', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 60.1695, 24.9354, '2000-02-1', 100),
+('ada', 'l', 'ada', 'binar@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 24.9354, '1999-02-1', 100),
+('heikki', 'h', 'heikki', 'heikki@heikki', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.1695, 24.9354, '1987-02-1', 90),
+('muumi', 'maa', 'muumio', 'peikko@born1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 61.1695, 24.9354, '2000-02-1', 100),
+('ada', 'l', 'adalmiina', 'binar@h1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 25.1354, '1999-02-1', 100),
+('kalle', 'pihlajakatunen', 'tohtori', 'poniheppatoequards@gmail.com', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90)
