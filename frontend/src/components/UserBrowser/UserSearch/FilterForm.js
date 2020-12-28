@@ -7,7 +7,7 @@ const FilterForm = ({ user, requiredTag, maxDistance, minFame, minAge, maxAge })
 		<Form className='mb-3'>
 			{user.tags
 				? <Form.Group>
-					<Form.Label>Tag</Form.Label>
+					<Form.Label htmlFor=''>Tag</Form.Label>
 					<Form.Control as="select" {...requiredTag} >
 						{user.tags
 							.split('#')
@@ -20,14 +20,14 @@ const FilterForm = ({ user, requiredTag, maxDistance, minFame, minAge, maxAge })
 			<Form.Row>
 				<Col>
 					<Form.Group>
-						<Form.Label>Max distance</Form.Label>
-						<Form.Control {...maxDistance} />
+						<Form.Label htmlFor='max-distance-field'>Max distance</Form.Label>
+						<Form.Control id='max-distance-field' {...maxDistance} />
 					</Form.Group>
 				</Col>
 				<Col>
 					<Form.Group>
-						<Form.Label>Min fame</Form.Label>
-						<Form.Control {...minFame} />
+						<Form.Label htmlFor='min-fame-field'>Min fame</Form.Label>
+						<Form.Control id='min-fame-field' {...minFame} />
 					</Form.Group>
 				</Col>
 			</Form.Row>
@@ -35,14 +35,14 @@ const FilterForm = ({ user, requiredTag, maxDistance, minFame, minAge, maxAge })
 			<Form.Row>
 				<Col>
 					<Form.Group>
-						<Form.Label>Min age</Form.Label>
-						<Form.Control {...minAge} />
+						<Form.Label htmlFor='min-age-field'>Min age</Form.Label>
+						<Form.Control id='min-age-field' {...minAge} />
 					</Form.Group>
 				</Col>
 				<Col>
 					<Form.Group>
-						<Form.Label>Max age</Form.Label>
-						<Form.Control {...maxAge} />
+						<Form.Label htmlFor='max-age-field'>Max age</Form.Label>
+						<Form.Control id='max-age-field' {...maxAge} />
 					</Form.Group>
 				</Col>
 			</Form.Row>
