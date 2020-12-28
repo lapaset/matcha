@@ -1,5 +1,4 @@
 import React from 'react'
-//import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAward } from '@fortawesome/free-solid-svg-icons'
 import { ListGroup } from 'react-bootstrap'
@@ -8,9 +7,9 @@ const ListOfUsers = ({ users, handleClick }) => {
 
 	return (
 		users && users.length > 0
-			? <ListGroup className="text-left" variant="flush">
+			? <ListGroup className="text-left mt-3" variant="flush">
 				{users.map(u =>
-					<ListGroup.Item
+					<ListGroup.Item action
 						key={u.user_id}
 						style={{ cursor: 'pointer' }}
 						onClick={() => handleClick(u)} >

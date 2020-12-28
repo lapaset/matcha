@@ -1,12 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Form, Col } from 'react-bootstrap'
+import Togglable from '../../UI/Togglable'
 
-const FilterForm = ({ user, requiredTag, maxDistance, minFame, minAge, maxAge }) => {
-	const [hideFilterForm, setHideFilterForm] = useState(true)
-
-	return <>
-		<Form hidden={hideFilterForm}>
-
+const FilterForm = ({ user, requiredTag, maxDistance, minFame, minAge, maxAge }) => (
+	<Togglable showText='show filters' hideText='hide filters'>
+		<Form className='mb-3'>
 			{user.tags
 				? <Form.Group>
 					<Form.Label>Tag</Form.Label>
@@ -48,17 +46,8 @@ const FilterForm = ({ user, requiredTag, maxDistance, minFame, minAge, maxAge })
 					</Form.Group>
 				</Col>
 			</Form.Row>
-		</Form>
-
-		<div id="toggleFilterForm" className="text-info text-right mb-3"
-			onClick={() => setHideFilterForm(!hideFilterForm)}>
-			{
-				hideFilterForm
-					? <>show filters</>
-					: <>hide filters</>
-			}
-		</div>
-	</>
-}
+		</Form >
+	</Togglable >
+)
 
 export default FilterForm
