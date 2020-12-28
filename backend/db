@@ -20,7 +20,9 @@ CREATE TABLE users (
 	latitude DOUBLE PRECISION,
 	longitude DOUBLE PRECISION,
 	birthdate DATE NOT NULL,
-	fame INTEGER DEFAULT 100
+	fame INTEGER DEFAULT 100,
+	last_online TIMESTAMP,
+	online SMALLINT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE tags (
@@ -109,6 +111,9 @@ CREATE TABLE notifications (
 	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY(user_id)
 		REFERENCES users(user_id)
+		ON DELETE CASCADE,
+	FOREIGN KEY(from_id)
+		REFERENCES users(user_id)
 		ON DELETE CASCADE
 );
 
@@ -122,4 +127,4 @@ VALUES
 ('heikki', 'h', 'heikki', 'heikki@heikki', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'male', 'fmo', '#hot', 60.1695, 24.9354, '1987-02-1', 90),
 ('muumi', 'maa', 'muumio', 'peikko@born1', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'other', 'mo', '#hot', 61.1695, 24.9354, '2000-02-1', 100),
 ('ada', 'l', 'adalmiina', 'binar@h1', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'other', 'f', '#hot', 60.1695, 25.1354, '1999-02-1', 100),
-('heikki', 'h', 'heikkila', 'heikki@heikki1', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90)
+('kalle', 'pihlajakatunen', 'tohtori', 'poniheppatoequards@gmail.com', '1', '$2a$10$sA6K28Xt4/LER8bgAurvK.kGzjchJhI/zabNQbIJdhw74xsEl2qUC', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90)

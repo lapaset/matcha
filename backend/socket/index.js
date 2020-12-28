@@ -6,7 +6,7 @@ module.exports = server => {
 		httpServer: server
 	})
 
-	const clients = {}
+	const clients = []
 
 	wsServer.on('request', request => {
 		console.log(`${new Date()} received a new connection from origin ${request.origin}`)
@@ -21,13 +21,23 @@ module.exports = server => {
 
 				console.log('message:', messageArray)
 
-				if (messageArray.type === 'connected')
+				if (messageArray.type === 'connected') {
 					clients[messageArray.from] = connection
+					db.query('UPDATE users SET online = 1 WHERE user_id = $1',
+						[messageArray.from], () => {
+							console.log('Websocket connected')
+						})
+				}
 
 				if (messageArray.type === 'close') {
 					clients[messageArray.from].close()
-					console.log(`connection ${messageArray.from} closed`)
+				}
 
+				if (messageArray.type === 'closed') {
+					db.query('UPDATE users SET online = 0, last_online = CURRENT_TIMESTAMP WHERE user_id = $1',
+						[messageArray.from], () => {
+							console.log('database user last_online should be updated')
+						})
 				}
 
 				if (messageArray.type === 'message') {
@@ -63,8 +73,8 @@ module.exports = server => {
 
 
 					db.query('SELECT from_user_id, to_user_id FROM blocked\
-						WHERE (from_user_id = $1 AND to_user_id = $2)\
-						OR (from_user_id = $2 AND to_user_id = $1)',
+					WHERE (from_user_id = $1 AND to_user_id = $2)\
+					OR (from_user_id = $2 AND to_user_id = $1)',
 					[messageArray.from, messageArray.to], (err, res) => {
 
 						if (res && res.rowCount === 0) {
@@ -85,9 +95,16 @@ module.exports = server => {
 			}
 		})
 
-		connection.on('close', () => {
-			console.log((new Date()) + ' Peer disconnected.')
-			//	delete clients[userId];
+		connection.on('close', ()  => {
+
+			clients.forEach((c, i) => {
+				if (c === connection) {
+					db.query('UPDATE users SET online = 0, last_online = CURRENT_TIMESTAMP WHERE user_id = $1',
+						[i], () => {
+							console.log('Websocket connection closed')
+						})
+				}
+			})
 		})
 	})
 }
