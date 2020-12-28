@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { ListGroup, Button, Modal } from 'react-bootstrap'
+import { ListGroup, Button } from 'react-bootstrap'
 import blockService from '../../../services/blockService'
 
 const BlockList = ({ user }) => {
-	const [modalIsOpen, setModalIsOpen] = useState(false)
 	const [blockedUsers, setBlockedUsers] = useState([])
 
 	useEffect(() => {
@@ -23,29 +22,20 @@ const BlockList = ({ user }) => {
 			})
 	}
 
-	return <>
-		<Button onClick={() => setModalIsOpen(true)} variant="primary">Blocked users</Button>
-		<Modal show={modalIsOpen} onHide={() => setModalIsOpen(false)}>
-			<Modal.Header closeButton>
-				<Modal.Title>Blocked users</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
-				{blockedUsers && blockedUsers.length > 0
-					? <ListGroup className="text-left" variant="flush">
-						{blockedUsers.map(u =>
-							<ListGroup.Item key={u.username}>
-								<div style={{ display: 'inline-block', width: '60%' }}>{u.username}</div>
-								<div style={{ display: 'inline-block', width: '40%', textAlign: 'right' }}>
-									<Button onClick={() => unblockUser(u.block_id)} variant="warning">Unblock</Button>
-								</div>
-							</ListGroup.Item>
-						)}
-					</ListGroup>
-					: <div className="text-info">Your block list is empty</div>
-				}
-			</Modal.Body>
-		</Modal>
-	</>
+	return blockedUsers && blockedUsers.length > 0
+		? <ListGroup className="text-left" variant="flush">
+			{blockedUsers.map(u =>
+				<ListGroup.Item key={u.username}>
+					<div style={{ display: 'inline-block', width: '60%' }}>{u.username}</div>
+					<div style={{ display: 'inline-block', width: '40%', textAlign: 'right' }}>
+						<Button onClick={() => unblockUser(u.block_id)} variant="outline-primary">Unblock</Button>
+					</div>
+				</ListGroup.Item>
+			)}
+		</ListGroup>
+
+		: <div className="text-info">Your block list is empty</div>
+
 }
 
 export default BlockList

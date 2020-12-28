@@ -29,7 +29,7 @@ const UserProfile = ({ user, setUser }) => {
 			<hr />
 
 			<Togglable title='Visit history'>
-				<VisitHistory />
+				<VisitHistory user={user} />
 			</Togglable>
 			<hr />
 
