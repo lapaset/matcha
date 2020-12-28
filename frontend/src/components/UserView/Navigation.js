@@ -18,10 +18,12 @@ const Navigation = (props) => {
 	const { user, wsClient, ...notificationProps } = props
 
 
-	return <Navbar className='d-flex justify-content-around nav' fixed='top'>
+	return <Navbar className='nav' fixed='top'>
 
 		<Nav id='title'>
-			<NavigationLink to='/' title='frontpage' icon={faHeart}> matcha</NavigationLink>
+			<NavigationLink to='/' title='frontpage' icon={faHeart}>
+				<span className='hide-on-mobile'> matcha</span>
+			</NavigationLink>
 		</Nav>
 
 		{user.username

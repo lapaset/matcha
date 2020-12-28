@@ -12,11 +12,13 @@
 
 .nav {
 	background: white;
-	font-size: 1.2rem;
+	font-size: 1.5rem;
+	justify-content: space-around;
 }
 
-.navbar-nav .nav-link {
-	padding: 0 2rem;
+.nav-link {
+	margin: 0 1rem;
+	padding: auto;
 	cursor: pointer;
 }
 
@@ -45,4 +47,37 @@ footer {
 .unreadNotifications {
 	margin-left: -0.5em;
 	vertical-align: top;
+}
+
+.dropdown-header {
+	font-weight: bold;
+}
+
+@media only screen and (max-width: 500px) {
+
+	.hide-on-mobile {
+		display: none;
+	}
+
+	.nav {
+		justify-content: space-between;
+		font-size: 1.3rem;
+	}
+	
+	.nav-link {
+		margin: 0 0.5rem;
+	}
+
+}
+
+@media only screen and (max-width: 320px) {
+
+	.nav {
+		font-size: 1.2rem;
+	}
+
+	.nav-link {
+		margin: 0 0.2rem;
+	}
+
 }

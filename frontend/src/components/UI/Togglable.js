@@ -9,7 +9,7 @@ const Togglable = (props) => {
 		<div className='pb-1 pt-1' onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
 			{props.title && <span className='float-left font-weight-bold'>{props.title}</span>}
 
-			<span className='float-right text-info text-right'>
+			<span className='float-right text-primary text-right'>
 				{visible ? props.hideText || 'hide' : props.showText || 'show'}
 			</span><br/>
 		</div>
