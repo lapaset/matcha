@@ -2,7 +2,7 @@ import React from 'react'
 import UserPhotos from './UserPhotos'
 import UpdateUserForm from './UpdateUserForm'
 import Map from './Map/index'
-import VisitHistory from './VisitHistory.js'
+import VisitHistory from './VisitHistory/index.js'
 import BlockList from './BlockList/index'
 import Togglable from '../UI/Togglable'
 

@@ -8,6 +8,7 @@ const VisitHistory = ({ user }) => {
 	const [viewhistory, setViewhistory] = useState([])
 
 	useEffect(() => {
+				
 		viewService
 			.viewsHistory({ username: user.username })
 			.then(res => {
@@ -24,13 +25,13 @@ const VisitHistory = ({ user }) => {
 		? <ListGroup className="text-left" variant="flush">
 			{viewhistory.map(u => u.from_visit_username === user.username
 				? <ListGroup.Item key={i++}>
-					<div style={{ display: 'inline-block', width: '60%' }}>
+					<div style={{ display: 'inline-block', width: '100%' }}>
 						You visited <Link to={`browse/?user_id=${u.to_user_id}`}>{u.to_visit_username}</Link> profile
 					</div>
 				</ListGroup.Item>
 				: <ListGroup.Item key={i++}>
-					<div style={{ display: 'inline-block', width: '60%' }}>
-						<Link to={`browse/?user_id=${u.from_user_id}`}>{u.from_visit_username}</Link> visited your profile</div>
+					<div style={{ display: 'inline-block', width: '100%' }}>
+						<Link to={`browse/?user_id=${u.from_user_id}`}>{u.from_visit_username}</Link> visited your profile {u.status === 1 ? "and liked you" : null}</div>
 				</ListGroup.Item>
 			)}
 		</ListGroup>
