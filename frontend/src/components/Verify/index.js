@@ -1,11 +1,11 @@
 import React from 'react'
 import Login from '../Login'
 
-const Verify = ({ setUser }) => {
+const Verify = ({ setUser, wsClient }) => {
 
 	return <>
 		<p className="text-center text-success">account verified</p>
-		<Login setUser={setUser} />
+		<Login setUser={setUser} wsClient={wsClient} />
 	</>
 }
 

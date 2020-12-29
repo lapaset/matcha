@@ -83,9 +83,10 @@ const SelectTags = ({ state, setState }) => {
 
 	const { value } = state
 
-	return <Form.Group className="text-left">
-		<Form.Label>tags</Form.Label>
+	return <Form.Group>
+		<Form.Label htmlFor='tags-select'>tags</Form.Label>
 		<CreatableSelect
+			id='tags-select'
 			inputValue={state.inputValue}
 			isClearable
 			isMulti
@@ -94,7 +95,7 @@ const SelectTags = ({ state, setState }) => {
 			onKeyDown={handleKeyDown}
 			value={value}
 			options={options}
-			name="tags"
+			name='tags'
 		/>
 	</Form.Group>
 }

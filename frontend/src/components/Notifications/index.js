@@ -28,13 +28,13 @@ const Notifications = ({ notifications, handleNotificationClick, markAllNotifica
 			<NavDropdown.Header>Notifications</NavDropdown.Header>
 			{
 				notificationsToRender()
-					.map(n => <NavDropdown.Item key={n.id} onClick={() => handleNotificationClick(n)} className='p-2'>
+					.map(n => <NavDropdown.Item key={n.id} onClick={() => handleNotificationClick(n)}>
 						<Notification data={n} handleClick={handleNotificationClick} />
 					</NavDropdown.Item>)
 			}
 			<NavDropdown.Divider className='p-0' />
-			<NavDropdown.Item as={Link} to='/notifications'>View all</NavDropdown.Item>
-			<NavDropdown.Item onClick={markAllNotificationsRead}>Mark all as read</NavDropdown.Item>
+			<NavDropdown.Item as={Link} to='/notifications' className='text-primary'>View all</NavDropdown.Item>
+			<NavDropdown.Item onClick={markAllNotificationsRead} className='text-primary'>Mark all as read</NavDropdown.Item>
 		</NavDropdown>
 		: null
 

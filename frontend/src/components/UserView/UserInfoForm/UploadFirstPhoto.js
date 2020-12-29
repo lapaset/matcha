@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Form, Image, ResponsiveEmbed } from 'react-bootstrap'
+import { Form, ResponsiveEmbed, Image } from 'react-bootstrap'
 
-const UploadPhoto = ({ photo, setPhoto, profilePic, setUploadDisabled }) => {
+
+const UploadFirstPhoto = ({ photo, setPhoto }) => {
 	const [errorMessage, setErrorMessage] = useState(null)
 
 	const handleImageChange = e => {
@@ -15,25 +16,19 @@ const UploadPhoto = ({ photo, setPhoto, profilePic, setUploadDisabled }) => {
 
 		if (file.size > 350000) {
 			setErrorMessage('Max photo size is 350kb')
-			if (!photo)
-				setUploadDisabled(true)
 			return
 		}
 
 		reader.onloadend = () => {
-			setPhoto({
-				photoStr: reader.result,
-				profilePic
-			})
+			setPhoto({ photoStr: reader.result })
 		}
 		reader.readAsDataURL(file)
-		setUploadDisabled(false)
 		setErrorMessage('')
 	}
 
 	const imagePreview = () => photo.photoStr
-		? <ResponsiveEmbed aspectRatio="1by1">
-			<div className="border d-flex" >
+		? <ResponsiveEmbed aspectRatio="1by1" className="w-50 m-auto">
+			<div className="d-flex" >
 				<Image src={photo.photoStr} alt="upload preview" title="upload preview"
 					className="img-fluid d-block m-auto" style={{ maxWidth: '100%', maxHeight: '100%' }} />
 			</div>
@@ -42,17 +37,19 @@ const UploadPhoto = ({ photo, setPhoto, profilePic, setUploadDisabled }) => {
 
 	return <>
 		<Form className="text-center">
-
 			{imagePreview()}
-
-			<Form.Group>
-				<Form.Label htmlFor="upload" className="btn btn-primary mt-3">Choose photo</Form.Label>
-				<Form.Control id="upload" type="file"
-					accept=".png, .jpg, .jpeg" onChange={handleImageChange} />
-			</Form.Group>
+			{
+				photo.profilePic
+					? null
+					: <Form.Group>
+						<Form.Label htmlFor="photo-upload" className="btn btn-primary mt-3">Choose photo</Form.Label>
+						<Form.Control id="photo-upload" type="file"
+							accept=".png, .jpg, .jpeg" onChange={handleImageChange} className='w-50 m-auto' />
+					</Form.Group>
+			}
 			{errorMessage && <div className="text-center text-danger" >{errorMessage}</div>}
 		</Form>
 	</>
 }
 
-export default UploadPhoto
+export default UploadFirstPhoto

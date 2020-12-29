@@ -15,26 +15,30 @@ const NavigationLink = ({ icon, children, ...props }) =>
 
 const Navigation = (props) => {
 
-	const { user, wsClient, ...notificationProps } = props
+	const { user, wsClient, userInfoComplete, ...notificationProps } = props
 
 
-	return <Navbar className='d-flex justify-content-around nav' fixed='top'>
+	return <Navbar className='nav' fixed='top'>
 
 		<Nav id='title'>
-			<NavigationLink to='/' title='frontpage' icon={faHeart}> matcha</NavigationLink>
+			<NavigationLink to='/' title='frontpage' icon={faHeart}>
+				<span className='hide-on-mobile'> matcha</span>
+			</NavigationLink>
 		</Nav>
 
-		{user.username
-			? <Nav>
-				<NavigationLink to='/matches' title='chat' icon={faComments} />
+		{user && user.user_id
+			? userInfoComplete(user)
+				? <Nav>
+					<NavigationLink to='/matches' title='chat' icon={faComments} />
 
-				<NavigationLink to='/profile' title='your profile' icon={faUser} />
+					<NavigationLink to='/profile' title='your profile' icon={faUser} />
 
-				<NavigationLink to="/login" title='logout' onClick={() => logoutService.handleLogout(wsClient, user.user_id)} icon={faSignOutAlt} />
+					<NavigationLink to="/login" title='logout' onClick={() => logoutService.handleLogout(wsClient, user.user_id)} icon={faSignOutAlt} />
 
-				<Notifications {...notificationProps} />
+					<Notifications {...notificationProps} />
 
-			</Nav>
+				</Nav>
+				: null
 
 			: <Nav>
 

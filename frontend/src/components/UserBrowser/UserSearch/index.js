@@ -11,7 +11,7 @@ const UserSearch = ({ user, setShowUser }) => {
 	const maxDistance = useFilter('matchaMaxDistance', 100, 'number')
 	const minAge = useFilter('matchaMinAge', 20, 'number')
 	const maxAge = useFilter('matchaMaxAge', 120, 'number')
-	const minFame = useFilter('matchaMinFame', 100, 'number')
+	const minFame = useFilter('matchaMinFame', 50, 'number')
 	const requiredTag = useFilter('matchaRequiredTag', '', 'text')
 
 	const sortFormProps = ({ user, resultsToShow, setResultsToShow })

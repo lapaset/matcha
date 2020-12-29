@@ -6,13 +6,13 @@ const Chat = ({ user, match, handleClose, wsClient }) => {
 
 	const [input, setInput] = useState('')
 	const messagesEndRef = useRef(null)
-
+	const inputField = useRef()
 
 	const sendMessage = (from, fromUn, to, msg) => {
 
 		//show some kind of error if connection is not working
 		if (wsClient.current.readyState > 1) {
-			console.log('could not send, websocket state', wsClient.current.readyState)
+			console.log('Could not send message, websocket state', wsClient.current.readyState)
 			return
 		}
 
@@ -23,8 +23,6 @@ const Chat = ({ user, match, handleClose, wsClient }) => {
 			to,
 			msg
 		}))
-
-		console.log('message sent', msg)
 	}
 
 	const handleSubmit = e => {
@@ -44,7 +42,7 @@ const Chat = ({ user, match, handleClose, wsClient }) => {
 
 	return match
 		? <>
-			<Modal show={true} onHide={handleClose} >
+			<Modal show={true} onHide={handleClose} onEntered={() => inputField.current.focus()}>
 				<Modal.Header closeButton>
 					<Modal.Title>{match.username}</Modal.Title>
 				</Modal.Header>
@@ -67,6 +65,7 @@ const Chat = ({ user, match, handleClose, wsClient }) => {
 					<Form onSubmit={handleSubmit} className="w-100">
 						<InputGroup >
 							<Form.Control
+								ref={inputField}
 								placeholder="write message and send"
 								value={input}
 								onChange={e => setInput(e.target.value)}

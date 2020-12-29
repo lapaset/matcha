@@ -1,6 +1,7 @@
 import React from 'react'
 import Select from 'react-select'
 import { Controller } from 'react-hook-form'
+import { Form } from 'react-bootstrap'
 
 const SelectOrientation = ({ orientation, control, errors }) => {
 
@@ -14,13 +15,14 @@ const SelectOrientation = ({ orientation, control, errors }) => {
 
 	const defVal = () => orientation ? orientation.map(o => ({ value: o, label: o })) : ''
 
-	return 	<div className="form-group text-left">
-		<label>looking for</label>
-		{errors.orientation && errors.orientation.type === 'required' && (<span className="text-danger"> *</span>)}<br />
+	return 	<Form.Group>
+		<Form.Label htmlFor='select-orientation'>looking for</Form.Label>
+		{errors.orientation && errors.orientation.type === 'required' && (<span className='text-danger'> *</span>)}<br />
 
 		<Controller
-			class="form-control"
-			name="orientation"
+			class='form-control'
+			id='select-orientation'
+			name='orientation'
 			as={Select}
 			options={options}
 			value={defVal()}
@@ -28,7 +30,7 @@ const SelectOrientation = ({ orientation, control, errors }) => {
 			control={control}
 			rules={{ required: true }}
 			isMulti />
-	</div>
+	</Form.Group>
 }
 
 export default SelectOrientation

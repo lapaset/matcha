@@ -21,6 +21,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.4",
     "react-select": "^3.1.0",
+    "react-timeago": "^5.2.0",
     "websocket": "^1.0.32"
   },
   "scripts": {

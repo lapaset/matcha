@@ -64,7 +64,7 @@ usersRouter.get('/:id', (req, resp) => {
 
 	let query = 'SELECT user_id, first_name, last_name, username, gender,\
 	orientation, bio, tags, AGE(birthdate) as age, longitude, latitude, fame,\
-	id, profile_pic, photo_str'
+	online, last_online, id, profile_pic, photo_str'
 
 	if (user.user_id === Number(req.params.id))
 		query = query.concat(', email, verified, token, password')
