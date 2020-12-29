@@ -12,7 +12,7 @@ const Chat = ({ user, match, handleClose, wsClient }) => {
 
 		//show some kind of error if connection is not working
 		if (wsClient.current.readyState > 1) {
-			console.log('could not send, websocket state', wsClient.current.readyState)
+			console.log('Could not send message, websocket state', wsClient.current.readyState)
 			return
 		}
 
@@ -23,8 +23,6 @@ const Chat = ({ user, match, handleClose, wsClient }) => {
 			to,
 			msg
 		}))
-
-		console.log('message sent', msg)
 	}
 
 	const handleSubmit = e => {
