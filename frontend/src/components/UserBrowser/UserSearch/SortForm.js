@@ -99,8 +99,8 @@ const SortForm = ({ user, resultsToShow, setResultsToShow }) => {
 
 	return <Form>
 		<Form.Group>
-			<Form.Label>Sort by</Form.Label>
-			<Form.Control as="select" defaultValue={window.localStorage.getItem('matchaSortBy')
+			<Form.Label htmlFor='sort-users-field'>Sort by</Form.Label>
+			<Form.Control id='sort-users-field' as="select" defaultValue={window.localStorage.getItem('matchaSortBy')
 				? window.localStorage.getItem('matchaSortBy')
 				: 'fame'} onChange={handleSort}>
 				<option value="fame">fame</option>

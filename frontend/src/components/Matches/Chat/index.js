@@ -6,7 +6,7 @@ const Chat = ({ user, match, handleClose, wsClient }) => {
 
 	const [input, setInput] = useState('')
 	const messagesEndRef = useRef(null)
-
+	const inputField = useRef()
 
 	const sendMessage = (from, fromUn, to, msg) => {
 
@@ -44,7 +44,7 @@ const Chat = ({ user, match, handleClose, wsClient }) => {
 
 	return match
 		? <>
-			<Modal show={true} onHide={handleClose} >
+			<Modal show={true} onHide={handleClose} onEntered={() => inputField.current.focus()}>
 				<Modal.Header closeButton>
 					<Modal.Title>{match.username}</Modal.Title>
 				</Modal.Header>
@@ -67,6 +67,7 @@ const Chat = ({ user, match, handleClose, wsClient }) => {
 					<Form onSubmit={handleSubmit} className="w-100">
 						<InputGroup >
 							<Form.Control
+								ref={inputField}
 								placeholder="write message and send"
 								value={input}
 								onChange={e => setInput(e.target.value)}

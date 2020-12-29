@@ -7,7 +7,8 @@ const Togglable = (props) => {
 	const showWhenVisible = { display: visible ? '' : 'none' }
 
 	return <>
-		<div className='pb-1 pt-1 d-flex justify-content-between align-items-baseline' onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
+		<div className='pb-1 pt-1 d-flex justify-content-between align-items-baseline'
+			onClick={() => setVisible(!visible)} style={{ cursor: 'pointer' }}>
 			<span className='font-weight-bold'>{props.title || ''}</span>
 
 			<Button variant='link'>
