@@ -1,18 +1,24 @@
 import React from 'react'
 import { Form, Col } from 'react-bootstrap'
+import Select from 'react-select'
 import Togglable from '../../UI/Togglable'
 
-const FilterForm = ({ user, requiredTag, maxDistance, minFame, minAge, maxAge }) => (
+const FilterForm = ({ user, requiredTags, handleTagsChange, maxDistance, minFame, minAge, maxAge }) => (
 	<Togglable showText='show filters' hideText='hide filters'>
 		<Form className='mb-3'>
 			{user.tags
 				? <Form.Group>
-					<Form.Label htmlFor=''>Tag</Form.Label>
-					<Form.Control as="select" {...requiredTag} >
-						{user.tags
+					<Form.Label htmlFor='tags-field'>Tags</Form.Label>
+					<Select
+						isMulti
+						id='tags-field'
+						defaultValue={requiredTags.value}
+						value={requiredTags.value}
+						name='tags'
+						onChange={handleTagsChange}
+						options={user.tags
 							.split('#')
-							.map(t => <option key={t} value={t}>{t}</option>)}
-					</Form.Control>
+							.map(t => t === '' ? ({ value: '', label: '' }) : ({ value: t, label: t }))} />
 				</Form.Group>
 				: null
 			}
