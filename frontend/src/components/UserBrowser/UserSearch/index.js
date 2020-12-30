@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useFilter } from '../../../hooks/index'
+import { useHistory } from 'react-router-dom'
 import ListOfUsers from './ListOfUsers'
 import SortForm from './SortForm'
 import FilterForm from './FilterForm'
@@ -15,6 +16,7 @@ const UserSearch = ({ user, setShowUser }) => {
 	const maxAge = useFilter('matchaMaxAge', 120, 'number')
 	const minFame = useFilter('matchaMinFame', 50, 'number')
 
+	const history = useHistory()
 	const sortFormProps = ({ user, resultsToShow, setResultsToShow })
 	const filterFormProps = ({ user, requiredTags, handleTagsChange, maxDistance, minFame, minAge, maxAge })
 
@@ -35,7 +37,10 @@ const UserSearch = ({ user, setShowUser }) => {
 			.filter(r => matchesFilters(r))
 		: []
 
-	const handleClick = user => setShowUser(user.user_id)
+	const handleClick = user => {
+		history.push(`/browse?user_id=${user.user_id}`)
+		//setShowUser(user.user_id)
+	}
 
 
 	return <>
