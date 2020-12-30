@@ -51,10 +51,3 @@ const UserBrowser = ({ user, wsClient, showUserAtLoad, matches, setMatches }) =>
 }
 
 export default UserBrowser
-/* 
-/likes
-<Views user={user} value={1} />
-
-/views
-<Views user={user} value={0} />
-*/
