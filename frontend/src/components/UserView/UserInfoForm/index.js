@@ -41,18 +41,20 @@ const UserInfoForm = ({ user, setUser }) => {
 
 				if (photo && !photo.profilePic) {
 
+					const photoToAdd = {
+						user_id: user.user_id,
+						profilePic: 1,
+						...photo
+					}
+
 					photoService
-						.addPhoto({
-							user_id: user.user_id,
-							profilePic: 1,
-							...photo
-						})
-						.then(data => {
+						.addPhoto(photoToAdd)
+						.then(addedPhoto => {
 							const newUser = { ...user, ...data }
-							const newPhoto = { ...data }
+
 							newUser.photos = user.photos
-								? user.photos.concat(newPhoto)
-								: [newPhoto]
+								? user.photos.concat({ ...photoToAdd, ...addedPhoto })
+								: [{ ...photoToAdd, ...addedPhoto }]
 
 							setUser(newUser)
 						})

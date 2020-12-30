@@ -20,7 +20,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 	const [confirmationModal, setConfirmationModal] = useState(null)
 	const [userToShow, setUserToShow] = useState(null)
 	const isMatch = matches ? matches.find(m => m.user_id = user_id) !== undefined : false
-	const [likeForView, setLikeForView] = useState(0);
+	const [likeForView, setLikeForView] = useState(0)
 
 	useEffect(() => {
 		blockService
@@ -58,7 +58,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 			viewService
 				.views({
 					from_user_id: loggedUser.user_id,
-					to_user_id: userToShow.user_id, 
+					to_user_id: userToShow.user_id,
 					status: likeForView
 				})
 				.then(res => {
@@ -102,7 +102,7 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 				if (res.value === 1 && res.status === 'match') {
 					sendNotification(`New match with ${loggedUser.username}`)
 					setMatchModal(userToShow.username)
-					setLikeForView(1);
+					setLikeForView(1)
 					setMatches(matches.concat({
 						user_id: userToShow.user_id,
 						username: userToShow.username,
@@ -111,12 +111,11 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 					}))
 				}
 
-				else if (res.value === 1 && res.status === 'like')
-				{
-					setLikeForView(1);
+				else if (res.value === 1 && res.status === 'like') {
+					setLikeForView(1)
 					sendNotification(`${loggedUser.username} likes you`)
 				}
-					
+
 
 				else if (res.value === 0 && res.status === 'unmatch') {
 					sendNotification(`No longer match with ${loggedUser.username}`)

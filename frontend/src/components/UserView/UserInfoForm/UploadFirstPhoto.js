@@ -26,7 +26,7 @@ const UploadFirstPhoto = ({ photo, setPhoto }) => {
 		setErrorMessage('')
 	}
 
-	const imagePreview = () => photo.photoStr
+	const imagePreview = () => photo && photo.photoStr
 		? <ResponsiveEmbed aspectRatio="1by1" className="w-50 m-auto">
 			<div className="d-flex" >
 				<Image src={photo.photoStr} alt="upload preview" title="upload preview"
@@ -39,7 +39,7 @@ const UploadFirstPhoto = ({ photo, setPhoto }) => {
 		<Form className="text-center">
 			{imagePreview()}
 			{
-				photo.profilePic
+				photo && photo.profilePic
 					? null
 					: <Form.Group>
 						<Form.Label htmlFor="photo-upload" className="btn btn-primary mt-3">Choose photo</Form.Label>
