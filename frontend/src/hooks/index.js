@@ -7,7 +7,6 @@ export const useFilter = (name, defVal, type) => {
 		: defVal)
 
 	const handleValue = val => {
-		console.log('onChange', val)
 		if (type === 'number') {
 			val = parseInt(val)
 

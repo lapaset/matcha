@@ -40,7 +40,10 @@ const App = () => {
 					setUser(data)
 				})
 				.catch(e => {
-					console.log('Database error', e)
+					if (!e.response)
+						console.log('Error: no response from the server')
+					else
+						console.log('Database error', e)
 				})
 
 			return () => {

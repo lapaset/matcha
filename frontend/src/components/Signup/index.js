@@ -27,7 +27,6 @@ const Signup = () => {
 		userService
 			.createUser(userObject)
 			.then(() => {
-				console.log('user added')
 				if (errorMessage)
 					setErrorMessage('')
 				setNotification('signup succesfull, check your email')

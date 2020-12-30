@@ -9,23 +9,22 @@ module.exports = server => {
 	const clients = []
 
 	wsServer.on('request', request => {
-		console.log(`${new Date()} received a new connection from origin ${request.origin}`)
+		console.log(`Websocket received a new connection from origin ${request.origin}`)
+		console.log('---')
 
 		const connection = request.accept(null, request.origin)
 
 		connection.on('message', message => {
-			console.log('\nNew message\n')
 
 			if (message.type === 'utf8') {
 				const messageArray = JSON.parse(message.utf8Data)
-
-				console.log('message:', messageArray)
 
 				if (messageArray.type === 'connected') {
 					clients[messageArray.from] = connection
 					db.query('UPDATE users SET online = 1 WHERE user_id = $1',
 						[messageArray.from], () => {
-							console.log('Websocket connected')
+							console.log(`User ${messageArray.from} connected`)
+							console.log('---')
 						})
 				}
 
@@ -35,9 +34,7 @@ module.exports = server => {
 
 				if (messageArray.type === 'closed') {
 					db.query('UPDATE users SET online = 0, last_online = CURRENT_TIMESTAMP WHERE user_id = $1',
-						[messageArray.from], () => {
-							console.log('database user last_online should be updated')
-						})
+						[messageArray.from], () => {})
 				}
 
 				if (messageArray.type === 'message') {
@@ -101,7 +98,8 @@ module.exports = server => {
 				if (c === connection) {
 					db.query('UPDATE users SET online = 0, last_online = CURRENT_TIMESTAMP WHERE user_id = $1',
 						[i], () => {
-							console.log('Websocket connection closed')
+							console.log(`User ${i} disconnected`)
+							console.log('---')
 						})
 				}
 			})

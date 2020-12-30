@@ -29,10 +29,8 @@ const createWs = from => {
 
 const sendNotification = (wsClient, notification) => {
 
-	//console.log('socket.sendNotification', notification)
-	//show some kind of error if connection is not working
 	if (!wsClient.current) {
-		console.log('Error: could not send notification, no websocket')
+		console.log('Error: could not send notification, no websocket connection')
 		return
 	}
 

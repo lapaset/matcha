@@ -61,9 +61,6 @@ const UserCard = ({ user_id, loggedUser, wsClient, hideUser, matches, setMatches
 					to_user_id: userToShow.user_id,
 					status: likeForView
 				})
-				.then(res => {
-					console.log(res.message)
-				})
 				.catch(e => {
 					console.log('Database error', e)
 				})

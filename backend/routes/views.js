@@ -8,8 +8,8 @@ viewsRouter.post('/', (req, resp) => {
 				resp.status(200).send({ message: 'new view inserted' })
 			else
 				resp.status(500).send(errors)
-	})
-			
+		})
+
 })
 
 viewsRouter.post('/list', (req, resp) => {

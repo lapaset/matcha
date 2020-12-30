@@ -5,7 +5,7 @@ import ListOfUsers from './ListOfUsers'
 import SortForm from './SortForm'
 import FilterForm from './FilterForm'
 
-const UserSearch = ({ user, setShowUser }) => {
+const UserSearch = ({ user }) => {
 
 	const [resultsToShow, setResultsToShow] = useState([])
 	const [requiredTags, setRequiredTags] = useState(localStorage.getItem('matchaRequiredTags') || [])
@@ -39,7 +39,6 @@ const UserSearch = ({ user, setShowUser }) => {
 
 	const handleClick = user => {
 		history.push(`/browse?user_id=${user.user_id}`)
-		//setShowUser(user.user_id)
 	}
 
 

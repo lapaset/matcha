@@ -28,22 +28,22 @@ const UserBrowser = ({ user, wsClient, showUserAtLoad, matches, setMatches }) =>
 		? <UserCard user_id={showUser} loggedUser={user} wsClient={wsClient} hideUser={hideUser} matches={matches} setMatches={setMatches} />
 
 		: <>
-			<ButtonGroup className="mb-5">
-				<Button variant="outline-light"><NavLink exact to={`${url}`} activeStyle={activeLinkStyle}>All</NavLink></Button>
+			<ButtonGroup className='mb-5'>
+				<Button variant='outline-light'><NavLink exact to={`${url}`} activeStyle={activeLinkStyle}>All</NavLink></Button>
 
-				<Button variant="outline-light"><NavLink to={`${url}/likes`} activeStyle={activeLinkStyle}>Likes</NavLink></Button>
+				<Button variant='outline-light'><NavLink to={`${url}/likes`} activeStyle={activeLinkStyle}>Likes</NavLink></Button>
 
-				<Button variant="outline-light"><NavLink to={`${url}/views`} activeStyle={activeLinkStyle}>Views</NavLink></Button>
+				<Button variant='outline-light'><NavLink to={`${url}/views`} activeStyle={activeLinkStyle}>Views</NavLink></Button>
 			</ButtonGroup>
 			<Switch>
 				<Route exact path={path} render={() => showUser
 					? null
-					: <UserSearch user={user} wsClient={wsClient} setShowUser={setShowUser} /> } />
+					: <UserSearch user={user} /> } />
 				<Route path={`${path}/likes`}>
-					<Views user={user} value={"likestab"} />
+					<Views user={user} value={'likestab'} />
 				</Route>
 				<Route path={`${path}/views`}>
-					<Views user={user} value={"viewstab"} />
+					<Views user={user} value={'viewstab'} />
 				</Route>
 			</Switch>
 		</>
