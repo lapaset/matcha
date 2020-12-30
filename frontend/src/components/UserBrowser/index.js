@@ -3,6 +3,7 @@ import { Button, ButtonGroup } from 'react-bootstrap'
 import { Switch, Route, useRouteMatch, NavLink, useHistory } from 'react-router-dom'
 import UserCard from './UserCard'
 import UserSearch from './UserSearch'
+import Views from '../UserProfile/VisitHistory/index'
 
 const UserBrowser = ({ user, wsClient, showUserAtLoad, matches, setMatches }) => {
 	const [showUser, setShowUser] = useState(showUserAtLoad)
@@ -39,10 +40,10 @@ const UserBrowser = ({ user, wsClient, showUserAtLoad, matches, setMatches }) =>
 					? null
 					: <UserSearch user={user} wsClient={wsClient} setShowUser={setShowUser} /> } />
 				<Route path={`${path}/likes`}>
-					<div>Show users that like you</div>
+					<Views user={user} value={"likestab"} />
 				</Route>
 				<Route path={`${path}/views`}>
-					<div>Show users that viewed you</div>
+					<Views user={user} value={"viewstab"} />
 				</Route>
 			</Switch>
 		</>
@@ -50,3 +51,10 @@ const UserBrowser = ({ user, wsClient, showUserAtLoad, matches, setMatches }) =>
 }
 
 export default UserBrowser
+/* 
+/likes
+<Views user={user} value={1} />
+
+/views
+<Views user={user} value={0} />
+*/

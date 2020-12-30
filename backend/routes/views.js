@@ -1,33 +1,15 @@
 const viewsRouter = require('express').Router()
 const db = require('../utils/db')
 
-/*
 viewsRouter.post('/', (req, resp) => {
-	db.query('INSERT INTO views (from_user_id, to_user_id) VALUES ($1, $2) RETURNING *',
-		[req.body.from_user_id, req.body.to_user_id], (err, res) => {
-			if (res)
-				resp.status(200).send({ message: "Views inserted" });
+	db.query('INSERT INTO views (from_user_id, to_user_id, status) VALUES ($1, $2, $3) RETURNING *',
+		[req.body.from_user_id, req.body.to_user_id, req.body.status], (errors, results) => {
+			if (results)
+				resp.status(200).send({ message: 'new view inserted' })
 			else
-				resp.status(500).send(err);
-		})
-})
-*/
-viewsRouter.post('/', (req, resp) => {
-	db.query('DELETE FROM views WHERE from_user_id = $1 AND to_user_id = $2 AND status = 0',
-		[req.body.from_user_id, req.body.to_user_id], (err, res) => {
-			if (res)
-			{
-				db.query('INSERT INTO views (from_user_id, to_user_id, status) VALUES ($1, $2, $3) RETURNING *',
-					[req.body.from_user_id, req.body.to_user_id, req.body.status], (errors, results) => {
-						if (results)
-							resp.status(200).send({ message: 'DELETED and inserted' })
-						else
-							resp.status(500).send(errors)
-					})
-			}
-			else
-				resp.status(500).send(err)
-		})
+				resp.status(500).send(errors)
+	})
+			
 })
 
 viewsRouter.post('/list', (req, resp) => {
