@@ -6,7 +6,7 @@ const Matches = ({ user, matches, chatToShow, setChatToShow, wsClient }) => {
 
 	return matches && matches.length !== 0
 		? <>
-			<ListGroup className="text-left text-primary" variant="flush">
+			<ListGroup className="text-left text-primary cursor-pointer" variant="flush">
 				{matches.map(m =>
 					<ListGroup.Item key={m.username} onClick={() => setChatToShow(m)}>
 						{m.username}
