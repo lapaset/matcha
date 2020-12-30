@@ -70,7 +70,7 @@ CREATE TABLE blocked (
 	block_id SERIAL PRIMARY KEY,
 	from_user_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
 	to_user_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-	unique (from_user_id, to_user_id),
+	unique (from_user_id, to_user_id)
 );
 
 CREATE TABLE chat (
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS "views"
 	"from_user_id" bigint NOT NULL REFERENCES "users" ( "user_id" ) ON DELETE CASCADE,
 	"to_user_id"   bigint NOT NULL REFERENCES "users" ( "user_id" ) ON DELETE CASCADE,
 	"status" SMALLINT
-)
+);
 
 CREATE TABLE notifications (
 	id SERIAL PRIMARY KEY,
