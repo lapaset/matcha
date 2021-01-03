@@ -1,14 +1,30 @@
-# Matcha 🚧 work in progress
+# Matcha
 
 Dating app<br />
 React+Node.js+Postgres<br/>
 Hive Helsinki school project
 
+Demo
+---
+- [Demo in Heroku](https://matchademo.herokuapp.com)
+- [Demo project depository](https://github.com/lapaset/matcha_demo)
+
 Features
-- register and edit profile
-- see and edit your location on a map
-- filter and sort interesting users by distance, age, common tags and fame
-- like, unlike, report and block users
+---
+- user browser
+  - filter and sort interesting users by distance, age, common tags and fame
+  - see users that like you
+  - see users that viewed your profile
+- user card
+  - see user photos and information
+  - see when user has last been online
+  - like, unlike, report and block user
+- user profile
+  - upload and delete photos
+  - toggle profile picture
+  - edit your user information
+  - see and edit your location on a map
+  - see visit history
+  - see and unblock blocked users
 - chat with connected users
-- see who visited and liked your profile
 - notifications
